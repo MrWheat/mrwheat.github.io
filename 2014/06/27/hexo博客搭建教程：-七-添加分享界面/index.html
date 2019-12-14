@@ -1,0 +1,700 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="hexo,教程," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="MaiZi's Blog" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.1" />
+
+
+
+
+
+
+<meta name="description" content="有段时间没更了，懒癌晚期真心没得治，当然也有其他的原因。寒假的时候重装了一次系统，今天才又重新把环境搭好。问题挺多，以前的hexo教程跟现在可能有些出入，毕竟软件更新速度还是很快的，更新就意味着一些改变，当然，前文的不当之处已经更正，至少到今天为止还是适用的，请放心食用。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="hexo博客搭建教程：(七)添加分享界面">
+<meta property="og:url" content="http://hackmz.com/2014/06/27/hexo博客搭建教程：-七-添加分享界面/index.html">
+<meta property="og:site_name" content="MaiZi's Blog">
+<meta property="og:description" content="有段时间没更了，懒癌晚期真心没得治，当然也有其他的原因。寒假的时候重装了一次系统，今天才又重新把环境搭好。问题挺多，以前的hexo教程跟现在可能有些出入，毕竟软件更新速度还是很快的，更新就意味着一些改变，当然，前文的不当之处已经更正，至少到今天为止还是适用的，请放心食用。">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="hexo博客搭建教程：(七)添加分享界面">
+<meta name="twitter:description" content="有段时间没更了，懒癌晚期真心没得治，当然也有其他的原因。寒假的时候重装了一次系统，今天才又重新把环境搭好。问题挺多，以前的hexo教程跟现在可能有些出入，毕竟软件更新速度还是很快的，更新就意味着一些改变，当然，前文的不当之处已经更正，至少到今天为止还是适用的，请放心食用。">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"hide"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 0,
+      author: '博主'
+    }
+  };
+</script>
+
+  <title> hexo博客搭建教程：(七)添加分享界面 | MaiZi's Blog </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?c2586345b27e17779034f84bb3e505d2";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">MaiZi's Blog</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">Nothing is impossible！</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                hexo博客搭建教程：(七)添加分享界面
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2014-06-27T21:13:29+08:00" content="Jun 27 2014">
+              Jun 27 2014
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/hexo教程/" itemprop="url" rel="index">
+                    <span itemprop="name">hexo教程</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2014/06/27/hexo博客搭建教程：-七-添加分享界面/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2014/06/27/hexo博客搭建教程：-七-添加分享界面/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>有段时间没更了，懒癌晚期真心没得治，当然也有其他的原因。寒假的时候重装了一次系统，今天才又重新把环境搭好。问题挺多，以前的hexo教程跟现在可能有些出入，毕竟软件更新速度还是很快的，更新就意味着一些改变，当然，前文的不当之处已经更正，至少到今天为止还是适用的，请放心食用。</p>
+<a id="more"></a>
+<p>今天介绍如何添加分享界面，就是博主博客右侧那个红白色的分享按钮。</p>
+<p>在<code>hexo\themes\jacman\layout\_partial\baidu_tongji.ejs</code>的开头添加如下代码：</p>
+<figure class="highlight erb"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br></pre></td><td class="code"><pre><span class="line"><span class="xml"></span>&lt;%<span class="ruby"> <span class="keyword">if</span> (theme.baidu_share.enable)&#123; </span>%&gt;<span class="xml"></span><br><span class="line"><span class="tag">&lt;<span class="title">script</span>&gt;</span><span class="javascript"></span><br><span class="line">    </span></span>&lt;%<span class="ruby"> <span class="keyword">if</span>(theme.baidu_share.color&amp;&amp;theme.baidu_share.color&gt;=<span class="number">0</span>)&#123; </span>%&gt;<span class="xml"><span class="javascript"></span><br><span class="line">        <span class="keyword">var</span> _bdImg = <span class="string">'</span></span></span>&lt;%=<span class="ruby">theme.baidu_share.color</span>%&gt;<span class="xml"><span class="javascript"><span class="string">';</span><br><span class="line">    </span></span></span>&lt;%<span class="ruby"> &#125;<span class="keyword">else</span>&#123; </span>%&gt;<span class="xml"><span class="javascript"></span><br><span class="line">        <span class="keyword">var</span> _bdImg = <span class="string">"4"</span>;</span><br><span class="line">    </span></span>&lt;%<span class="ruby"> &#125; </span>%&gt;<span class="xml"><span class="javascript"></span><br><span class="line">    <span class="built_in">window</span>._bd_share_config=&#123;</span><br><span class="line">        <span class="string">"common"</span>:&#123;</span><br><span class="line">            <span class="string">"bdSnsKey"</span>:&#123;</span><br><span class="line"></span><br><span class="line">            &#125;,</span><br><span class="line">            <span class="string">"bdText"</span>:<span class="string">""</span>,</span><br><span class="line">            <span class="string">"bdMini"</span>:<span class="string">"2"</span>,</span><br><span class="line">            <span class="string">"bdMiniList"</span>:[</span><br><span class="line">                <span class="string">"qzone"</span>,</span><br><span class="line">                <span class="string">"tsina"</span>,</span><br><span class="line">                <span class="string">"weixin"</span>,</span><br><span class="line">                <span class="string">"renren"</span>,</span><br><span class="line">                <span class="string">"tqq"</span>,</span><br><span class="line">                <span class="string">"tieba"</span>,</span><br><span class="line">                <span class="string">"douban"</span>,</span><br><span class="line">                <span class="string">"sqq"</span>,</span><br><span class="line">                <span class="string">"diandian"</span>,</span><br><span class="line">                <span class="string">"huaban"</span>,</span><br><span class="line">                <span class="string">"youdao"</span>,</span><br><span class="line">                <span class="string">"mail"</span>,</span><br><span class="line">                <span class="string">"ty"</span>,</span><br><span class="line">                <span class="string">"fbook"</span>,</span><br><span class="line">                <span class="string">"twi"</span>,</span><br><span class="line">                <span class="string">"linkedin"</span>,</span><br><span class="line">                <span class="string">"copy"</span>,</span><br><span class="line">                <span class="string">"print"</span></span><br><span class="line">            ],</span><br><span class="line">            <span class="string">"bdPic"</span>:<span class="string">""</span>,</span><br><span class="line">            <span class="string">"bdStyle"</span>:<span class="string">"0"</span>,</span><br><span class="line">            <span class="string">"bdSize"</span>:<span class="string">"16"</span></span><br><span class="line">        &#125;,</span><br><span class="line">        <span class="string">"slide"</span>:&#123;</span><br><span class="line">            <span class="string">"type"</span>:<span class="string">"slide"</span>,</span><br><span class="line">            <span class="string">"bdImg"</span>:_bdImg,</span><br><span class="line">            <span class="string">"bdPos"</span>:<span class="string">"right"</span>,</span><br><span class="line">            <span class="string">"bdTop"</span>:<span class="string">"350"</span></span><br><span class="line">        &#125;,</span><br><span class="line">        <span class="string">"image"</span>:&#123;</span><br><span class="line">            <span class="string">"viewList"</span>:[</span><br><span class="line">                <span class="string">"weixin"</span>,</span><br><span class="line">                <span class="string">"qzone"</span>,</span><br><span class="line">                <span class="string">"tsina"</span>,</span><br><span class="line">                <span class="string">"renren"</span>,</span><br><span class="line">                <span class="string">"douban"</span>,</span><br><span class="line">                <span class="string">"tqq"</span></span><br><span class="line">            ],</span><br><span class="line">            <span class="string">"viewText"</span>:<span class="string">"分享："</span>,</span><br><span class="line">            <span class="string">"viewSize"</span>:<span class="string">"16"</span></span><br><span class="line">        &#125;,</span><br><span class="line">        <span class="string">"selectShare"</span>:&#123;</span><br><span class="line">            <span class="string">"bdContainerClass"</span>:<span class="literal">null</span>,</span><br><span class="line">            <span class="string">"bdSelectMiniList"</span>:[</span><br><span class="line">                <span class="string">"weixin"</span>,</span><br><span class="line">                <span class="string">"qzone"</span>,</span><br><span class="line">                <span class="string">"tsina"</span>,</span><br><span class="line">                <span class="string">"renren"</span>,</span><br><span class="line">                <span class="string">"douban"</span>,</span><br><span class="line">                <span class="string">"tqq"</span></span><br><span class="line">            ]</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;;</span><br><span class="line">    <span class="keyword">with</span>(<span class="built_in">document</span>)<span class="number">0</span>[(getElementsByTagName(<span class="string">'head'</span>)[<span class="number">0</span>]||body).appendChild(createElement(<span class="string">'script'</span>)).src=<span class="string">'http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='</span>+~(-<span class="keyword">new</span> <span class="built_in">Date</span>()/<span class="number">36e5</span>)];</span><br><span class="line"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span></span><br><span class="line"></span>&lt;%<span class="ruby"> &#125; </span>%&gt;<span class="xml"></span></span><br></pre></td></tr></table></figure>
+<p>然后在<code>hexo\themes\jacman\_config.yml</code>中添加：</p>
+<figure class="highlight less"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="attribute">baidu_share</span>:</span><br><span class="line">  <span class="attribute">enable</span>: true</span><br><span class="line">  <span class="attribute">color</span>: <span class="number">4</span></span><br></pre></td></tr></table></figure>
+<p>如果有该选项，设置为true，打开就行。</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/hexo/" rel="tag">#hexo</a>
+          
+            <a href="/tags/教程/" rel="tag">#教程</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2014/06/20/hexo博客搭建教程：-六-hexo博客主题优化-下/" rel="next" title="hexo博客搭建教程：(六)hexo博客主题的优化 (下)">
+                <i class="fa fa-chevron-left"></i> hexo博客搭建教程：(六)hexo博客主题的优化 (下)
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2014/08/20/《硅谷》关于创业与投资的思考/" rel="prev" title="《硅谷》关于创业与投资的思考">
+                《硅谷》关于创业与投资的思考 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <div class="ds-share flat" data-thread-key="2014/06/27/hexo博客搭建教程：-七-添加分享界面/"
+     data-title="hexo博客搭建教程：(七)添加分享界面"
+     data-content=""
+     data-url="http://hackmz.com/2014/06/27/hexo博客搭建教程：-七-添加分享界面/">
+  <div class="ds-share-inline">
+    <ul  class="ds-share-icons-16">
+
+      <li data-toggle="ds-share-icons-more"><a class="ds-more" href="javascript:void(0);">分享到：</a></li>
+      <li><a class="ds-weibo" href="javascript:void(0);" data-service="weibo">微博</a></li>
+      <li><a class="ds-qzone" href="javascript:void(0);" data-service="qzone">QQ空间</a></li>
+      <li><a class="ds-qqt" href="javascript:void(0);" data-service="qqt">腾讯微博</a></li>
+      <li><a class="ds-wechat" href="javascript:void(0);" data-service="wechat">微信</a></li>
+
+    </ul>
+    <div class="ds-share-icons-more">
+    </div>
+  </div>
+</div>
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2014/06/27/hexo博客搭建教程：-七-添加分享界面/"
+           data-title="hexo博客搭建教程：(七)添加分享界面" data-url="http://hackmz.com/2014/06/27/hexo博客搭建教程：-七-添加分享界面/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="http://7pumug.com1.z0.glb.clouddn.com/author.jpg"
+               alt="麦子" />
+          <p class="site-author-name" itemprop="name">麦子</p>
+          <p class="site-description motion-element" itemprop="description">当你的才华撑不起你的野心的时候，你就应该静下心来学习！</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">41</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">7</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">43</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/MrWheat" target="_blank" title="Github">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  Github
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/3202240184" target="_blank" title="微博">
+                  
+                    <i class="fa fa-fw fa-weibo"></i>
+                  
+                  微博
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <p class="post-toc-empty">此文章未包含目录</p>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2014 - 
+  <span itemprop="copyrightYear">2016</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">麦子</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+        
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.1"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.0.1"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.1"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"mrwheat"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+  
+
+
+
+
+
+  
+  
+  
+
+  
+
+  
+
+</body>
+</html>

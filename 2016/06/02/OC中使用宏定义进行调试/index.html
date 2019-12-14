@@ -1,0 +1,887 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="iOS,宏定义,开发," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="MaiZi's Blog" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.1" />
+
+
+
+
+
+
+<meta name="description" content="想了想还是把OC中经常用到的宏定义语法单独列了一章出来，毕竟对于不同的语言，不同的平台，使用起来还是千差万别的，如果对#define还不熟悉的朋友可以参看以前写的一篇博客#define用法总结。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="OC中使用宏定义进行调试">
+<meta property="og:url" content="http://hackmz.com/2016/06/02/OC中使用宏定义进行调试/index.html">
+<meta property="og:site_name" content="MaiZi's Blog">
+<meta property="og:description" content="想了想还是把OC中经常用到的宏定义语法单独列了一章出来，毕竟对于不同的语言，不同的平台，使用起来还是千差万别的，如果对#define还不熟悉的朋友可以参看以前写的一篇博客#define用法总结。">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="OC中使用宏定义进行调试">
+<meta name="twitter:description" content="想了想还是把OC中经常用到的宏定义语法单独列了一章出来，毕竟对于不同的语言，不同的平台，使用起来还是千差万别的，如果对#define还不熟悉的朋友可以参看以前写的一篇博客#define用法总结。">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"hide"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 0,
+      author: '博主'
+    }
+  };
+</script>
+
+  <title> OC中使用宏定义进行调试 | MaiZi's Blog </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?c2586345b27e17779034f84bb3e505d2";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">MaiZi's Blog</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">Nothing is impossible！</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                OC中使用宏定义进行调试
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-06-02T18:01:46+08:00" content="Jun 2 2016">
+              Jun 2 2016
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/语法基础/" itemprop="url" rel="index">
+                    <span itemprop="name">语法基础</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2016/06/02/OC中使用宏定义进行调试/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/06/02/OC中使用宏定义进行调试/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>想了想还是把OC中经常用到的宏定义语法单独列了一章出来，毕竟对于不同的语言，不同的平台，使用起来还是千差万别的，如果对<code>#define</code>还不熟悉的朋友可以参看以前写的一篇博客<a href="http://www.hackmz.com/2015/05/21/define用法总结/" target="_blank" rel="external">#define用法总结</a>。</p>
+<a id="more"></a>
+<h3 id="…的用法">…的用法</h3><p>代码调试，用的最多的方法就是打印数据，对于输出方法来说，参数一般都是可变的，在调试程序时，你可能希望自己定义参数可变的输出函数，那么可变参数宏会是一个选择。</p>
+<pre><code><span class="id">#define</span> <span class="tag">FMWLog</span>(id, ...) <span class="tag">NSLog</span>((@<span class="string">"%s [Line %d] "</span> id),__PRETTY_FUNCTION__, __LINE__, ##__VA_ARGS__);
+</code></pre><p>其中…表示可变的参数列表，##<strong>VA_ARGS</strong>在预处理中为实际的参数集。</p>
+<h3 id="宏定义过滤NSLog">宏定义过滤NSLog</h3><p>应用开发过程中，不可避免的会大量使用NSLog打印数据，但是在项目上线或是release的时候为了提高应用的执行效率，我们需要去掉这些打印方法。此时你辛辛苦苦写了那么多的NSLog，我们不可能手动去注释，有些做法是设一个开关变量，企图用这个总开关开启或注释NSLog。但更方便的则是利用宏定义进行设置。</p>
+<ul>
+<li><p>对于系统的NSLog方法</p>
+<pre><code><span class="preprocessor">#ifndef __OPTIMIZE__</span>
+<span class="preprocessor">#define NSLog(...) NSLog(__VA_ARGS__)</span>
+<span class="preprocessor">#else</span>
+<span class="preprocessor">#define NSLog(...) {}</span>
+<span class="preprocessor">#endif</span>
+</code></pre></li>
+<li><p>如果是自定义输出方法</p>
+<pre><code><span class="preprocessor">#<span class="keyword">if</span> DEBUG    <span class="comment">// 也可用#ifndef __OPTIMIZE__来代替</span></span>
+    <span class="preprocessor">#<span class="keyword">define</span> FMWLog(id, ...) NSLog((@"%s [Line %d] " id),__PRETTY_FUNCTION__, __LINE__, ##__VA_ARGS__);</span>
+<span class="preprocessor">#<span class="keyword">else</span></span>
+    <span class="preprocessor">#<span class="keyword">define</span> FMWLog(id, ...)</span>
+<span class="preprocessor">#<span class="keyword">endif</span></span>
+</code></pre></li>
+</ul>
+<p>这样设置后，只需要在Product -&gt;Scheme-&gt;Edit Scheme -&gt;info选择，是release ,还是debug版本即可。如果是debug版本，则打印数据，如果是release版本则不打印。</p>
+<p>我们发布到appstore上的版本均是release版本，这里简单说下这两个版本的差异。release是发行版本，比debug版本要小一些，他们调用两个不同底层库，debug包含的信息多，可以断点调试，单步执行，使用TRACE/ASSERT等调试输出语句，但是release 版本不包含调试信息，运行速度比较快。</p>
+<p>另外在此处设置的DEBUG参数可以在下面的路径进行设置：<code>工程-&gt;Target-&gt;Build Setting -&gt;Preprocessor Macros</code>。默认系统已经给出了DEBUG的参数。如果要增加新的参数，则在那里进行增加。</p>
+<h3 id="__OBJC__宏定义">__OBJC__宏定义</h3><p>我们经常会见到在.pch文件中加上<code>#ifdef __OBJC__</code>这句宏定义，它的作用是什么呢？</p>
+<p>因为在一个OC工程中，可能包含.m、.mm、.c、.cpp四类编译文件，这四类文件均会引用.pch预编译头。在编译.c、.cpp时，因为语法不兼容OC，所以预编译头中不能包含objc代码。</p>
+<p>而.pch是多类源文件共用的，所以在pch中，oc头文件要用__OBJC__包含起来，表示宏内引用的文件确保只被使用Objective-C语言的文件所引用，保证引用关系的清晰。</p>
+<pre><code><span class="id">#ifdef</span> __OBJC__
+<span class="id">#import</span> &lt;UIKit/UIKit.h&gt;
+<span class="id">#import</span> <span class="string">"AcctConst.h"</span>
+<span class="id">#import</span> <span class="string">"AcctHeader.h"</span>
+<span class="id">#import</span> <span class="string">"AcctMacro.h"</span>
+<span class="id">#import</span> <span class="string">"EMSDK.h"</span>
+#endif
+</code></pre><h3 id="宏定义指令">宏定义指令</h3><pre><code><span class="preprocessor">#<span class="keyword">define</span> 定义一个预处理宏</span>
+<span class="preprocessor">#<span class="keyword">undef</span> 取消宏的定义</span>
+<span class="preprocessor">#include 包含文件命令</span>
+<span class="preprocessor">#include_next 与#include相似, 但它有着特殊的用途</span>
+<span class="preprocessor">#<span class="keyword">if</span> 编译预处理中的条件命令, 相当于C语法中的<span class="keyword">if</span>语句</span>
+<span class="preprocessor">#ifdef 判断某个宏是否被定义, 若已定义, 执行随后的语句</span>
+<span class="preprocessor">#ifndef 与#ifdef相反, 判断某个宏是否未被定义</span>
+<span class="preprocessor">#<span class="keyword">elif</span> 若#<span class="keyword">if</span>, #ifdef, #ifndef或前面的#<span class="keyword">elif</span>条件不满足, 则执行#<span class="keyword">elif</span>之后的语句, 相当于C语法中的<span class="keyword">else</span>-<span class="keyword">if</span></span>
+<span class="preprocessor">#<span class="keyword">else</span> 与#<span class="keyword">if</span>, #ifdef, #ifndef对应, 若这些条件不满足, 则执行#<span class="keyword">else</span>之后的语句, 相当于C语法中的<span class="keyword">else</span></span>
+<span class="preprocessor">#<span class="keyword">endif</span> #<span class="keyword">if</span>, #ifdef, #ifndef这些条件命令的结束标志.</span>
+<span class="preprocessor">#defined 与#<span class="keyword">if</span>, #<span class="keyword">elif</span>配合使用, 判断某个宏是否被定义</span>
+<span class="preprocessor">#<span class="keyword">line</span> 标志该语句所在的行号</span>
+<span class="preprocessor"># 将宏参数替代为以参数值为内容的字符窜常量</span>
+<span class="preprocessor">## 将两个相邻的标记(token)连接为一个单独的标记</span>
+<span class="preprocessor">#<span class="keyword">pragma</span> 说明编译器信息</span>
+<span class="preprocessor">#<span class="keyword">warning</span> 显示编译警告信息</span>
+<span class="preprocessor">#<span class="keyword">error</span> 显示编译错误信息</span>
+</code></pre><h3 id="一些系统宏定义">一些系统宏定义</h3><pre><code><span class="comment">##__VA_ARGS__    // __VA_ARGS__ 是一个可变参数的宏。宏前面加 上##的作用在于，当可变参数的个数为0时，这里的##起到把前面多余的","去掉的作用,否则会编译出错。</span>
+
+<span class="keyword">__FILE__</span>    <span class="comment">// 在预编译时会替换成当前的源文件名</span>
+
+<span class="keyword">__LINE__</span>    <span class="comment">// 在预编译时会替换成当前的行号</span>
+
+<span class="keyword">__FUNCTION__</span>    <span class="comment">// 在预编译时会替换成当前的函数名称</span>
+</code></pre><h3 id="开发常见的宏定义">开发常见的宏定义</h3><pre><code><span class="comment">//AppDelegate</span>
+<span class="preprocessor">#<span class="keyword">define</span> APPDELEGATE [(AppDelegate*)[UIApplication sharedApplication]  delegate]</span>
+<span class="comment">//----------------------系统设备相关----------------------------</span>
+<span class="comment">//获取设备屏幕尺寸</span>
+<span class="preprocessor">#<span class="keyword">define</span> SCREEN_WIDTH ([UIScreen mainScreen].bounds.size.width)</span>
+<span class="preprocessor">#<span class="keyword">define</span> SCREEN_HEIGHT ([UIScreen mainScreen].bounds.size.height)<span class="comment">//应用尺寸</span></span>
+<span class="preprocessor">#<span class="keyword">define</span> APP_WIDTH [[UIScreen mainScreen]applicationFrame].size.width</span>
+<span class="preprocessor">#<span class="keyword">define</span> APP_HEIGHT [[UIScreen mainScreen]applicationFrame].size.height</span>
+<span class="comment">//获取系统版本</span>
+<span class="preprocessor">#<span class="keyword">define</span> IOS_VERSION [[[UIDevice currentDevice] systemVersion] floatValue]</span>
+<span class="preprocessor">#<span class="keyword">define</span> CurrentSystemVersion [[UIDevice currentDevice] systemVersion]</span>
+<span class="preprocessor">#<span class="keyword">define</span> isIOS4 ([[[UIDevice currentDevice] systemVersion] intValue]==4)</span>
+<span class="preprocessor">#<span class="keyword">define</span> isIOS5 ([[[UIDevice currentDevice] systemVersion] intValue]==5)</span>
+<span class="preprocessor">#<span class="keyword">define</span> isIOS6 ([[[UIDevice currentDevice] systemVersion] intValue]==6)</span>
+<span class="preprocessor">#<span class="keyword">define</span> isAfterIOS4 ([[[UIDevice currentDevice] systemVersion] intValue]&gt;4)</span>
+<span class="preprocessor">#<span class="keyword">define</span> isAfterIOS5 ([[[UIDevice currentDevice] systemVersion] intValue]&gt;5)</span>
+<span class="preprocessor">#<span class="keyword">define</span> isAfterIOS6 ([[[UIDevice currentDevice] systemVersion] intValue]&gt;6)</span>
+<span class="comment">//获取当前语言</span>
+<span class="preprocessor">#<span class="keyword">define</span> CurrentLanguage ([[NSLocale preferredLanguages] objectAtIndex:0])</span>
+
+<span class="comment">//判断是否 Phone 4/5/6 是否是iPad</span>
+<span class="preprocessor">#<span class="keyword">define</span> Phone4 ([UIScreen instancesRespondToSelector:@selector(currentMode)] ? CGSizeEqualToSize(CGSizeMake(640, 960), [[UIScreen mainScreen] currentMode].size) : NO)</span>
+<span class="preprocessor">#<span class="keyword">define</span> Phone5 ([UIScreen instancesRespondToSelector:@selector(currentMode)] ? CGSizeEqualToSize(CGSizeMake(640, 1136), [[UIScreen mainScreen] currentMode].size) : NO)</span>
+<span class="preprocessor">#<span class="keyword">define</span> Phone6 ([UIScreen instancesRespondToSelector:@selector(currentMode)] ? CGSizeEqualToSize(CGSizeMake(750, 1334), [[UIScreen mainScreen] currentMode].size) : NO)</span>
+<span class="preprocessor">#<span class="keyword">define</span> Phone6Plus ([UIScreen instancesRespondToSelector:@selector(currentMode)] ? CGSizeEqualToSize(CGSizeMake(1242,2208), [[UIScreen mainScreen] currentMode].size) : NO)</span>
+<span class="preprocessor">#<span class="keyword">define</span> isPad (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)</span>
+<span class="comment">//判断是真机还是模拟器</span>
+<span class="preprocessor">#<span class="keyword">if</span> TARGET_OS_IPHONE</span>
+<span class="comment">//iPhone Device</span>
+<span class="preprocessor">#<span class="keyword">endif</span></span>
+<span class="preprocessor">#<span class="keyword">if</span> TARGET_IPHONE_SIMULATOR</span>
+<span class="comment">//iPhone Simulator</span>
+<span class="preprocessor">#<span class="keyword">endif</span></span>
+<span class="comment">//----------------------系统设备相关----------------------------</span>
+
+<span class="comment">//----------------------内存相关----------------------------</span>
+<span class="comment">//使用ARC和不使用ARC</span>
+<span class="preprocessor">#<span class="keyword">if</span> __has_feature(objc_arc)</span>
+<span class="comment">//compiling with ARC</span>
+<span class="preprocessor">#<span class="keyword">else</span></span>
+<span class="comment">// compiling without ARC</span>
+<span class="preprocessor">#<span class="keyword">endif</span></span>
+<span class="comment">//释放一个对象</span>
+<span class="preprocessor">#<span class="keyword">define</span> SAFE_DELETE(P) <span class="keyword">if</span>(P) { [P release], P = nil; }</span>
+<span class="preprocessor">#<span class="keyword">define</span> SAFE_RELEASE(x) [x release];x=nil</span>
+<span class="comment">//----------------------内存相关----------------------------</span>
+
+<span class="comment">//----------------------图片相关----------------------------</span>
+<span class="comment">//读取本地图片</span>
+<span class="preprocessor">#<span class="keyword">define</span> LOADIMAGE(file,ext) [UIImage imageWithContentsOfFile:[[NSBundle mainBundle]pathForResource:file ofType:ext]]</span>
+<span class="comment">//定义UIImage对象</span>
+<span class="preprocessor">#<span class="keyword">define</span> IMAGE(A) [UIImage imageWithContentsOfFile:[[NSBundle mainBundle] pathForResource:A ofType:nil]]</span>
+<span class="comment">//定义UIImage对象</span>
+<span class="preprocessor">#<span class="keyword">define</span> ImageNamed(_pointer) [UIImage imageNamed:_pointer]</span>
+<span class="comment">//可拉伸的图片</span>
+<span class="preprocessor">#<span class="keyword">define</span> ResizableImage(name,top,left,bottom,right) [[UIImage imageNamed:name] resizableImageWithCapInsets:UIEdgeInsetsMake(top,left,bottom,right)]</span>
+<span class="preprocessor">#<span class="keyword">define</span> ResizableImageWithMode(name,top,left,bottom,right,mode) [[UIImage imageNamed:name] resizableImageWithCapInsets:UIEdgeInsetsMake(top,left,bottom,right) resizingMode:mode]</span>
+<span class="comment">//建议使用前两种宏定义,性能高于后者</span>
+<span class="comment">//----------------------图片相关----------------------------</span>
+
+<span class="comment">//----------------------颜色相关---------------------------</span>
+<span class="comment">// rgb颜色转换（16进制-&gt;10进制）</span>
+<span class="preprocessor">#<span class="keyword">define</span> UIColorFromRGB(rgbValue) [UIColor colorWithRed:((float)((rgbValue &amp; 0xFF0000) &gt;&gt; 16))/255.0 green:((float)((rgbValue &amp; 0xFF00) &gt;&gt; 8))/255.0 blue:((float)(rgbValue &amp; 0xFF))/255.0 alpha:1.0]</span>
+<span class="comment">// 获取RGB颜色</span>
+<span class="preprocessor">#<span class="keyword">define</span> RGBA(r,g,b,a) [UIColor colorWithRed:r/255.0f green:g/255.0f blue:b/255.0f alpha:a]</span>
+<span class="preprocessor">#<span class="keyword">define</span> RGB(r,g,b) RGBA(r,g,b,1.0f)</span>
+<span class="comment">//背景色</span>
+<span class="preprocessor">#<span class="keyword">define</span> BACKGROUND_COLOR [UIColor colorWithRed:242.0/255.0 green:236.0/255.0 blue:231.0/255.0 alpha:1.0]</span>
+<span class="comment">//清除背景色</span>
+<span class="preprocessor">#<span class="keyword">define</span> CLEARCOLOR [UIColor clearColor]</span>
+<span class="comment">//----------------------颜色相关--------------------------</span>
+
+<span class="comment">//----------------------其他----------------------------</span>
+<span class="comment">//方正黑体简体字体定义</span>
+<span class="preprocessor">#<span class="keyword">define</span> FONT(F) [UIFont fontWithName:@"FZHTJW--GB1-0" size:F]</span>
+<span class="comment">//file</span>
+<span class="comment">//读取文件的文本内容,默认编码为UTF-8</span>
+<span class="preprocessor">#<span class="keyword">define</span> FileString(name,ext)            [[NSString alloc] initWithContentsOfFile:[[NSBundle mainBundle] pathForResource:(name) ofType:(ext)] encoding:NSUTF8StringEncoding <span class="keyword">error</span>:nil]</span>
+<span class="preprocessor">#<span class="keyword">define</span> FileDictionary(name,ext)        [[NSDictionary alloc] initWithContentsOfFile:[[NSBundle mainBundle] pathForResource:(name) ofType:(ext)]]</span>
+<span class="preprocessor">#<span class="keyword">define</span> FileArray(name,ext)             [[NSArray alloc] initWithContentsOfFile:[[NSBundle mainBundle] pathForResource:(name) ofType:(ext)]]</span>
+<span class="comment">//G－C－D</span>
+<span class="preprocessor">#<span class="keyword">define</span> BACK(block) dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), block)</span>
+<span class="preprocessor">#<span class="keyword">define</span> MAIN(block) dispatch_async(dispatch_get_main_queue(),block)</span>
+<span class="comment">//Alert</span>
+<span class="preprocessor">#<span class="keyword">define</span> ALERT(msg) [[[UIAlertView alloc] initWithTitle:nil message:msg delegate:nil cancelButtonTitle:@"ok" otherButtonTitles:nil] show]</span>
+
+<span class="comment">//由角度获取弧度 有弧度获取角度</span>
+<span class="preprocessor">#<span class="keyword">define</span> degreesToRadian(x) (M_PI * (x) / 180.0)</span>
+<span class="preprocessor">#<span class="keyword">define</span> radianToDegrees(radian) (radian*180.0)/(M_PI)</span>
+<span class="comment">//----------------------其他-------------------------------</span>
+
+<span class="comment">//----------------------视图相关----------------------------</span>
+<span class="comment">//设置需要粘贴的文字或图片</span>
+<span class="preprocessor">#<span class="keyword">define</span> PasteString(string)   [[UIPasteboard generalPasteboard] setString:string];</span>
+<span class="preprocessor">#<span class="keyword">define</span> PasteImage(image)     [[UIPasteboard generalPasteboard] setImage:image];</span>
+
+<span class="comment">//得到视图的left top的X,Y坐标点</span>
+<span class="preprocessor">#<span class="keyword">define</span> VIEW_TX(view) (view.frame.origin.x)</span>
+<span class="preprocessor">#<span class="keyword">define</span> VIEW_TY(view) (view.frame.origin.y)</span>
+
+<span class="comment">//得到视图的right bottom的X,Y坐标点</span>
+<span class="preprocessor">#<span class="keyword">define</span> VIEW_BX(view) (view.frame.origin.x + view.frame.size.width)</span>
+<span class="preprocessor">#<span class="keyword">define</span> VIEW_BY(view) (view.frame.origin.y + view.frame.size.height )</span>
+
+<span class="comment">//得到视图的尺寸:宽度、高度</span>
+<span class="preprocessor">#<span class="keyword">define</span> VIEW_W(view)  (view.frame.size.width)</span>
+<span class="preprocessor">#<span class="keyword">define</span> VIEW_H(view)  (view.frame.size.height)</span>
+<span class="comment">//得到frame的X,Y坐标点</span>
+<span class="preprocessor">#<span class="keyword">define</span> FRAME_TX(frame)  (frame.origin.x)</span>
+<span class="preprocessor">#<span class="keyword">define</span> FRAME_TY(frame)  (frame.origin.y)</span>
+<span class="comment">//得到frame的宽度、高度</span>
+<span class="preprocessor">#<span class="keyword">define</span> FRAME_W(frame)  (frame.size.width)</span>
+<span class="preprocessor">#<span class="keyword">define</span> FRAME_H(frame)  (frame.size.height)</span>
+<span class="comment">//----------------------视图相关----------------------------</span>
+
+<span class="comment">//---------------------打印日志--------------------------</span>
+<span class="comment">//Debug模式下打印日志,当前行,函数名</span>
+<span class="preprocessor">#<span class="keyword">if</span> DEBUG</span>
+<span class="preprocessor">#<span class="keyword">define</span> DLog(FORMAT, ...) fprintf(stderr,"\nfunction:%s <span class="keyword">line</span>:%d content:%s\n", __FUNCTION__, __LINE__, [[NSString stringWithFormat:FORMAT, ##__VA_ARGS__] UTF8String]);</span>
+<span class="preprocessor">#<span class="keyword">else</span></span>
+<span class="preprocessor">#<span class="keyword">define</span> NSLog(FORMAT, ...) nil</span>
+<span class="preprocessor">#<span class="keyword">endif</span></span>
+<span class="comment">//Debug模式下打印日志,当前行,函数名 并弹出一个警告</span>
+<span class="preprocessor">#ifdef DEBUG</span>
+<span class="preprocessor">#   <span class="keyword">define</span>  WDLog(fmt, ...)  { UIAlertView *alert = [[UIAlertView alloc] initWithTitle:[NSString stringWithFormat:@"%s\n [Line %d] ", __PRETTY_FUNCTION__, __LINE__] message:[NSString stringWithFormat:fmt, ##__VA_ARGS__]  delegate:nil cancelButtonTitle:@"Ok" otherButtonTitles:nil]; [alert show]; }</span>
+<span class="preprocessor">#<span class="keyword">else</span></span>
+<span class="preprocessor">#   <span class="keyword">define</span> NSLog(...)</span>
+<span class="preprocessor">#<span class="keyword">endif</span></span>
+<span class="comment">//打印Frame</span>
+<span class="preprocessor">#<span class="keyword">define</span> LogFrame(frame) NSLog(@"frame[X=%.1f,Y=%.1f,W=%.1f,H=%.1f",frame.origin.x,frame.origin.y,frame.size.width,frame.size.height)</span>
+<span class="comment">//打印Point</span>
+<span class="preprocessor">#<span class="keyword">define</span> LogPoint(point) NSLog(@"Point[X=%.1f,Y=%.1f]",point.x,point.y)</span>
+<span class="comment">//---------------------打印日志--------------------------</span>
+<span class="preprocessor">#<span class="keyword">endif</span></span>
+</code></pre>
+      
+    </div>
+
+    <div>
+      
+        
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/iOS/" rel="tag">#iOS</a>
+          
+            <a href="/tags/宏定义/" rel="tag">#宏定义</a>
+          
+            <a href="/tags/开发/" rel="tag">#开发</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/05/30/iPhone图片上传服务器旋转的问题/" rel="next" title="iPhone图片上传服务器旋转的问题">
+                <i class="fa fa-chevron-left"></i> iPhone图片上传服务器旋转的问题
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/06/27/用CocoaPods管理你的第三方库/" rel="prev" title="用CocoaPods管理你的第三方库">
+                用CocoaPods管理你的第三方库 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <div class="ds-share flat" data-thread-key="2016/06/02/OC中使用宏定义进行调试/"
+     data-title="OC中使用宏定义进行调试"
+     data-content=""
+     data-url="http://hackmz.com/2016/06/02/OC中使用宏定义进行调试/">
+  <div class="ds-share-inline">
+    <ul  class="ds-share-icons-16">
+
+      <li data-toggle="ds-share-icons-more"><a class="ds-more" href="javascript:void(0);">分享到：</a></li>
+      <li><a class="ds-weibo" href="javascript:void(0);" data-service="weibo">微博</a></li>
+      <li><a class="ds-qzone" href="javascript:void(0);" data-service="qzone">QQ空间</a></li>
+      <li><a class="ds-qqt" href="javascript:void(0);" data-service="qqt">腾讯微博</a></li>
+      <li><a class="ds-wechat" href="javascript:void(0);" data-service="wechat">微信</a></li>
+
+    </ul>
+    <div class="ds-share-icons-more">
+    </div>
+  </div>
+</div>
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2016/06/02/OC中使用宏定义进行调试/"
+           data-title="OC中使用宏定义进行调试" data-url="http://hackmz.com/2016/06/02/OC中使用宏定义进行调试/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="http://7pumug.com1.z0.glb.clouddn.com/author.jpg"
+               alt="麦子" />
+          <p class="site-author-name" itemprop="name">麦子</p>
+          <p class="site-description motion-element" itemprop="description">当你的才华撑不起你的野心的时候，你就应该静下心来学习！</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">41</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">7</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">43</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/MrWheat" target="_blank" title="Github">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  Github
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/3202240184" target="_blank" title="微博">
+                  
+                    <i class="fa fa-fw fa-weibo"></i>
+                  
+                  微博
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#…的用法"><span class="nav-number">1.</span> <span class="nav-text">…的用法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#宏定义过滤NSLog"><span class="nav-number">2.</span> <span class="nav-text">宏定义过滤NSLog</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#__OBJC__宏定义"><span class="nav-number">3.</span> <span class="nav-text">__OBJC__宏定义</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#宏定义指令"><span class="nav-number">4.</span> <span class="nav-text">宏定义指令</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#一些系统宏定义"><span class="nav-number">5.</span> <span class="nav-text">一些系统宏定义</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#开发常见的宏定义"><span class="nav-number">6.</span> <span class="nav-text">开发常见的宏定义</span></a></li></ol></div>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2014 - 
+  <span itemprop="copyrightYear">2016</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">麦子</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+        
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.1"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.0.1"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.1"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"mrwheat"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+  
+
+
+
+
+
+  
+  
+  
+
+  
+
+  
+
+</body>
+</html>

@@ -1,0 +1,1142 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="iOS,笔记," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="MaiZi's Blog" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.1" />
+
+
+
+
+
+
+<meta name="description" content="随着iOS设备的成员不断增多，屏幕分辨率也在不断的变多，在开发过程中如果使用固定尺寸为每种屏幕开发一套固定的代码，会大大增加工作量，这时候需要使用到屏幕适配。屏幕适配是在同一代码下通过调节UI，使之使用适应于各种不同分辨率的设备。而AutoLayout是一种基于约束的，描述性的布局系统（官方定义:AutoLayout Is a Constraint-Based, Descriptive Layou">
+<meta property="og:type" content="article">
+<meta property="og:title" content="iOS教程之AutoLayout/SizeClass屏幕适配">
+<meta property="og:url" content="http://hackmz.com/2015/01/06/iOS教程之AutoLayout自动布局/index.html">
+<meta property="og:site_name" content="MaiZi's Blog">
+<meta property="og:description" content="随着iOS设备的成员不断增多，屏幕分辨率也在不断的变多，在开发过程中如果使用固定尺寸为每种屏幕开发一套固定的代码，会大大增加工作量，这时候需要使用到屏幕适配。屏幕适配是在同一代码下通过调节UI，使之使用适应于各种不同分辨率的设备。而AutoLayout是一种基于约束的，描述性的布局系统（官方定义:AutoLayout Is a Constraint-Based, Descriptive Layou">
+<meta property="og:image" content="/img/AutoLayout/top.png">
+<meta property="og:image" content="/img/AutoLayout/top-i4.png">
+<meta property="og:image" content="/img/AutoLayout/top-i5.png">
+<meta property="og:image" content="/img/AutoLayout/top-i6.png">
+<meta property="og:image" content="/img/AutoLayout/bottom.png">
+<meta property="og:image" content="/img/AutoLayout/bottom-i4.png">
+<meta property="og:image" content="/img/AutoLayout/bottom-i5.png">
+<meta property="og:image" content="/img/AutoLayout/bottom-i6.png">
+<meta property="og:image" content="/img/AutoLayout/left.png">
+<meta property="og:image" content="/img/AutoLayout/left-i4.png">
+<meta property="og:image" content="/img/AutoLayout/left-i5.png">
+<meta property="og:image" content="/img/AutoLayout/left-i6.png">
+<meta property="og:image" content="/img/AutoLayout/right.png">
+<meta property="og:image" content="/img/AutoLayout/right-i4.png">
+<meta property="og:image" content="/img/AutoLayout/right-i5.png">
+<meta property="og:image" content="/img/AutoLayout/right-i6.png">
+<meta property="og:image" content="/img/AutoLayout/center.png">
+<meta property="og:image" content="/img/AutoLayout/center-i4.png">
+<meta property="og:image" content="/img/AutoLayout/center-i5.png">
+<meta property="og:image" content="/img/AutoLayout/center-i6.png">
+<meta property="og:image" content="/img/AutoLayout/auto.png">
+<meta property="og:image" content="/img/AutoLayout/auto-i4.png">
+<meta property="og:image" content="/img/AutoLayout/auto-i5.png">
+<meta property="og:image" content="/img/AutoLayout/auto-i6.png">
+<meta property="og:image" content="/img/AutoLayout/竖屏.png">
+<meta property="og:image" content="/img/AutoLayout/横屏.png">
+<meta property="og:image" content="/img/AutoLayout/300*300.png">
+<meta property="og:image" content="/img/AutoLayout/280*280.png">
+<meta property="og:image" content="/img/AutoLayout/135*150.png">
+<meta property="og:image" content="/img/AutoLayout/head.png">
+<meta property="og:image" content="/img/AutoLayout/tail.png">
+<meta property="og:image" content="/img/AutoLayout/final.png">
+<meta property="og:image" content="/img/AutoLayout/1.png">
+<meta property="og:image" content="/img/AutoLayout/2.png">
+<meta property="og:image" content="/img/AutoLayout/3.png">
+<meta property="og:image" content="/img/AutoLayout/4.png">
+<meta property="og:image" content="/img/AutoLayout/5.png">
+<meta property="og:image" content="/img/AutoLayout/6.png">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="iOS教程之AutoLayout/SizeClass屏幕适配">
+<meta name="twitter:description" content="随着iOS设备的成员不断增多，屏幕分辨率也在不断的变多，在开发过程中如果使用固定尺寸为每种屏幕开发一套固定的代码，会大大增加工作量，这时候需要使用到屏幕适配。屏幕适配是在同一代码下通过调节UI，使之使用适应于各种不同分辨率的设备。而AutoLayout是一种基于约束的，描述性的布局系统（官方定义:AutoLayout Is a Constraint-Based, Descriptive Layou">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"hide"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 0,
+      author: '博主'
+    }
+  };
+</script>
+
+  <title> iOS教程之AutoLayout/SizeClass屏幕适配 | MaiZi's Blog </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?c2586345b27e17779034f84bb3e505d2";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">MaiZi's Blog</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">Nothing is impossible！</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                iOS教程之AutoLayout/SizeClass屏幕适配
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2015-01-06T20:27:12+08:00" content="Jan 6 2015">
+              Jan 6 2015
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/iOS笔记/" itemprop="url" rel="index">
+                    <span itemprop="name">iOS笔记</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2015/01/06/iOS教程之AutoLayout自动布局/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2015/01/06/iOS教程之AutoLayout自动布局/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>随着iOS设备的成员不断增多，屏幕分辨率也在不断的变多，在开发过程中如果使用固定尺寸为每种屏幕开发一套固定的代码，会大大增加工作量，这时候需要使用到屏幕适配。屏幕适配是在同一代码下通过调节UI，使之使用适应于各种不同分辨率的设备。而AutoLayout是一种基于约束的，描述性的布局系统（官方定义:AutoLayout Is a Constraint-Based, Descriptive Layout System）。它是让UI适应控件自适应设备尺寸变化的一项关键技术。</p>
+<a id="more"></a>
+<h3 style="background-color:#A3BB50; color:white; padding-top: 2px; padding-left: 5px;
+padding-bottom: 2px;" ;="">目录</h3>
+
+<ol>
+<li>AutoLayout基本使用</li>
+<li>Massory第三方库</li>
+<li>SizeClass使用</li>
+</ol>
+<h3 style="background-color:#A3BB50; color:white; padding-top: 2px; padding-left: 5px;
+padding-bottom: 2px;" ;="">Autolayout基本使用</h3>
+
+<ul>
+<li><p>控件靠上对齐</p>
+<p>  设置方式:</p>
+<p>  <img src="/img/AutoLayout/top.png" alt=""></p>
+<p>  效果图:</p>
+<p>  iphone4/4S适应—-iphone5/5S适应—-iphone6/6S适应:</p>
+<p>  <img src="/img/AutoLayout/top-i4.png" alt=""> <img src="/img/AutoLayout/top-i5.png" alt=""> <img src="/img/AutoLayout/top-i6.png" alt=""></p>
+</li>
+<li><p>控件靠下对齐</p>
+<p>  设置方式:</p>
+<p>  <img src="/img/AutoLayout/bottom.png" alt=""></p>
+<p>  效果图:</p>
+<p>  iphone4/4S适应—-iphone5/5S适应—-iphone6/6S适应:</p>
+<p>  <img src="/img/AutoLayout/bottom-i4.png" alt=""> <img src="/img/AutoLayout/bottom-i5.png" alt=""> <img src="/img/AutoLayout/bottom-i6.png" alt=""></p>
+</li>
+<li><p>控件靠左对齐</p>
+<p>  设置方式:</p>
+<p>  <img src="/img/AutoLayout/left.png" alt=""></p>
+<p>  效果图:</p>
+<p>  iphone4/4S适应—-iphone5/5S适应—-iphone6/6S适应:</p>
+<p>  <img src="/img/AutoLayout/left-i4.png" alt=""> <img src="/img/AutoLayout/left-i5.png" alt=""> <img src="/img/AutoLayout/left-i6.png" alt=""></p>
+</li>
+<li><p>控件靠右对齐</p>
+<p>  设置方式:</p>
+<p>  <img src="/img/AutoLayout/right.png" alt=""></p>
+<p>  效果图:</p>
+<p>  iphone4/4S适应—-iphone5/5S适应—-iphone6/6S适应:</p>
+<p>  <img src="/img/AutoLayout/right-i4.png" alt=""> <img src="/img/AutoLayout/right-i5.png" alt=""> <img src="/img/AutoLayout/right-i6.png" alt=""></p>
+</li>
+<li><p>控件居中对齐</p>
+<p>  设置方式:</p>
+<p>  <img src="/img/AutoLayout/center.png" alt=""></p>
+<p>  效果图:</p>
+<p>  iphone4/4S适应—-iphone5/5S适应—-iphone6/6S适应:</p>
+<p>  <img src="/img/AutoLayout/center-i4.png" alt=""> <img src="/img/AutoLayout/center-i5.png" alt=""> <img src="/img/AutoLayout/center-i6.png" alt=""></p>
+</li>
+<li><p>控件适应容器大小</p>
+<p>  设置方式:</p>
+<p>  <img src="/img/AutoLayout/auto.png" alt=""></p>
+<p>  效果图:</p>
+<p>  iphone4/4S适应—-iphone5/5S适应—-iphone6/6S适应:</p>
+<p>  <img src="/img/AutoLayout/auto-i4.png" alt=""> <img src="/img/AutoLayout/auto-i5.png" alt=""> <img src="/img/AutoLayout/auto-i6.png" alt=""></p>
+</li>
+<li><p>控件之间约束</p>
+<p>  <img src="/img/AutoLayout/竖屏.png" alt=""> <img src="/img/AutoLayout/横屏.png" alt=""></p>
+</li>
+</ul>
+<h3 style="background-color:#A3BB50; color:white; padding-top: 2px; padding-left: 5px;
+padding-bottom: 2px;" ;="">Massory第三方库</h3>
+
+<h4 id="基本使用">基本使用</h4><p>Massory第三方库的基本属性</p>
+<pre><code><span class="comment">//左侧</span>
+<span class="keyword">@property</span> (<span class="keyword">nonatomic</span>, <span class="keyword">strong</span>, <span class="keyword">readonly</span>) MASConstraint *left;
+<span class="comment">//上侧</span>
+<span class="keyword">@property</span> (<span class="keyword">nonatomic</span>, <span class="keyword">strong</span>, <span class="keyword">readonly</span>) MASConstraint *top;
+<span class="comment">//右侧</span>
+<span class="keyword">@property</span> (<span class="keyword">nonatomic</span>, <span class="keyword">strong</span>, <span class="keyword">readonly</span>) MASConstraint *right;
+<span class="comment">//下侧</span>
+<span class="keyword">@property</span> (<span class="keyword">nonatomic</span>, <span class="keyword">strong</span>, <span class="keyword">readonly</span>) MASConstraint *bottom;
+<span class="comment">//首部</span>
+<span class="keyword">@property</span> (<span class="keyword">nonatomic</span>, <span class="keyword">strong</span>, <span class="keyword">readonly</span>) MASConstraint *leading;
+<span class="comment">//尾部</span>
+<span class="keyword">@property</span> (<span class="keyword">nonatomic</span>, <span class="keyword">strong</span>, <span class="keyword">readonly</span>) MASConstraint *trailing;
+<span class="comment">//宽</span>
+<span class="keyword">@property</span> (<span class="keyword">nonatomic</span>, <span class="keyword">strong</span>, <span class="keyword">readonly</span>) MASConstraint *width;
+<span class="comment">//高</span>
+<span class="keyword">@property</span> (<span class="keyword">nonatomic</span>, <span class="keyword">strong</span>, <span class="keyword">readonly</span>) MASConstraint *height;
+<span class="comment">//横向中点</span>
+<span class="keyword">@property</span> (<span class="keyword">nonatomic</span>, <span class="keyword">strong</span>, <span class="keyword">readonly</span>) MASConstraint *centerX;
+<span class="comment">//纵向中点</span>
+<span class="keyword">@property</span> (<span class="keyword">nonatomic</span>, <span class="keyword">strong</span>, <span class="keyword">readonly</span>) MASConstraint *centerY;
+<span class="comment">//文本基线</span>
+<span class="keyword">@property</span> (<span class="keyword">nonatomic</span>, <span class="keyword">strong</span>, <span class="keyword">readonly</span>) MASConstraint *baseline;
+</code></pre><p>其中leading与left trailing与right 在正常情况下是等价的 但是当一些布局是从右至左时(比如阿拉伯文?没有类似的经验) 则会对调 换句话说就是基本可以不理不用 用left和right就好了</p>
+<p>在ios8发布后 又新增了一堆奇奇怪怪的属性(有兴趣的朋友可以去瞅瞅) Masonry暂时还不支持(不过你要支持ios6,ios7 就没必要去管那么多了)</p>
+<p>在讲实例之前 先介绍一个MACRO</p>
+<pre><code><span class="variable">#define</span> WS(weakSelf)  __weak __typeof(<span class="subst">&amp;*</span><span class="built_in">self</span>)weakSelf <span class="subst">=</span> <span class="built_in">self</span>;
+</code></pre><p>快速的定义一个weakSelf 当然是用于block里面啦 下面进入正题(为了方便 我们测试的superView都是一个size为(300,300)的UIView)</p>
+<p>下面 通过一些简单的实例来简单介绍如何轻松愉快的使用Masonry:</p>
+<ol>
+<li><p>[基础] 居中显示一个view</p>
+<pre><code>- (void)viewDidLoad
+{
+    [super viewDidLoad];
+    <span class="comment">// Do any additional setup after loading the view.</span>
+
+    WS(ws);
+
+    UIView *<span class="built_in">sv</span> = [UIView new];
+    [<span class="built_in">sv</span> showPlaceHolder];
+    <span class="built_in">sv</span>.backgroundColor = [UIColor blackColor];
+    [self.<span class="built_in">view</span> addSubview:<span class="built_in">sv</span>];
+    [<span class="built_in">sv</span> mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.center.equalTo(ws.<span class="built_in">view</span>);
+        make.size.mas_equalTo(CGSizeMake(<span class="number">300</span>, <span class="number">300</span>));
+    }];
+}
+</code></pre><p> 代码效果</p>
+<p> <img src="/img/AutoLayout/300*300.png" alt=""></p>
+<p> 使用我之间写的MMPlaceHolder 可以看到superview已经按照我们预期居中并且设置成了适当的大小</p>
+<p> 那么先看看这几行代码</p>
+<pre><code><span class="comment">//从此以后基本可以抛弃CGRectMake了</span>
+UIView *<span class="built_in">sv</span> = [UIView new];
+<span class="comment">//在做autoLayout之前 一定要先将view添加到superview上 否则会报错</span>
+[self.<span class="built_in">view</span> addSubview:<span class="built_in">sv</span>];
+<span class="comment">//mas_makeConstraints就是Masonry的autolayout添加函数 将所需的约束添加到block中行了</span>
+[<span class="built_in">sv</span> mas_makeConstraints:^(MASConstraintMaker *make) {
+    <span class="comment">//将sv居中(很容易理解吧?)</span>
+    make.center.equalTo(ws.<span class="built_in">view</span>);
+
+    <span class="comment">//将size设置成(300,300)</span>
+    make.size.mas_equalTo(CGSizeMake(<span class="number">300</span>, <span class="number">300</span>));
+}];
+</code></pre><p> 这里有两个问题要分解一下</p>
+<p> 首先在Masonry中能够添加autolayout约束有三个函数</p>
+<pre><code>- (NSArray <span class="keyword">*</span>)mas_makeConstraints:(void(^)(MASConstraintMaker <span class="keyword">*</span>make))block;
+- (NSArray <span class="keyword">*</span>)mas_updateConstraints:(void(^)(MASConstraintMaker <span class="keyword">*</span>make))block;
+- (NSArray <span class="keyword">*</span>)mas_remakeConstraints:(void(^)(MASConstraintMaker <span class="keyword">*</span>make))block;
+/<span class="keyword">*</span>
+mas_makeConstraints 只负责新增约束 Autolayout不能同时存在两条针对于同一对象的约束 否则会报错 
+mas_updateConstraints 针对上面的情况 会更新在block中出现的约束 不会导致出现两个相同约束的情况
+mas_remakeConstraints 则会清除之前的所有约束 仅保留最新的约束
+三种函数善加利用 就可以应对各种情况了
+<span class="keyword">*</span>/
+</code></pre><p> 其次 equalTo 和 mas_equalTo的区别在哪里呢? 其实 mas_equalTo是一个MACRO</p>
+<pre><code><span class="hexcolor">#def</span>ine <span class="function"><span class="title">mas_equalTo</span><span class="params">(...)</span></span>                 <span class="function"><span class="title">equalTo</span><span class="params">(MASBoxValue((__VA_ARGS__)</span></span>))
+<span class="hexcolor">#def</span>ine <span class="function"><span class="title">mas_greaterThanOrEqualTo</span><span class="params">(...)</span></span>    <span class="function"><span class="title">greaterThanOrEqualTo</span><span class="params">(MASBoxValue((__VA_ARGS__)</span></span>))
+<span class="hexcolor">#def</span>ine <span class="function"><span class="title">mas_lessThanOrEqualTo</span><span class="params">(...)</span></span>       <span class="function"><span class="title">lessThanOrEqualTo</span><span class="params">(MASBoxValue((__VA_ARGS__)</span></span>))
+<span class="hexcolor">#def</span>ine <span class="function"><span class="title">mas_offset</span><span class="params">(...)</span></span>                  <span class="function"><span class="title">valueOffset</span><span class="params">(MASBoxValue((__VA_ARGS__)</span></span>))
+</code></pre><p> 可以看到 mas_equalTo只是对其参数进行了一个BOX操作(装箱) MASBoxValue的定义具体可以看看源代码 太长就不贴出来了</p>
+<p> 所支持的类型 除了NSNumber支持的那些数值类型之外 就只支持CGPoint CGSize UIEdgeInsets</p>
+<p> 介绍完这几个问题 我们就继续往下了 PS:刚才定义的sv会成为我们接下来所有sample的superView</p>
+</li>
+<li><p>[初级] 让一个view略小于其superView(边距为10)</p>
+<pre><code>UIView *sv1 = [UIView <span class="keyword">new</span>];
+[sv1 showPlaceHolder];
+sv1.backgroundColor = [UIColor redColor];
+[sv addSubview:sv1];
+[sv1 mas_makeConstraints:^(MASConstraintMaker *make) {
+make.edges.equalTo(sv).<span class="keyword">with</span>.insets(UIEdgeInsetsMake(<span class="number">10</span>, <span class="number">10</span>, <span class="number">10</span>, <span class="number">10</span>));
+
+/* 等价于
+make.top.equalTo(sv).<span class="keyword">with</span>.offset(<span class="number">10</span>);
+make.<span class="built_in">left</span>.equalTo(sv).<span class="keyword">with</span>.offset(<span class="number">10</span>);
+make.bottom.equalTo(sv).<span class="keyword">with</span>.offset(-<span class="number">10</span>);
+make.<span class="built_in">right</span>.equalTo(sv).<span class="keyword">with</span>.offset(-<span class="number">10</span>);
+*/
+
+/* 也等价于
+make.top.<span class="built_in">left</span>.bottom.<span class="keyword">and</span>.<span class="built_in">right</span>.equalTo(sv).<span class="keyword">with</span>.insets(UIEdgeInsetsMake(<span class="number">10</span>, <span class="number">10</span>, <span class="number">10</span>, <span class="number">10</span>));
+*/
+}];
+</code></pre><p> 代码效果</p>
+<p> <img src="/img/AutoLayout/280*280.png" alt=""></p>
+<p> 可以看到 edges 其实就是top,left,bottom,right的一个简化 分开写也可以 一句话更省事</p>
+<p> 那么为什么bottom和right里的offset是负数呢? 因为这里计算的是绝对的数值 计算的bottom需要小鱼sv的底部高度 所以要-10 同理用于right</p>
+<p> 这里有意思的地方是and和with 其实这两个函数什么事情都没做</p>
+<pre><code><span class="subst">-</span> (MASConstraint <span class="subst">*</span>)<span class="keyword">with</span> {
+    <span class="keyword">return</span> <span class="built_in">self</span>;
+}
+<span class="subst">-</span> (MASConstraint <span class="subst">*</span>)<span class="literal">and</span> {
+    <span class="keyword">return</span> <span class="built_in">self</span>;
+}
+</code></pre><p> 但是用在这种链式语法中 就非常的巧妙和易懂 不得不佩服作者的心思(虽然我现在基本都会省略)</p>
+</li>
+<li><p>[初级] 让两个高度为150的view垂直居中且等宽且等间隔排列 间隔为10(自动计算其宽度)</p>
+<pre><code><span class="typename">int</span> padding1 = <span class="number">10</span>;
+[sv2 mas_makeConstraints:^(MASConstraintMaker *<span class="built_in">make</span>) {
+    <span class="built_in">make</span>.centerY.mas_equalTo(sv.mas_centerY);
+    <span class="built_in">make</span>.left.equalTo(sv.mas_left).with.offset(padding1);
+    <span class="built_in">make</span>.right.equalTo(sv3.mas_left).with.offset(-padding1);
+    <span class="built_in">make</span>.height.mas_equalTo(@<span class="number">150</span>);
+    <span class="built_in">make</span>.width.equalTo(sv3);
+}];
+[sv3 mas_makeConstraints:^(MASConstraintMaker *<span class="built_in">make</span>) {
+    <span class="built_in">make</span>.centerY.mas_equalTo(sv.mas_centerY);
+    <span class="built_in">make</span>.left.equalTo(sv2.mas_right).with.offset(padding1);
+    <span class="built_in">make</span>.right.equalTo(sv.mas_right).with.offset(-padding1);
+    <span class="built_in">make</span>.height.mas_equalTo(@<span class="number">150</span>);
+    <span class="built_in">make</span>.width.equalTo(sv2);
+}];
+</code></pre><p> 代码效果</p>
+<p> <img src="/img/AutoLayout/135*150.png" alt=""></p>
+<p> 这里我们在两个子view之间互相设置的约束 可以看到他们的宽度在约束下自动的被计算出来了。</p>
+</li>
+<li><p>[中级] 在UIScrollView顺序排列一些view并自动计算contentSize</p>
+<pre><code>UIScrollView *scrollView = [UIScrollView <span class="built_in">new</span>];
+scrollView.backgroundColor = [UIColor whiteColor];
+[sv addSubview:scrollView];
+[scrollView mas_makeConstraints:^(MASConstraintMaker *<span class="built_in">make</span>) {
+    <span class="built_in">make</span>.edges.equalTo(sv).with.insets(UIEdgeInsetsMake(<span class="number">5</span>,<span class="number">5</span>,<span class="number">5</span>,<span class="number">5</span>));
+}];
+UIView *container = [UIView <span class="built_in">new</span>];
+[scrollView addSubview:container];
+[container mas_makeConstraints:^(MASConstraintMaker *<span class="built_in">make</span>) {
+    <span class="built_in">make</span>.edges.equalTo(scrollView);
+    <span class="built_in">make</span>.width.equalTo(scrollView);
+}];
+<span class="typename">int</span> count = <span class="number">10</span>;
+UIView *lastView = <span class="constant">nil</span>;
+<span class="keyword">for</span> ( <span class="typename">int</span> i = <span class="number">1</span> ; i &lt;= count ; ++i )
+{
+    UIView *subv = [UIView <span class="built_in">new</span>];
+    [container addSubview:subv];
+    subv.backgroundColor = [UIColor colorWithHue:( arc4random() % <span class="number">256</span> / <span class="number">256.0</span> )
+    saturation:( arc4random() % <span class="number">128</span> / <span class="number">256.0</span> ) + <span class="number">0.5</span>
+    brightness:( arc4random() % <span class="number">128</span> / <span class="number">256.0</span> ) + <span class="number">0.5</span>
+    alpha:<span class="number">1</span>];
+
+    [subv mas_makeConstraints:^(MASConstraintMaker *<span class="built_in">make</span>) {
+        <span class="built_in">make</span>.left.and.right.equalTo(container);
+        <span class="built_in">make</span>.height.mas_equalTo(@(<span class="number">20</span>*i));
+
+        <span class="keyword">if</span> (lastView) {
+            <span class="built_in">make</span>.top.mas_equalTo(lastView.mas_bottom);
+        } <span class="keyword">else</span> {
+            <span class="built_in">make</span>.top.mas_equalTo(container.mas_top);
+        }
+    }];
+    lastView = subv;
+}
+[container mas_makeConstraints:^(MASConstraintMaker *<span class="built_in">make</span>) {
+    <span class="built_in">make</span>.bottom.equalTo(lastView.mas_bottom);
+}];
+</code></pre><p> 代码效果</p>
+<p> 头部效果—-尾部效果</p>
+<p> <img src="/img/AutoLayout/head.png" alt=""> <img src="/img/AutoLayout/tail.png" alt=""></p>
+<p> 从scrollView的scrollIndicator可以看出 scrollView的内部已如我们所想排列好了</p>
+<p> 这里的关键就在于container这个view起到了一个中间层的作用 能够自动的计算uiscrollView的contentSize。</p>
+</li>
+<li><p>[高级] 横向或者纵向等间隙的排列一组view</p>
+<p> 很遗憾 autoLayout并没有直接提供等间隙排列的方法(Masonry的官方demo中也没有对应的案例) 但是参考案例3 我们可以通过一个小技巧来实现这个目的 为此我写了一个Category：</p>
+<pre><code><span class="class"><span class="keyword">@implementation</span> <span class="title">UIView</span>(<span class="title">Masonry_LJC</span>)</span>
+- (<span class="keyword">void</span>) distributeSpacingHorizontallyWith:(<span class="built_in">NSArray</span>*)views
+{
+    <span class="built_in">NSMutableArray</span> *spaces = [<span class="built_in">NSMutableArray</span> arrayWithCapacity:views<span class="variable">.count</span>+<span class="number">1</span>];
+
+    <span class="keyword">for</span> ( <span class="keyword">int</span> i = <span class="number">0</span> ; i &lt; views<span class="variable">.count</span>+<span class="number">1</span> ; ++i )
+    {
+        <span class="built_in">UIView</span> *v = [<span class="built_in">UIView</span> new];
+        [spaces addObject:v];
+        [<span class="keyword">self</span> addSubview:v];
+
+        [v mas_makeConstraints:^(MASConstraintMaker *make) {
+            make<span class="variable">.width</span><span class="variable">.equalTo</span>(v<span class="variable">.mas_height</span>);
+        }];
+    }    
+
+    <span class="built_in">UIView</span> *v0 = spaces[<span class="number">0</span>];
+
+    __<span class="keyword">weak</span> __<span class="keyword">typeof</span>(&amp;*<span class="keyword">self</span>)ws = <span class="keyword">self</span>;
+
+    [v0 mas_makeConstraints:^(MASConstraintMaker *make) {
+        make<span class="variable">.left</span><span class="variable">.equalTo</span>(ws<span class="variable">.mas_left</span>);
+        make<span class="variable">.centerY</span><span class="variable">.equalTo</span>(((<span class="built_in">UIView</span>*)views[<span class="number">0</span>])<span class="variable">.mas_centerY</span>);
+    }];
+
+    <span class="built_in">UIView</span> *lastSpace = v0;
+    <span class="keyword">for</span> ( <span class="keyword">int</span> i = <span class="number">0</span> ; i &lt; views<span class="variable">.count</span>; ++i )
+    {
+        <span class="built_in">UIView</span> *obj = views[i];
+        <span class="built_in">UIView</span> *space = spaces[i+<span class="number">1</span>];
+
+        [obj mas_makeConstraints:^(MASConstraintMaker *make) {
+            make<span class="variable">.left</span><span class="variable">.equalTo</span>(lastSpace<span class="variable">.mas_right</span>);
+        }];
+
+        [space mas_makeConstraints:^(MASConstraintMaker *make) {
+            make<span class="variable">.left</span><span class="variable">.equalTo</span>(obj<span class="variable">.mas_right</span>);
+            make<span class="variable">.centerY</span><span class="variable">.equalTo</span>(obj<span class="variable">.mas_centerY</span>);
+            make<span class="variable">.width</span><span class="variable">.equalTo</span>(v0);
+        }];
+        lastSpace = space;
+    }
+
+    [lastSpace mas_makeConstraints:^(MASConstraintMaker *make) {
+        make<span class="variable">.right</span><span class="variable">.equalTo</span>(ws<span class="variable">.mas_right</span>);
+    }];
+
+}
+
+- (<span class="keyword">void</span>) distributeSpacingVerticallyWith:(<span class="built_in">NSArray</span>*)views {
+    <span class="built_in">NSMutableArray</span> *spaces = [<span class="built_in">NSMutableArray</span> arrayWithCapacity:views<span class="variable">.count</span>+<span class="number">1</span>];
+
+    <span class="keyword">for</span> ( <span class="keyword">int</span> i = <span class="number">0</span> ; i &lt; views<span class="variable">.count</span>+<span class="number">1</span> ; ++i ) {
+        <span class="built_in">UIView</span> *v = [<span class="built_in">UIView</span> new];
+        [spaces addObject:v];
+        [<span class="keyword">self</span> addSubview:v];
+        [v mas_makeConstraints:^(MASConstraintMaker *make) {
+            make<span class="variable">.width</span><span class="variable">.equalTo</span>(v<span class="variable">.mas_height</span>);
+        }];
+    }
+
+    <span class="built_in">UIView</span> *v0 = spaces[<span class="number">0</span>];
+    __<span class="keyword">weak</span> __<span class="keyword">typeof</span>(&amp;*<span class="keyword">self</span>)ws = <span class="keyword">self</span>;
+
+    [v0 mas_makeConstraints:^(MASConstraintMaker *make) {
+        make<span class="variable">.top</span><span class="variable">.equalTo</span>(ws<span class="variable">.mas_top</span>);
+        make<span class="variable">.centerX</span><span class="variable">.equalTo</span>(((<span class="built_in">UIView</span>*)views[<span class="number">0</span>])<span class="variable">.mas_centerX</span>);
+    }];
+
+    <span class="built_in">UIView</span> *lastSpace = v0;
+    <span class="keyword">for</span> ( <span class="keyword">int</span> i = <span class="number">0</span> ; i &lt; views<span class="variable">.count</span>; ++i ) {
+        <span class="built_in">UIView</span> *obj = views[i];
+        <span class="built_in">UIView</span> *space = spaces[i+<span class="number">1</span>];
+
+        [obj mas_makeConstraints:^(MASConstraintMaker *make) {
+            make<span class="variable">.top</span><span class="variable">.equalTo</span>(lastSpace<span class="variable">.mas_bottom</span>);
+        }];
+
+        [space mas_makeConstraints:^(MASConstraintMaker *make) {
+            make<span class="variable">.top</span><span class="variable">.equalTo</span>(obj<span class="variable">.mas_bottom</span>);
+            make<span class="variable">.centerX</span><span class="variable">.equalTo</span>(obj<span class="variable">.mas_centerX</span>);
+            make<span class="variable">.height</span><span class="variable">.equalTo</span>(v0);
+        }];
+
+        lastSpace = space;
+    }
+
+    [lastSpace mas_makeConstraints:^(MASConstraintMaker *make) {
+        make<span class="variable">.bottom</span><span class="variable">.equalTo</span>(ws<span class="variable">.mas_bottom</span>);
+    }];
+}
+<span class="keyword">@end</span>
+</code></pre><p> 简单的来测试一下</p>
+<pre><code>UIView *sv11 = [UIView <span class="built_in">new</span>];
+UIView *sv12 = [UIView <span class="built_in">new</span>];
+UIView *sv13 = [UIView <span class="built_in">new</span>];
+UIView *sv21 = [UIView <span class="built_in">new</span>];
+UIView *sv31 = [UIView <span class="built_in">new</span>];
+sv11.backgroundColor = [UIColor redColor];
+sv12.backgroundColor = [UIColor redColor];
+sv13.backgroundColor = [UIColor redColor];
+sv21.backgroundColor = [UIColor redColor];
+sv31.backgroundColor = [UIColor redColor];
+[sv addSubview:sv11];
+[sv addSubview:sv12];
+[sv addSubview:sv13];
+[sv addSubview:sv21];
+[sv addSubview:sv31];
+<span class="comment">//给予不同的大小 测试效果</span>
+[sv11 mas_makeConstraints:^(MASConstraintMaker *<span class="built_in">make</span>) {
+    <span class="built_in">make</span>.centerY.equalTo(@[sv12,sv13]);
+    <span class="built_in">make</span>.centerX.equalTo(@[sv21,sv31]);
+    <span class="built_in">make</span>.size.mas_equalTo(CGSizeMake(<span class="number">40</span>, <span class="number">40</span>));
+}];
+[sv12 mas_makeConstraints:^(MASConstraintMaker *<span class="built_in">make</span>) {
+    <span class="built_in">make</span>.size.mas_equalTo(CGSizeMake(<span class="number">70</span>, <span class="number">20</span>));
+}];
+[sv13 mas_makeConstraints:^(MASConstraintMaker *<span class="built_in">make</span>) {
+    <span class="built_in">make</span>.size.mas_equalTo(CGSizeMake(<span class="number">50</span>, <span class="number">50</span>));
+}];
+[sv21 mas_makeConstraints:^(MASConstraintMaker *<span class="built_in">make</span>) {
+    <span class="built_in">make</span>.size.mas_equalTo(CGSizeMake(<span class="number">50</span>, <span class="number">20</span>));
+}];
+[sv31 mas_makeConstraints:^(MASConstraintMaker *<span class="built_in">make</span>) {
+    <span class="built_in">make</span>.size.mas_equalTo(CGSizeMake(<span class="number">40</span>, <span class="number">60</span>));
+}];
+[sv distributeSpacingHorizontallyWith:@[sv11,sv12,sv13]];
+[sv distributeSpacingVerticallyWith:@[sv11,sv21,sv31]];
+[sv showPlaceHolderWithAllSubviews];
+[sv hidePlaceHolder];
+</code></pre><p> 代码效果</p>
+<p> <img src="/img/AutoLayout/final.png" alt=""></p>
+<p> 简洁明了的达到了我们所要的效果</p>
+<p> 这里所用的技巧就是 使用空白的占位view来填充我们目标view的旁边 这点通过图上的空白标注可以看出来</p>
+</li>
+</ol>
+<h3 style="background-color:#A3BB50; color:white; padding-top: 2px; padding-left: 5px;
+padding-bottom: 2px;" ;="">SizeClass使用</h3>
+
+<ul>
+<li><p>屏幕适配的发展历程 </p>
+<p>  代码计算frame -&gt; autoreszing(父控件和子控件的关系ios6) -&gt; autolayout(任何控件都可以产生关系ios7) -&gt; sizeclass（ios8）</p>
+</li>
+<li><p>Sizeclass的作用</p>
+<p>  iOS8中为了解决屏幕适配，引入了一个全新的概念，Sizeclass 而这个使用的时候不需要判断屏幕的尺寸，也没有横屏和竖屏的概念，只有（Compact、Any，Regular）的概念！在Xcode新建的项目中，看到的storyboard界面下面栏目中，有一个（wAny,hAny）点击之后会出现一个可选择的类似九宫格的表格，这个就是一个屏幕选择器，可以对不同屏幕进行选择！</p>
+<p>  <img src="/img/AutoLayout/1.png" alt=""></p>
+<p>  仅仅是对屏幕进行了分类, 真正排布UI元素还得使用autolayout</p>
+<p>  不再有横竖屏的概念, 只有屏幕尺寸的概念</p>
+<p>  不再有具体尺寸的概念, 只有抽象尺寸的概念</p>
+<p>  把宽度和高度各分为3种情况 而3*3的组合就是9中情况 </p>
+<p>  ①Compact : 紧凑(小) </p>
+<p>  ②Any : 任意 </p>
+<p>  ③Regular : 宽松(大) </p>
+<p>  ④符号代表</p>
+<p>  Compact</p>
+<p>  Any</p>
+<p>  Regular </p>
+<p>  ⑤继承性 （尽量少用*组合，这样很可能会导致冲突）</p>
+<p>  其它8种情况都会继承</p>
+<p>  会被- - \ + -继承</p>
+<p>  会被+ - \ + +继承 </p>
+<p>  ⑥sizeclass和autolayout的作用 </p>
+<p>  sizeclass:仅仅是对屏幕进行了分类（判断屏幕） </p>
+<p>  autolayout:对屏幕中各种元素进行约束(位置\尺寸) </p>
+<p>  <img src="/img/AutoLayout/2.png" alt=""><br>  <img src="/img/AutoLayout/3.png" alt=""><br>  <img src="/img/AutoLayout/4.png" alt=""><br>  <img src="/img/AutoLayout/5.png" alt=""><br>  <img src="/img/AutoLayout/6.png" alt=""></p>
+</li>
+</ul>
+
+      
+    </div>
+
+    <div>
+      
+        
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/iOS/" rel="tag">#iOS</a>
+          
+            <a href="/tags/笔记/" rel="tag">#笔记</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2014/11/16/iOS教程之UITableView的使用/" rel="next" title="iOS教程之UITableView的使用">
+                <i class="fa fa-chevron-left"></i> iOS教程之UITableView的使用
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2015/03/14/改变自己从强身健体开始/" rel="prev" title="改变自己从强身健体开始">
+                改变自己从强身健体开始 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <div class="ds-share flat" data-thread-key="2015/01/06/iOS教程之AutoLayout自动布局/"
+     data-title="iOS教程之AutoLayout/SizeClass屏幕适配"
+     data-content=""
+     data-url="http://hackmz.com/2015/01/06/iOS教程之AutoLayout自动布局/">
+  <div class="ds-share-inline">
+    <ul  class="ds-share-icons-16">
+
+      <li data-toggle="ds-share-icons-more"><a class="ds-more" href="javascript:void(0);">分享到：</a></li>
+      <li><a class="ds-weibo" href="javascript:void(0);" data-service="weibo">微博</a></li>
+      <li><a class="ds-qzone" href="javascript:void(0);" data-service="qzone">QQ空间</a></li>
+      <li><a class="ds-qqt" href="javascript:void(0);" data-service="qqt">腾讯微博</a></li>
+      <li><a class="ds-wechat" href="javascript:void(0);" data-service="wechat">微信</a></li>
+
+    </ul>
+    <div class="ds-share-icons-more">
+    </div>
+  </div>
+</div>
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2015/01/06/iOS教程之AutoLayout自动布局/"
+           data-title="iOS教程之AutoLayout/SizeClass屏幕适配" data-url="http://hackmz.com/2015/01/06/iOS教程之AutoLayout自动布局/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="http://7pumug.com1.z0.glb.clouddn.com/author.jpg"
+               alt="麦子" />
+          <p class="site-author-name" itemprop="name">麦子</p>
+          <p class="site-description motion-element" itemprop="description">当你的才华撑不起你的野心的时候，你就应该静下心来学习！</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">41</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">7</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">43</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/MrWheat" target="_blank" title="Github">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  Github
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/3202240184" target="_blank" title="微博">
+                  
+                    <i class="fa fa-fw fa-weibo"></i>
+                  
+                  微博
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#undefined"><span class="nav-number">1.</span> <span class="nav-text">目录</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#undefined"><span class="nav-number">2.</span> <span class="nav-text">Autolayout基本使用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#undefined"><span class="nav-number">3.</span> <span class="nav-text">Massory第三方库</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#基本使用"><span class="nav-number">3.1.</span> <span class="nav-text">基本使用</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#undefined"><span class="nav-number">4.</span> <span class="nav-text">SizeClass使用</span></a></li></ol></div>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2014 - 
+  <span itemprop="copyrightYear">2016</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">麦子</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+        
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.1"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.0.1"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.1"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"mrwheat"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+  
+
+
+
+
+
+  
+  
+  
+
+  
+
+  
+
+</body>
+</html>

@@ -1,0 +1,2026 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>MaiZi&#39;s Blog</title>
+  <subtitle>Nothing is impossible！</subtitle>
+  <link href="/atom.xml" rel="self"/>
+  
+  <link href="http://hackmz.com/"/>
+  <updated>2016-08-12T08:22:31.000Z</updated>
+  <id>http://hackmz.com/</id>
+  
+  <author>
+    <name>麦子</name>
+    <email>dyq@hackmz.com</email>
+  </author>
+  
+  <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Runtime开发使用实例</title>
+    <link href="http://hackmz.com/2016/08/12/Runtime%E5%BC%80%E5%8F%91%E4%BD%BF%E7%94%A8%E5%AE%9E%E4%BE%8B/"/>
+    <id>http://hackmz.com/2016/08/12/Runtime开发使用实例/</id>
+    <published>2016-08-12T02:45:23.000Z</published>
+    <updated>2016-08-12T08:22:31.000Z</updated>
+    
+    <content type="html">&lt;p&gt;当我们学习和使用Objective-C时，Objective-C Runtime往往被我们自动忽略了。因为就算不知道它的存在，似乎对我们平时写代码并没有多大的影响。既然没影响，那我们还学它干嘛，就像不会造车但我会开车不就可以了？&lt;/p&gt;
+&lt;p&gt;但是当你在这行逐步深入进去，你至少应该知道一些Runtime的工作细节，知道Objective-C正在做的事情，能够帮助你更深层次的理解Objective-C和你的App，不管你有没有好奇心，对你个人来说也是一种收获和提升。了解车的性能和构造又何尝不是为了能更好的驾驭这辆车，成为一名资深的赛车手。&lt;/p&gt;
+&lt;a id=&quot;more&quot;&gt;&lt;/a&gt;
+&lt;h3 id=&quot;什么是runtime&quot;&gt;什么是runtime&lt;/h3&gt;&lt;p&gt;概念这东西，都是老生常谈，引用网上的话：Objective-C的Runtime是一个运行时库（Runtime Library），主要使用 C 和汇编编写，为C添加了面相对象的能力并创造了 Objective-C。&lt;/p&gt;
+&lt;h3 id=&quot;runtime的作用&quot;&gt;runtime的作用&lt;/h3&gt;&lt;p&gt;通过runtime，你可以动态的产生、修改和删除一个类，或者一个方法和成员变量。&lt;/p&gt;
+&lt;h3 id=&quot;runtime的使用&quot;&gt;runtime的使用&lt;/h3&gt;&lt;p&gt;使用之前，首先包含头文件。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&lt;span class=&quot;id&quot;&gt;#import&lt;/span&gt; &amp;lt;objc/runtime.h&amp;gt;    &lt;span class=&quot;comment&quot;&gt;// 包含对类、成员变量、属性、方法的操作&lt;/span&gt;
+&lt;span class=&quot;id&quot;&gt;#import&lt;/span&gt; &amp;lt;objc/message.h&amp;gt;    &lt;span class=&quot;comment&quot;&gt;// 包含消息机制&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;以下是runtime经常用到的方法。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class_copyIvarList()    &lt;span class=&quot;comment&quot;&gt;// 返回一个指向类的成员变量数组的指针&lt;/span&gt;
+class_copyPropertyList()    &lt;span class=&quot;comment&quot;&gt;//返回一个指向类的属性数组的指针&lt;/span&gt;
+ivar_getName()    &lt;span class=&quot;comment&quot;&gt;// 获取成员变量名（C类型的字符串）&lt;/span&gt;
+property_getName()    &lt;span class=&quot;comment&quot;&gt;// 获取属性名（C类型的字符串）&lt;/span&gt;
+---------------------------------------------------
+typedef struct objc_method *&lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;Method&lt;/span&gt;;&lt;/span&gt;
+class_getInstanceMethod()
+class_getClassMethod()    &lt;span class=&quot;comment&quot;&gt;// 以上两个函数传入返回Method类型&lt;/span&gt;
+---------------------------------------------------
+method_exchangeImplementations(&lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;Method&lt;/span&gt; &lt;span class=&quot;title&quot;&gt;m1&lt;/span&gt;, &lt;span class=&quot;title&quot;&gt;Method&lt;/span&gt; &lt;span class=&quot;title&quot;&gt;m2&lt;/span&gt;)    // 交换两个方法的实现&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;h4 id=&quot;获取类成员变量&quot;&gt;获取类成员变量&lt;/h4&gt;&lt;p&gt;通过runtime可以获取某个类的所有成员变量，代码如下，使用时需要添加头文件&lt;code&gt;#import &amp;lt;objc/runtime.h&amp;gt;&lt;/code&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&lt;span class=&quot;comment&quot;&gt;/**
+ *  获取某个类的所有成员变量
+ *
+ *  @param object 某个类的实例对象
+ *
+ *  @return NSArray（成员变量名和值）
+ */&lt;/span&gt;
+- (&lt;span class=&quot;built_in&quot;&gt;NSArray&lt;/span&gt; *)getAllIvar:(&lt;span class=&quot;keyword&quot;&gt;id&lt;/span&gt;)object
+{
+    &lt;span class=&quot;built_in&quot;&gt;NSMutableArray&lt;/span&gt; *array = [&lt;span class=&quot;built_in&quot;&gt;NSMutableArray&lt;/span&gt; array];
+    &lt;span class=&quot;keyword&quot;&gt;unsigned&lt;/span&gt; &lt;span class=&quot;keyword&quot;&gt;int&lt;/span&gt; count;
+    &lt;span class=&quot;comment&quot;&gt;// 获得一个指向该类成员变量的指针&lt;/span&gt;
+    Ivar *ivars = class_copyIvarList([object class], &amp;amp;count);
+    &lt;span class=&quot;keyword&quot;&gt;for&lt;/span&gt; (&lt;span class=&quot;keyword&quot;&gt;int&lt;/span&gt; i = &lt;span class=&quot;number&quot;&gt;0&lt;/span&gt;; i &amp;lt; count; i++) {
+        Ivar ivar = ivars[i];
+        &lt;span class=&quot;comment&quot;&gt;// 根据ivar获得其成员变量的名称(C语言字符串)&lt;/span&gt;
+        &lt;span class=&quot;keyword&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;keyword&quot;&gt;char&lt;/span&gt; *keyChar = ivar_getName(ivar);
+        &lt;span class=&quot;built_in&quot;&gt;NSString&lt;/span&gt; *keyStr = [&lt;span class=&quot;built_in&quot;&gt;NSString&lt;/span&gt; stringWithCString:keyChar encoding:NSUTF8StringEncoding];
+        &lt;span class=&quot;keyword&quot;&gt;@try&lt;/span&gt; {
+            &lt;span class=&quot;keyword&quot;&gt;id&lt;/span&gt; valueStr = [object valueForKey:keyStr];
+            &lt;span class=&quot;built_in&quot;&gt;NSDictionary&lt;/span&gt; *dic = &lt;span class=&quot;literal&quot;&gt;nil&lt;/span&gt;;
+            &lt;span class=&quot;keyword&quot;&gt;if&lt;/span&gt; (valueStr) {
+                dic = @{keyStr : valueStr};
+            } &lt;span class=&quot;keyword&quot;&gt;else&lt;/span&gt; {
+                dic = @{keyStr : &lt;span class=&quot;string&quot;&gt;@&quot;值为nil&quot;&lt;/span&gt;};
+            }
+            [array addObject:dic];
+        }
+        &lt;span class=&quot;keyword&quot;&gt;@catch&lt;/span&gt; (&lt;span class=&quot;built_in&quot;&gt;NSException&lt;/span&gt; *exception) {}
+    }
+    &lt;span class=&quot;keyword&quot;&gt;return&lt;/span&gt; [array &lt;span class=&quot;keyword&quot;&gt;copy&lt;/span&gt;];
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;我们以UILabel为例：&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;/img/Runtime开发使用实例01.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
+&lt;h4 id=&quot;获取类属性&quot;&gt;获取类属性&lt;/h4&gt;&lt;p&gt;获取类属性的方式跟获取类成员变量的方式类似，代码如下。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&lt;span class=&quot;comment&quot;&gt;/**
+ *  获取某个类的所有属性
+ *
+ *  @param object 某个类的实例对象
+ *
+ *  @return NSArray（所有属性名）
+ */&lt;/span&gt;
+- (&lt;span class=&quot;built_in&quot;&gt;NSArray&lt;/span&gt; *)getAllProperty:(&lt;span class=&quot;keyword&quot;&gt;id&lt;/span&gt;)object
+{
+    &lt;span class=&quot;built_in&quot;&gt;NSMutableArray&lt;/span&gt; *array = [&lt;span class=&quot;built_in&quot;&gt;NSMutableArray&lt;/span&gt; array];
+    &lt;span class=&quot;keyword&quot;&gt;unsigned&lt;/span&gt; &lt;span class=&quot;keyword&quot;&gt;int&lt;/span&gt; count;
+    &lt;span class=&quot;comment&quot;&gt;// 获得指向该类所有属性的指针&lt;/span&gt;
+    objc_property_t *propertys = class_copyPropertyList([object class], &amp;amp;count);
+    &lt;span class=&quot;keyword&quot;&gt;for&lt;/span&gt; (&lt;span class=&quot;keyword&quot;&gt;int&lt;/span&gt; i = &lt;span class=&quot;number&quot;&gt;0&lt;/span&gt;; i &amp;lt; count; i++) {
+        objc_property_t property = propertys[i];
+        &lt;span class=&quot;comment&quot;&gt;// 通过objc_property_t获得属性名称(C语言字符串)&lt;/span&gt;
+        &lt;span class=&quot;keyword&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;keyword&quot;&gt;char&lt;/span&gt; *nameChar = property_getName(property);
+        &lt;span class=&quot;built_in&quot;&gt;NSString&lt;/span&gt; *nameStr = [&lt;span class=&quot;built_in&quot;&gt;NSString&lt;/span&gt; stringWithCString:nameChar encoding:NSUTF8StringEncoding];
+        [array addObject:nameStr];
+    }
+    &lt;span class=&quot;keyword&quot;&gt;return&lt;/span&gt; [array &lt;span class=&quot;keyword&quot;&gt;copy&lt;/span&gt;];
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;同样以UILabel为例：&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;/img/Runtime开发使用实例02.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
+&lt;h3 id=&quot;应用实例&quot;&gt;应用实例&lt;/h3&gt;&lt;p&gt;我们可以通过runtime来获得某个类的所有属性和所有成员变量，便可以通过这种方式实现对任意类的快速归档和解档，同样的，还能实现字典转模型的操作。&lt;/p&gt;
+&lt;h4 id=&quot;归档解档&quot;&gt;归档解档&lt;/h4&gt;&lt;p&gt;关于自定义类的归档需要遵守&lt;nscoding&gt;协议，使用runtime同时也别忘记包含头文件。&lt;/nscoding&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&lt;span class=&quot;preprocessor&quot;&gt;#import &lt;span class=&quot;title&quot;&gt;&quot;MZTestModel.h&quot;&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;preprocessor&quot;&gt;#import &lt;span class=&quot;title&quot;&gt;&amp;lt;objc/runtime.h&amp;gt;&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;class&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;@interface&lt;/span&gt; &lt;span class=&quot;title&quot;&gt;MZTestModel&lt;/span&gt; () &amp;lt;&lt;span class=&quot;title&quot;&gt;NSCoding&lt;/span&gt;&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;keyword&quot;&gt;@end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;然后实现NSCoding的协议方法，这里我们通过runtime动态获取该类的属性，通过这种方式，我们不用关心类里到底有多少属性，属性名称是什么，一套代码就能搞定自定义类的归档和解档。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;- (&lt;span class=&quot;keyword&quot;&gt;void&lt;/span&gt;)encodeWithCoder:(NSCoder *)encoder{
+    &lt;span class=&quot;comment&quot;&gt;//归档存储自定义对象&lt;/span&gt;
+    &lt;span class=&quot;keyword&quot;&gt;unsigned&lt;/span&gt; &lt;span class=&quot;keyword&quot;&gt;int&lt;/span&gt; count = &lt;span class=&quot;number&quot;&gt;0&lt;/span&gt;;
+    &lt;span class=&quot;comment&quot;&gt;//获得指向该类所有属性的指针&lt;/span&gt;
+    objc_property_t *properties =     class_copyPropertyList([&lt;span class=&quot;keyword&quot;&gt;self&lt;/span&gt; class], &amp;amp;count);
+    &lt;span class=&quot;keyword&quot;&gt;for&lt;/span&gt; (&lt;span class=&quot;keyword&quot;&gt;int&lt;/span&gt; i =&lt;span class=&quot;number&quot;&gt;0&lt;/span&gt;; i &amp;lt; count; i ++) {
+        objc_property_t property = properties[i];
+        &lt;span class=&quot;comment&quot;&gt;// 根据objc_property_t获得其属性的名称(C语言的字符串)&lt;/span&gt;
+        &lt;span class=&quot;keyword&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;keyword&quot;&gt;char&lt;/span&gt; *name = property_getName(property);
+        &lt;span class=&quot;built_in&quot;&gt;NSString&lt;/span&gt; *key = [&lt;span class=&quot;built_in&quot;&gt;NSString&lt;/span&gt;   stringWithUTF8String:name];
+        &lt;span class=&quot;comment&quot;&gt;// 编码每个属性,利用kVC取出每个属性对应的数值&lt;/span&gt;
+        [encoder encodeObject:[&lt;span class=&quot;keyword&quot;&gt;self&lt;/span&gt; valueForKeyPath:key] forKey:key];
+    }}
+
+- (instancetype)initWithCoder:(NSCoder *)decoder{
+    &lt;span class=&quot;comment&quot;&gt;// 归档存储自定义对象&lt;/span&gt;
+    &lt;span class=&quot;keyword&quot;&gt;unsigned&lt;/span&gt; &lt;span class=&quot;keyword&quot;&gt;int&lt;/span&gt; count = &lt;span class=&quot;number&quot;&gt;0&lt;/span&gt;;
+    &lt;span class=&quot;comment&quot;&gt;// 获得指向该类所有属性的指针&lt;/span&gt;
+    objc_property_t *properties = class_copyPropertyList([&lt;span class=&quot;keyword&quot;&gt;self&lt;/span&gt; class], &amp;amp;count);
+    &lt;span class=&quot;keyword&quot;&gt;for&lt;/span&gt; (&lt;span class=&quot;keyword&quot;&gt;int&lt;/span&gt; i =&lt;span class=&quot;number&quot;&gt;0&lt;/span&gt;; i &amp;lt; count; i ++) {
+        objc_property_t property = properties[i];
+        &lt;span class=&quot;comment&quot;&gt;// 根据objc_property_t获得其属性的名称(C语言的字符串)&lt;/span&gt;
+        &lt;span class=&quot;keyword&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;keyword&quot;&gt;char&lt;/span&gt; *name = property_getName(property);
+        &lt;span class=&quot;built_in&quot;&gt;NSString&lt;/span&gt; *key = [&lt;span class=&quot;built_in&quot;&gt;NSString&lt;/span&gt; stringWithUTF8String:name];
+        &lt;span class=&quot;comment&quot;&gt;// 解码每个属性,利用kVC取出每个属性对应的数值&lt;/span&gt;
+        [&lt;span class=&quot;keyword&quot;&gt;self&lt;/span&gt; setValue:[decoder decodeObjectForKey:key] forKeyPath:key];
+    }
+    &lt;span class=&quot;keyword&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;keyword&quot;&gt;self&lt;/span&gt;;
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;h4 id=&quot;交换方法&quot;&gt;交换方法&lt;/h4&gt;&lt;p&gt;交换方法是通过&lt;code&gt;method_exchangeImplementations(Method m1, Method m2)&lt;/code&gt;实现的。对于苹果系统提供的方法，我们看不到其内部实现，当然也无法去修改里面的代码。但是却可以使用runtime去替换它，这样就能处理某些使用系统方法而导致程序崩溃的问题(当然使用继承也是可以解决这个问题的)。&lt;/p&gt;
+&lt;p&gt;举个例子，我们在使用字典和数组的时候，是不能向里面写入nil的。这样会导致程序崩溃。&lt;/p&gt;
+&lt;p&gt;在进行后台接口调试的时候，经常会遇到这个问题。比如登陆注册，我们需要将用户的账号和密码以字典的形式传给后台进行比对，如果账号密码为空，前端不进行判断，直接将该值写入字典，那么程序就直接崩溃了。&lt;/p&gt;
+&lt;p&gt;有些接口的参数比较多，同时部分字段又不是必传字段。我们需要每次对传入的数据进行判断是否为空，然后才写入字典，很麻烦，因为你不判断程序就直接崩溃了，而一堆if语句看起来又是那么的恶心。。。。&lt;/p&gt;
+&lt;p&gt;那么如何解决？我们以NSMutableArray为例。&lt;/p&gt;
+&lt;p&gt;我在数组里加了一个nil，代码直接崩了。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;/img/Runtime开发使用实例03.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
+&lt;p&gt;然后我们给NSMutableArray新建一个类别Extension，然后在类别里添加以下方法。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&lt;span class=&quot;comment&quot;&gt;// 该方法在类或者分类第一次加载内存时会自动调用&lt;/span&gt;
++ (&lt;span class=&quot;typename&quot;&gt;void&lt;/span&gt;)load {
+    &lt;span class=&quot;comment&quot;&gt;// __NSArrayM为NSMutableArray对象的类型，通过以下方式获取。&lt;/span&gt;
+    &lt;span class=&quot;comment&quot;&gt;// NSMutableArray *testArray = [[NSMutableArray alloc] init];&lt;/span&gt;
+    &lt;span class=&quot;comment&quot;&gt;// NSLog(@&quot;%@&quot;, NSStringFromClass([testArray class]));&lt;/span&gt;
+    Method oldMethod = class_getInstanceMethod(NSClassFromString(@&lt;span class=&quot;string&quot;&gt;&quot;__NSArrayM&quot;&lt;/span&gt;), &lt;span class=&quot;annotation&quot;&gt;@selector&lt;/span&gt;(&lt;span class=&quot;string&quot;&gt;addObject:&lt;/span&gt;));
+    Method newMethod = class_getInstanceMethod(NSClassFromString(@&lt;span class=&quot;string&quot;&gt;&quot;__NSArrayM&quot;&lt;/span&gt;), &lt;span class=&quot;annotation&quot;&gt;@selector&lt;/span&gt;(&lt;span class=&quot;string&quot;&gt;mz_addObject:&lt;/span&gt;));
+    method_exchangeImplementations(oldMethod, newMethod);
+}
+
+&lt;span class=&quot;comment&quot;&gt;// 自定义方法&lt;/span&gt;
+- (&lt;span class=&quot;typename&quot;&gt;void&lt;/span&gt;)&lt;span class=&quot;string&quot;&gt;mz_addObject:&lt;/span&gt;(id)object {
+    &lt;span class=&quot;keyword&quot;&gt;if&lt;/span&gt; (object != nil) {
+        [self &lt;span class=&quot;string&quot;&gt;mz_addObject:&lt;/span&gt;object];
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;&lt;img src=&quot;/img/Runtime开发使用实例04.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
+&lt;p&gt;再一次运行程序，一切正常，没有崩溃。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;/img/Runtime开发使用实例05.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
+&lt;h3 id=&quot;参考&quot;&gt;参考&lt;/h3&gt;&lt;p&gt;&lt;a href=&quot;http://www.cocoachina.com/ios/20141008/9844.html&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;理解 Objective-C Runtime&lt;/a&gt;&lt;/p&gt;
+</content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;当我们学习和使用Objective-C时，Objective-C Runtime往往被我们自动忽略了。因为就算不知道它的存在，似乎对我们平时写代码并没有多大的影响。既然没影响，那我们还学它干嘛，就像不会造车但我会开车不就可以了？&lt;/p&gt;
+&lt;p&gt;但是当你在这行逐步深入进去，你至少应该知道一些Runtime的工作细节，知道Objective-C正在做的事情，能够帮助你更深层次的理解Objective-C和你的App，不管你有没有好奇心，对你个人来说也是一种收获和提升。了解车的性能和构造又何尝不是为了能更好的驾驭这辆车，成为一名资深的赛车手。&lt;/p&gt;
+    
+    </summary>
+    
+      <category term="iOS笔记" scheme="http://hackmz.com/categories/iOS%E7%AC%94%E8%AE%B0/"/>
+    
+    
+      <category term="iOS" scheme="http://hackmz.com/tags/iOS/"/>
+    
+      <category term="runtime" scheme="http://hackmz.com/tags/runtime/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>iOS字典转模型的那些坑</title>
+    <link href="http://hackmz.com/2016/08/11/iOS%E5%AD%97%E5%85%B8%E8%BD%AC%E6%A8%A1%E5%9E%8B%E7%9A%84%E9%82%A3%E4%BA%9B%E5%9D%91/"/>
+    <id>http://hackmz.com/2016/08/11/iOS字典转模型的那些坑/</id>
+    <published>2016-08-11T09:00:14.000Z</published>
+    <updated>2016-08-12T01:54:39.000Z</updated>
+    
+    <content type="html">&lt;p&gt;无论是XML解析还是JSON解析，最终得到的数据通常我们都是以数据模型的形式保存在本地的，为什么不直接用字典呢？&lt;/p&gt;
+&lt;p&gt;首先大多数编译器都有自动提示补全功能，将字典的key转换成模型里的属性，就能很好的利用这一功能，提高开发速度，比复制粘贴还快哦。&lt;/p&gt;
+&lt;p&gt;其次，如果模型的属性写错了，编译的时候，编译器会提示报错，这样就能及时修正BUG，而字典的key，你写成啥样，编译器也不会管你的死活。&lt;/p&gt;
+&lt;p&gt;最后一点，不管怎么样，写成数据模型的形式，起码看起来也比字典专业不是么？&lt;/p&gt;
+&lt;p&gt;字典转模型的方式多种多样，网上的开源库也很多。但在实际开发过程中，稍有不慎，一些细节问题同样会让你头疼。&lt;/p&gt;
+&lt;a id=&quot;more&quot;&gt;&lt;/a&gt;
+&lt;h3 id=&quot;字典键值对多于模型属性。&quot;&gt;字典键值对多于模型属性。&lt;/h3&gt;&lt;p&gt;有些开发者会选择使用KVC的方式来进行字典模型转换。&lt;/p&gt;
+&lt;p&gt;使用setValuesForKeysWithDictionary:方法能够直接将字典的value赋值给模型，但是有时候会遇到程序莫名崩溃的情况。通过比对，发现字典的某些key，模型中并不存在对应的属性。&lt;/p&gt;
+&lt;p&gt; 当找不到对应属性时，程序首先会到模型里去寻找master的getter方法，看有没有&lt;code&gt;- (id)master;&lt;/code&gt;这个方法，如果没有，则会寻找&lt;code&gt;_master&lt;/code&gt;的成员变量，如果没有，则继续寻找&lt;code&gt;master&lt;/code&gt;的成员变量，如果还没有，会看有没有实现&lt;code&gt;valueForUndefinedKey&lt;/code&gt;方法，如果没有，程序就崩溃了。&lt;/p&gt;
+&lt;p&gt; 因此我们可以在模型里重写以下方法：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&lt;span class=&quot;tag&quot;&gt;-&lt;/span&gt; (void)&lt;span class=&quot;tag&quot;&gt;setValue&lt;/span&gt;:(id)&lt;span class=&quot;tag&quot;&gt;value&lt;/span&gt; &lt;span class=&quot;tag&quot;&gt;forUndefinedKey&lt;/span&gt;:(NSString *)&lt;span class=&quot;tag&quot;&gt;key&lt;/span&gt; {
+    &lt;span class=&quot;comment&quot;&gt;// 内部并不需要写任何东西&lt;/span&gt;
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;h3 id=&quot;字典的key为OC关键字&quot;&gt;字典的key为OC关键字&lt;/h3&gt;&lt;p&gt;我们不能要求每一个后台都了解OC，有时候遇到后台数据字段和OC关键字冲突的情况下，更改后台代码又特别麻烦。这种情况下，以description关键字为例，我们可以在模型的.m文件中增加这样一行代码：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&lt;span class=&quot;at_rule&quot;&gt;@&lt;span class=&quot;keyword&quot;&gt;synthesize&lt;/span&gt; description = _description&lt;/span&gt;;
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;当然，如果你使用MJExtension三方库，也可以这样写，然后在模型里定义一个des属性来代替description：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;+ (&lt;span class=&quot;built_in&quot;&gt;NSDictionary&lt;/span&gt; *)replacedKeyFromPropertyName{
+    &lt;span class=&quot;keyword&quot;&gt;return&lt;/span&gt; @{&lt;span class=&quot;string&quot;&gt;@&quot;des&quot;&lt;/span&gt;: &lt;span class=&quot;string&quot;&gt;@&quot;description&quot;&lt;/span&gt;};
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;像多个页面使用同一个类，页面相似，数据也相似，但字段不同的情况，我们也可以通过这种方式，免除建很多个多余的Model的烦恼。&lt;/p&gt;
+&lt;h3 id=&quot;写在最后&quot;&gt;写在最后&lt;/h3&gt;&lt;p&gt;最后分享一个根据字典的key快速创建模型的方法。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;- (&lt;span class=&quot;keyword&quot;&gt;void&lt;/span&gt;)createModelWithDictionary:(&lt;span class=&quot;built_in&quot;&gt;NSDictionary&lt;/span&gt; *)dict {
+    &lt;span class=&quot;keyword&quot;&gt;for&lt;/span&gt; (&lt;span class=&quot;built_in&quot;&gt;NSString&lt;/span&gt; *key &lt;span class=&quot;keyword&quot;&gt;in&lt;/span&gt; dict) {
+        printf(&lt;span class=&quot;string&quot;&gt;&quot;@property (nonatomic, copy) NSString *%s;\n&quot;&lt;/span&gt;, [key UTF8String]);
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;然后将XCode打印的数据复制粘贴到我们的数据模型类里，偷懒也需要讲究方法不是么？&lt;/p&gt;
+</content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;无论是XML解析还是JSON解析，最终得到的数据通常我们都是以数据模型的形式保存在本地的，为什么不直接用字典呢？&lt;/p&gt;
+&lt;p&gt;首先大多数编译器都有自动提示补全功能，将字典的key转换成模型里的属性，就能很好的利用这一功能，提高开发速度，比复制粘贴还快哦。&lt;/p&gt;
+&lt;p&gt;其次，如果模型的属性写错了，编译的时候，编译器会提示报错，这样就能及时修正BUG，而字典的key，你写成啥样，编译器也不会管你的死活。&lt;/p&gt;
+&lt;p&gt;最后一点，不管怎么样，写成数据模型的形式，起码看起来也比字典专业不是么？&lt;/p&gt;
+&lt;p&gt;字典转模型的方式多种多样，网上的开源库也很多。但在实际开发过程中，稍有不慎，一些细节问题同样会让你头疼。&lt;/p&gt;
+    
+    </summary>
+    
+      <category term="iOS笔记" scheme="http://hackmz.com/categories/iOS%E7%AC%94%E8%AE%B0/"/>
+    
+    
+      <category term="iOS" scheme="http://hackmz.com/tags/iOS/"/>
+    
+      <category term="数据" scheme="http://hackmz.com/tags/%E6%95%B0%E6%8D%AE/"/>
+    
+      <category term="模型" scheme="http://hackmz.com/tags/%E6%A8%A1%E5%9E%8B/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>封装一个AlertView控件</title>
+    <link href="http://hackmz.com/2016/08/10/%E5%B0%81%E8%A3%85%E4%B8%80%E4%B8%AAAlertView%E6%8E%A7%E4%BB%B6/"/>
+    <id>http://hackmz.com/2016/08/10/封装一个AlertView控件/</id>
+    <published>2016-08-10T09:03:07.000Z</published>
+    <updated>2016-08-10T09:41:14.000Z</updated>
+    
+    <content type="html">&lt;p&gt;系统的UIAlertView和UIActionSheet在iOS9.0已经被苹果废弃，由UIAlertController代替。&lt;/p&gt;
+&lt;p&gt;然而UIAlertController的样式只有有限的几种，对于特殊的字体和颜色需求，UIAlertController并没有预留接口给我们。&lt;/p&gt;
+&lt;p&gt;当然虽然修改的办法还是有的，但一不小心触及到苹果的底线，影响产品上线，也会增加时间成本。&lt;/p&gt;
+&lt;p&gt;之前封装了一个ActionSheet底部弹出视图，这里再封装一个AlertView提示框，常用的弹出框基本就这两种了。&lt;/p&gt;
+&lt;p&gt;以下是效果图：&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;/img/封装一个AlertView控件.gif&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
+&lt;p&gt;Github下载地址：&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;https://github.com/MrWheat/MZAlertViewDemo&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;https://github.com/MrWheat/MZAlertViewDemo&lt;/a&gt;&lt;/p&gt;
+</content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;系统的UIAlertView和UIActionSheet在iOS9.0已经被苹果废弃，由UIAlertController代替。&lt;/p&gt;
+&lt;p&gt;然而UIAlertController的样式只有有限的几种，对于特殊的字体和颜色需求，UIAlertController并没有预留
+    
+    </summary>
+    
+      <category term="项目开发" scheme="http://hackmz.com/categories/%E9%A1%B9%E7%9B%AE%E5%BC%80%E5%8F%91/"/>
+    
+    
+      <category term="AlertView" scheme="http://hackmz.com/tags/AlertView/"/>
+    
+      <category term="iOS" scheme="http://hackmz.com/tags/iOS/"/>
+    
+      <category term="控件" scheme="http://hackmz.com/tags/%E6%8E%A7%E4%BB%B6/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>封装自己的ActionSheet控件</title>
+    <link href="http://hackmz.com/2016/08/09/%E5%B0%81%E8%A3%85%E8%87%AA%E5%B7%B1%E7%9A%84ActionSheet%E6%8E%A7%E4%BB%B6/"/>
+    <id>http://hackmz.com/2016/08/09/封装自己的ActionSheet控件/</id>
+    <published>2016-08-09T09:37:21.000Z</published>
+    <updated>2016-08-10T09:05:48.000Z</updated>
+    
+    <content type="html">&lt;p&gt;在开发中，弹出框是必不可少的一个控件，苹果也有自带UIAlertController来供我们使用，通常情况下，使用系统的弹出框就可以了。&lt;/p&gt;
+&lt;p&gt;但是，需求总是游离在现实之外的，万恶的产品和UI可能会要求你改这改那，这个字体太丑了，这个颜色不好看。哈哈，没办法，改吧。&lt;/p&gt;
+&lt;p&gt;但是系统自带的弹出框，样式就那么几种，颜色和字体也不能随意更改，为了适应需求，我们需要封装一个自己的ActionSheet控件。&lt;/p&gt;
+&lt;p&gt;以下是效果图：&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;/img/封装自己的ActionSheet控件.gif&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
+&lt;p&gt;字体和颜色都预留了接口，可以随意更改。&lt;/p&gt;
+&lt;p&gt;Github下载地址：&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;https://github.com/MrWheat/MZActionSheetDemo&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;https://github.com/MrWheat/MZActionSheetDemo&lt;/a&gt;&lt;/p&gt;
+</content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;在开发中，弹出框是必不可少的一个控件，苹果也有自带UIAlertController来供我们使用，通常情况下，使用系统的弹出框就可以了。&lt;/p&gt;
+&lt;p&gt;但是，需求总是游离在现实之外的，万恶的产品和UI可能会要求你改这改那，这个字体太丑了，这个颜色不好看。哈哈，没办法，改吧。
+    
+    </summary>
+    
+      <category term="项目开发" scheme="http://hackmz.com/categories/%E9%A1%B9%E7%9B%AE%E5%BC%80%E5%8F%91/"/>
+    
+    
+      <category term="ActionSheet" scheme="http://hackmz.com/tags/ActionSheet/"/>
+    
+      <category term="iOS" scheme="http://hackmz.com/tags/iOS/"/>
+    
+      <category term="控件" scheme="http://hackmz.com/tags/%E6%8E%A7%E4%BB%B6/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>UIImage图片显示处理</title>
+    <link href="http://hackmz.com/2016/08/05/UIImage%E5%9B%BE%E7%89%87%E6%98%BE%E7%A4%BA%E5%A4%84%E7%90%86/"/>
+    <id>http://hackmz.com/2016/08/05/UIImage图片显示处理/</id>
+    <published>2016-08-05T06:31:26.000Z</published>
+    <updated>2016-08-05T09:03:12.000Z</updated>
+    
+    <content type="html">&lt;p&gt;上回写过一篇关于图片旋转的问题，详情请见&lt;a href=&quot;http://www.hackmz.com/2016/05/30/iPhone图片上传服务器旋转的问题/&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;iPhone图片上传服务器旋转的问题&lt;/a&gt;。&lt;/p&gt;
+&lt;p&gt;这只是图片使用过程中的一个小坑，类似的坑还有千万，我们不需要所有的坑都走一遍，也不用对每个坑做细致的调查，但对于常见的坑，掌握如何填平还是有必要的。&lt;/p&gt;
+&lt;p&gt;UIImageView作为最常用的控件之一，为了迎合需求，总是要求我们对图片做各种各样的处理，最常见的有拉伸，缩放，模糊，裁剪几种。&lt;/p&gt;
+&lt;p&gt;在这里分享图片处理的一些实用方法。&lt;/p&gt;
+&lt;a id=&quot;more&quot;&gt;&lt;/a&gt;
+&lt;h3 id=&quot;加载图片&quot;&gt;加载图片&lt;/h3&gt;&lt;p&gt;这个不必多说，有两种方式：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&lt;span class=&quot;built_in&quot;&gt;UIImageView&lt;/span&gt; *imageV = [[&lt;span class=&quot;built_in&quot;&gt;UIImageView&lt;/span&gt; alloc] initWithFrame:CGRectMake(&lt;span class=&quot;number&quot;&gt;0&lt;/span&gt;, &lt;span class=&quot;number&quot;&gt;0&lt;/span&gt;, &lt;span class=&quot;number&quot;&gt;300&lt;/span&gt;, &lt;span class=&quot;number&quot;&gt;150&lt;/span&gt;)];
+
+&lt;span class=&quot;comment&quot;&gt;// 第一种方式，通过文件路径加载，无缓存&lt;/span&gt;
+&lt;span class=&quot;built_in&quot;&gt;NSBundle&lt;/span&gt; *bundle = [&lt;span class=&quot;built_in&quot;&gt;NSBundle&lt;/span&gt; mainBundle];
+&lt;span class=&quot;built_in&quot;&gt;NSString&lt;/span&gt; *imageNamed = [bundle pathForResource:&lt;span class=&quot;string&quot;&gt;@&quot;testImage&quot;&lt;/span&gt; ofType:&lt;span class=&quot;string&quot;&gt;@&quot;jpg&quot;&lt;/span&gt;];
+imageV&lt;span class=&quot;variable&quot;&gt;.image&lt;/span&gt; = [&lt;span class=&quot;built_in&quot;&gt;UIImage&lt;/span&gt; imageWithContentsOfFile:imageNamed];
+
+&lt;span class=&quot;comment&quot;&gt;// 第二种方式，imageNamed:方法加载，有缓存&lt;/span&gt;
+imageV&lt;span class=&quot;variable&quot;&gt;.image&lt;/span&gt; = [&lt;span class=&quot;built_in&quot;&gt;UIImage&lt;/span&gt; imageNamed:&lt;span class=&quot;string&quot;&gt;@&quot;testImage.jpg&quot;&lt;/span&gt;];
+&lt;/code&gt;&lt;/pre&gt;&lt;h3 id=&quot;渲染模式&quot;&gt;渲染模式&lt;/h3&gt;&lt;p&gt;图片在显示的时候，我们可以根据当前视图的Tint Color对图片进行渲染。系统提供了一个枚举值(UIImageRenderingMode)来方便我们设置。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;UIImageRenderingModeAutomatic    &lt;span class=&quot;comment&quot;&gt;// 根据图片使用环境自动渲染&lt;/span&gt;
+UIImageRenderingModeAlwaysOriginal    &lt;span class=&quot;comment&quot;&gt;// 始终绘制图片原始状态，不使用Tint Color&lt;/span&gt;
+UIImageRenderingModeAlwaysTemplate    &lt;span class=&quot;comment&quot;&gt;// 始终根据Tint Color绘制图片，忽略图片的颜色信息&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;使用方法：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;UIImage *image = [[UIImage &lt;span class=&quot;string&quot;&gt;imageNamed:&lt;/span&gt;@&lt;span class=&quot;string&quot;&gt;&quot;testImage.jpg&quot;&lt;/span&gt;] &lt;span class=&quot;string&quot;&gt;imageWithRenderingMode:&lt;/span&gt;UIImageRenderingModeAlwaysOriginal];  
+&lt;/code&gt;&lt;/pre&gt;&lt;h3 id=&quot;显示方式&quot;&gt;显示方式&lt;/h3&gt;&lt;p&gt;系统提供了UIViewContentMode这个枚举值来设置图片的显示模式，下面介绍常用的几种。&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;p&gt;UIViewContentModeScaleToFill    &lt;/p&gt;
+&lt;p&gt; 默认方式，拉伸显示，充满控件，显示整个图片&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&lt;span class=&quot;attribute&quot;&gt;imageV.contentMode &lt;/span&gt;=&lt;span class=&quot;string&quot;&gt; UIViewContentModeScaleToFill;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt; &lt;img src=&quot;/img/UIImage图片显示处理01.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;UIViewContentModeScaleAspectFit&lt;/p&gt;
+&lt;p&gt; 原图缩放显示，适应控件，直到两个宽高都小于或等于控件，但有部分空白&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&lt;span class=&quot;attribute&quot;&gt;imageV.contentMode &lt;/span&gt;=&lt;span class=&quot;string&quot;&gt; UIViewContentModeScaleAspectFit;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt; &lt;img src=&quot;/img/UIImage图片显示处理02.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;UIViewContentModeScaleAspectFill&lt;/p&gt;
+&lt;p&gt; 原图缩放直到某个宽或高和控件相等，但是有部分会超出控件，这是使用最多的一个样式。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&lt;span class=&quot;attribute&quot;&gt;imageV.contentMode &lt;/span&gt;=&lt;span class=&quot;string&quot;&gt; UIViewContentModeScaleAspectFill;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt; &lt;img src=&quot;/img/UIImage图片显示处理03.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
+&lt;p&gt; 超出部分可以使用&lt;code&gt;imageV.layer.masksToBounds = YES;&lt;/code&gt;进行裁剪。&lt;/p&gt;
+&lt;p&gt; &lt;img src=&quot;/img/UIImage图片显示处理04.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;UIViewContentModeLeft&lt;/p&gt;
+&lt;p&gt; 原图显示，图片靠左对齐，有部分会超出控件，当然类似的还有上下和右，这里就不一一介绍了。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&lt;span class=&quot;attribute&quot;&gt;imageV.contentMode &lt;/span&gt;=&lt;span class=&quot;string&quot;&gt; UIViewContentModeLeft;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt; &lt;img src=&quot;/img/UIImage图片显示处理05.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3 id=&quot;颜色转图片&quot;&gt;颜色转图片&lt;/h3&gt;&lt;p&gt;对于想要找一个纯色图片作背景的人，这个方法再适合不过了，也不用麻烦美工妹子了，自己动手丰衣足食。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&lt;span class=&quot;pp&quot;&gt;- &lt;span class=&quot;params&quot;&gt;(&lt;span class=&quot;variable&quot;&gt;UIImage&lt;/span&gt; *)&lt;/span&gt;imageWithColor:&lt;span class=&quot;params&quot;&gt;(&lt;span class=&quot;variable&quot;&gt;UIColor&lt;/span&gt; *)&lt;/span&gt;color {
+    CGRect rect = CGRectMake&lt;span class=&quot;params&quot;&gt;(&lt;span class=&quot;number&quot;&gt;0.0&lt;/span&gt;f, &lt;span class=&quot;number&quot;&gt;0.0&lt;/span&gt;f, &lt;span class=&quot;number&quot;&gt;1.0&lt;/span&gt;f, &lt;span class=&quot;number&quot;&gt;1.0&lt;/span&gt;f)&lt;/span&gt;;
+    UIGraphicsBeginImageContext&lt;span class=&quot;params&quot;&gt;(rect.size)&lt;/span&gt;;
+    CGContextRef context = UIGraphicsGetCurrentContext&lt;span class=&quot;params&quot;&gt;()&lt;/span&gt;;
+    CGContextSetFillColorWithColor&lt;span class=&quot;params&quot;&gt;(context, [color &lt;span class=&quot;variable&quot;&gt;CGColor&lt;/span&gt;])&lt;/span&gt;;
+    CGContextFillRect&lt;span class=&quot;params&quot;&gt;(context, rect)&lt;/span&gt;;
+    UIImage *image = UIGraphicsGetImageFromCurrentImageContext&lt;span class=&quot;params&quot;&gt;()&lt;/span&gt;;
+    UIGraphicsEndImageContext&lt;span class=&quot;params&quot;&gt;()&lt;/span&gt;;
+    return image;
+}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;h3 id=&quot;图片转颜色&quot;&gt;图片转颜色&lt;/h3&gt;&lt;p&gt;对于某些不支持图片只能使用颜色作背景的控件，比如UIView，如果想要加个背景怎么办呢，新建一个UIImageView也可以，不过下面这个好像更简单一些。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&lt;span class=&quot;built_in&quot;&gt;UIColor&lt;/span&gt; *color = [&lt;span class=&quot;built_in&quot;&gt;UIColor&lt;/span&gt; colorWithPatternImage:[&lt;span class=&quot;built_in&quot;&gt;UIImage&lt;/span&gt; imageNamed:&lt;span class=&quot;string&quot;&gt;@&quot;麦子.jpg&quot;&lt;/span&gt;]];
+&lt;/code&gt;&lt;/pre&gt;&lt;h3 id=&quot;图片圆角设置&quot;&gt;图片圆角设置&lt;/h3&gt;&lt;p&gt;设置图片圆角用处也很多，最常见的就是设置头像。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;imageV.layer.&lt;span class=&quot;variable&quot;&gt;masksToBounds =&lt;/span&gt; YES;
+// 数值为正方形宽高的一半
+imageV.layer.&lt;span class=&quot;variable&quot;&gt;cornerRadius =&lt;/span&gt; &lt;span class=&quot;number&quot;&gt;150&lt;/span&gt;;
+// 为了防止头像变形
+imageV.&lt;span class=&quot;variable&quot;&gt;contentMode =&lt;/span&gt; UIViewContentModeScaleAspectFill;
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;&lt;img src=&quot;/img/UIImage图片显示处理06.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
+</content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;上回写过一篇关于图片旋转的问题，详情请见&lt;a href=&quot;http://www.hackmz.com/2016/05/30/iPhone图片上传服务器旋转的问题/&quot;&gt;iPhone图片上传服务器旋转的问题&lt;/a&gt;。&lt;/p&gt;
+&lt;p&gt;这只是图片使用过程中的一个小坑，类似的坑还有千万，我们不需要所有的坑都走一遍，也不用对每个坑做细致的调查，但对于常见的坑，掌握如何填平还是有必要的。&lt;/p&gt;
+&lt;p&gt;UIImageView作为最常用的控件之一，为了迎合需求，总是要求我们对图片做各种各样的处理，最常见的有拉伸，缩放，模糊，裁剪几种。&lt;/p&gt;
+&lt;p&gt;在这里分享图片处理的一些实用方法。&lt;/p&gt;
+    
+    </summary>
+    
+      <category term="iOS笔记" scheme="http://hackmz.com/categories/iOS%E7%AC%94%E8%AE%B0/"/>
+    
+    
+      <category term="UIImage" scheme="http://hackmz.com/tags/UIImage/"/>
+    
+      <category term="iOS" scheme="http://hackmz.com/tags/iOS/"/>
+    
+      <category term="图片" scheme="http://hackmz.com/tags/%E5%9B%BE%E7%89%87/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>常用iOS系统应用API</title>
+    <link href="http://hackmz.com/2016/08/02/%E5%B8%B8%E7%94%A8iOS%E7%B3%BB%E7%BB%9F%E5%BA%94%E7%94%A8API/"/>
+    <id>http://hackmz.com/2016/08/02/常用iOS系统应用API/</id>
+    <published>2016-08-02T06:32:43.000Z</published>
+    <updated>2016-08-08T03:15:16.000Z</updated>
+    
+    <content type="html">&lt;p&gt;前面讲沙盒目录的时候说过，iOS应用都是被一个小箱子锁起来的独立个体，里面的数据出不来，外面的数据进不去，除了某些特殊的情况。&lt;a href=&quot;http://www.hackmz.com/2016/07/25/沙盒目录和应用程序包/&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;博客传送门&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;我们在开发App的时候可以预留一些Api用来与其他应用进行交互，而对于系统应用来说，比如地图，相册，照相机这些预装应用，苹果也为我们提供了一些工具来访问它们。&lt;/p&gt;
+&lt;p&gt;那怎么做呢？&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;PS:&lt;/strong&gt;以下代码大部分均需在真机上调试才有效果。&lt;/p&gt;
+&lt;a id=&quot;more&quot;&gt;&lt;/a&gt;
+&lt;h3 id=&quot;照片&quot;&gt;照片&lt;/h3&gt;&lt;p&gt;使用照片应用，一般用来取照片或者保存照片，以下介绍这两种方法的实现。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;取出照片&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;p&gt;首先遵守协议&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&lt;span class=&quot;preprocessor&quot;&gt;#import &lt;span class=&quot;title&quot;&gt;&quot;ViewController.h&quot;&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;class&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;@interface&lt;/span&gt; &lt;span class=&quot;title&quot;&gt;ViewController&lt;/span&gt; () &amp;lt;&lt;span class=&quot;title&quot;&gt;UIImagePickerControllerDelegate&lt;/span&gt;,&lt;span class=&quot;title&quot;&gt;UINavigationControllerDelegate&lt;/span&gt;&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;keyword&quot;&gt;@end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;打开相册&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&lt;span class=&quot;keyword&quot;&gt;if&lt;/span&gt; (![UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypePhotoLibrary]) {
+    &lt;span class=&quot;built_in&quot;&gt;NSLog&lt;/span&gt;(&lt;span class=&quot;string&quot;&gt;@&quot;没有相册权限，请到设置中打开&quot;&lt;/span&gt;);
+    &lt;span class=&quot;keyword&quot;&gt;return&lt;/span&gt;;
+}
+UIImagePickerController *ipc = [[UIImagePickerController alloc] init];
+ipc&lt;span class=&quot;variable&quot;&gt;.sourceType&lt;/span&gt; = UIImagePickerControllerSourceTypePhotoLibrary;
+ipc&lt;span class=&quot;variable&quot;&gt;.delegate&lt;/span&gt; = &lt;span class=&quot;keyword&quot;&gt;self&lt;/span&gt;;
+[&lt;span class=&quot;keyword&quot;&gt;self&lt;/span&gt; presentViewController:ipc animated:&lt;span class=&quot;literal&quot;&gt;YES&lt;/span&gt; completion:&lt;span class=&quot;literal&quot;&gt;nil&lt;/span&gt;];
+&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;实现协议方法&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;- (&lt;span class=&quot;keyword&quot;&gt;void&lt;/span&gt;)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(&lt;span class=&quot;built_in&quot;&gt;NSDictionary&lt;/span&gt;&amp;lt;&lt;span class=&quot;built_in&quot;&gt;NSString&lt;/span&gt; *,&lt;span class=&quot;keyword&quot;&gt;id&lt;/span&gt;&amp;gt; *)info {
+    [picker dismissViewControllerAnimated:&lt;span class=&quot;literal&quot;&gt;YES&lt;/span&gt; completion:&lt;span class=&quot;literal&quot;&gt;nil&lt;/span&gt;];
+    &lt;span class=&quot;comment&quot;&gt;//  1.取出选中的图片&lt;/span&gt;
+    &lt;span class=&quot;built_in&quot;&gt;UIImage&lt;/span&gt; *image = info[UIImagePickerControllerOriginalImage];
+} 
+&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;保存图片&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;p&gt;保存图片&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;UIImage *image = [UIImage &lt;span class=&quot;string&quot;&gt;imageNamed:&lt;/span&gt;@&lt;span class=&quot;string&quot;&gt;&quot;testImage.jpg&quot;&lt;/span&gt;];
+UIImageWriteToSavedPhotosAlbum(image, self, &lt;span class=&quot;annotation&quot;&gt;@selector&lt;/span&gt;(&lt;span class=&quot;string&quot;&gt;image:&lt;/span&gt;&lt;span class=&quot;string&quot;&gt;didFinishSavingWithError:&lt;/span&gt;&lt;span class=&quot;string&quot;&gt;contextInfo:&lt;/span&gt;), nil);
+&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;实现保存图片的方法（不需要遵守协议）&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;- (&lt;span class=&quot;keyword&quot;&gt;void&lt;/span&gt;)image:(&lt;span class=&quot;built_in&quot;&gt;UIImage&lt;/span&gt; *)image didFinishSavingWithError:(&lt;span class=&quot;built_in&quot;&gt;NSError&lt;/span&gt; *)error contextInfo:(&lt;span class=&quot;keyword&quot;&gt;void&lt;/span&gt; *)contextInfo {
+    &lt;span class=&quot;keyword&quot;&gt;if&lt;/span&gt;(error != &lt;span class=&quot;literal&quot;&gt;NULL&lt;/span&gt;){
+        &lt;span class=&quot;built_in&quot;&gt;NSLog&lt;/span&gt;(&lt;span class=&quot;string&quot;&gt;@&quot;保存图片失败&quot;&lt;/span&gt;);
+    }&lt;span class=&quot;keyword&quot;&gt;else&lt;/span&gt;{
+        &lt;span class=&quot;built_in&quot;&gt;NSLog&lt;/span&gt;(&lt;span class=&quot;string&quot;&gt;@&quot;保存图片成功&quot;&lt;/span&gt;);
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&quot;相机&quot;&gt;相机&lt;/h3&gt;&lt;p&gt;有些App经常需要应用相机拍照的功能，该功能的使用和照片类似。&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;p&gt;首先遵守协议&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&lt;span class=&quot;preprocessor&quot;&gt;#import &lt;span class=&quot;title&quot;&gt;&quot;ViewController.h&quot;&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;class&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;@interface&lt;/span&gt; &lt;span class=&quot;title&quot;&gt;ViewController&lt;/span&gt; () &amp;lt;&lt;span class=&quot;title&quot;&gt;UIImagePickerControllerDelegate&lt;/span&gt;,&lt;span class=&quot;title&quot;&gt;UINavigationControllerDelegate&lt;/span&gt;&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;keyword&quot;&gt;@end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;打开相机&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&lt;span class=&quot;keyword&quot;&gt;if&lt;/span&gt; (![UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera]) {
+    &lt;span class=&quot;built_in&quot;&gt;NSLog&lt;/span&gt;(&lt;span class=&quot;string&quot;&gt;@&quot;没有相机权限，请到设置中打开&quot;&lt;/span&gt;);
+    &lt;span class=&quot;keyword&quot;&gt;return&lt;/span&gt;;
+}
+UIImagePickerController *ipc = [[UIImagePickerController alloc] init];
+ipc&lt;span class=&quot;variable&quot;&gt;.sourceType&lt;/span&gt; = UIImagePickerControllerSourceTypeCamera;
+ipc&lt;span class=&quot;variable&quot;&gt;.cameraFlashMode&lt;/span&gt; = UIImagePickerControllerCameraFlashModeAuto;
+ipc&lt;span class=&quot;variable&quot;&gt;.delegate&lt;/span&gt; = &lt;span class=&quot;keyword&quot;&gt;self&lt;/span&gt;;
+[&lt;span class=&quot;keyword&quot;&gt;self&lt;/span&gt; presentViewController:ipc animated:&lt;span class=&quot;literal&quot;&gt;YES&lt;/span&gt; completion:&lt;span class=&quot;literal&quot;&gt;nil&lt;/span&gt;];
+&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;实现协议方法&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;- (&lt;span class=&quot;keyword&quot;&gt;void&lt;/span&gt;)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(&lt;span class=&quot;built_in&quot;&gt;NSDictionary&lt;/span&gt;&amp;lt;&lt;span class=&quot;built_in&quot;&gt;NSString&lt;/span&gt; *,&lt;span class=&quot;keyword&quot;&gt;id&lt;/span&gt;&amp;gt; *)info {
+    [picker dismissViewControllerAnimated:&lt;span class=&quot;literal&quot;&gt;YES&lt;/span&gt; completion:&lt;span class=&quot;literal&quot;&gt;nil&lt;/span&gt;];
+    &lt;span class=&quot;comment&quot;&gt;//  1.取出选中的图片&lt;/span&gt;
+    &lt;span class=&quot;built_in&quot;&gt;UIImage&lt;/span&gt; *image = info[UIImagePickerControllerOriginalImage];
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3 id=&quot;打电话&quot;&gt;打电话&lt;/h3&gt;&lt;p&gt;打电话有3种方式，推荐第三种方式。&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;p&gt;直接跳转拨号界面拨打电话&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&lt;span class=&quot;built_in&quot;&gt;NSString&lt;/span&gt; *num = [[&lt;span class=&quot;built_in&quot;&gt;NSString&lt;/span&gt; alloc] initWithFormat:&lt;span class=&quot;string&quot;&gt;@&quot;tel://%@&quot;&lt;/span&gt;, &lt;span class=&quot;string&quot;&gt;@&quot;10086&quot;&lt;/span&gt;];
+[[&lt;span class=&quot;built_in&quot;&gt;UIApplication&lt;/span&gt; sharedApplication] openURL:[&lt;span class=&quot;built_in&quot;&gt;NSURL&lt;/span&gt; URLWithString:num]]; 
+&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;拨号之前弹窗询问（私有Api，可能无法过审）&lt;/p&gt;
+&lt;p&gt; NSURL *url = [NSURL URLWithString:@”telprompt://10086”];&lt;br&gt; [[UIApplication sharedApplication] openURL:url];&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;创建一个UIWebView来加载URL，拨完能自动回到原应用&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&lt;span class=&quot;built_in&quot;&gt;UIWebView&lt;/span&gt; *webView = [[&lt;span class=&quot;built_in&quot;&gt;UIWebView&lt;/span&gt; alloc]init];
+&lt;span class=&quot;built_in&quot;&gt;NSURL&lt;/span&gt; *url = [&lt;span class=&quot;built_in&quot;&gt;NSURL&lt;/span&gt; URLWithString:&lt;span class=&quot;string&quot;&gt;@&quot;tel://10086&quot;&lt;/span&gt;];
+[webView loadRequest:[&lt;span class=&quot;built_in&quot;&gt;NSURLRequest&lt;/span&gt; requestWithURL:url ]];
+&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3 id=&quot;发送短信&quot;&gt;发送短信&lt;/h3&gt;&lt;p&gt;发送短信有两种方式。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;直接跳转发短信界面发送短信&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&lt;span class=&quot;built_in&quot;&gt;NSURL&lt;/span&gt; *url = [&lt;span class=&quot;built_in&quot;&gt;NSURL&lt;/span&gt; URLWithString:&lt;span class=&quot;string&quot;&gt;@&quot;sms://10086&quot;&lt;/span&gt;];
+[[&lt;span class=&quot;built_in&quot;&gt;UIApplication&lt;/span&gt; sharedApplication] openURL:url];
+&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;使用MessageUI框架发送短信&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;p&gt;首先包含头文件，然后遵守协议&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&lt;span class=&quot;preprocessor&quot;&gt;#import &lt;span class=&quot;title&quot;&gt;&amp;lt;MessageUI/MessageUI.h&amp;gt;&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;class&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;@interface&lt;/span&gt; &lt;span class=&quot;title&quot;&gt;ViewController&lt;/span&gt; () &amp;lt;&lt;span class=&quot;title&quot;&gt;MFMessageComposeViewControllerDelegate&lt;/span&gt;&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;keyword&quot;&gt;@end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;编写短信内容，设置收件人&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&lt;span class=&quot;comment&quot;&gt;// 判断是否允许发短信&lt;/span&gt;
+&lt;span class=&quot;keyword&quot;&gt;if&lt;/span&gt; ([MFMessageComposeViewController canSendText]) {
+    MFMessageComposeViewController *vc = [[MFMessageComposeViewController alloc]init];
+    &lt;span class=&quot;comment&quot;&gt;//设置短信内容&lt;/span&gt;
+    vc&lt;span class=&quot;variable&quot;&gt;.body&lt;/span&gt; = &lt;span class=&quot;string&quot;&gt;@&quot;吃饭了没&quot;&lt;/span&gt;;
+    &lt;span class=&quot;comment&quot;&gt;//设置收件人列表&lt;/span&gt;
+    vc&lt;span class=&quot;variable&quot;&gt;.recipients&lt;/span&gt; = @[&lt;span class=&quot;string&quot;&gt;@&quot;10010&quot;&lt;/span&gt;,&lt;span class=&quot;string&quot;&gt;@&quot;10086&quot;&lt;/span&gt;];
+    &lt;span class=&quot;comment&quot;&gt;//设置代理&lt;/span&gt;
+    vc&lt;span class=&quot;variable&quot;&gt;.messageComposeDelegate&lt;/span&gt; = &lt;span class=&quot;keyword&quot;&gt;self&lt;/span&gt;;
+    &lt;span class=&quot;comment&quot;&gt;//显示控制器&lt;/span&gt;
+    [&lt;span class=&quot;keyword&quot;&gt;self&lt;/span&gt; presentViewController:vc animated:&lt;span class=&quot;literal&quot;&gt;YES&lt;/span&gt; completion:&lt;span class=&quot;literal&quot;&gt;nil&lt;/span&gt;];
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;实现协议方法&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;- (&lt;span class=&quot;type&quot;&gt;void&lt;/span&gt;)messageComposeViewController:(&lt;span class=&quot;type&quot;&gt;MFMessageComposeViewController&lt;/span&gt; *)controller didFinishWithResult:(&lt;span class=&quot;type&quot;&gt;MessageComposeResult&lt;/span&gt;)&lt;span class=&quot;literal&quot;&gt;result&lt;/span&gt; {
+    &lt;span class=&quot;type&quot;&gt;NSLog&lt;/span&gt;(@&lt;span class=&quot;string&quot;&gt;&quot;发送完成&quot;&lt;/span&gt;);
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&quot;发送邮件&quot;&gt;发送邮件&lt;/h3&gt;&lt;p&gt;发送邮件的方式和短信差不多，同样也有两种。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;跳转邮件客户端&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&lt;span class=&quot;built_in&quot;&gt;NSURL&lt;/span&gt; *url = [&lt;span class=&quot;built_in&quot;&gt;NSURL&lt;/span&gt; URLWithString:&lt;span class=&quot;string&quot;&gt;@&quot;mailto://maizi@qq.com&quot;&lt;/span&gt;];
+[[&lt;span class=&quot;built_in&quot;&gt;UIApplication&lt;/span&gt; sharedApplication] openURL:url];
+&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;使用MessageUI框架发送邮件&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;p&gt;首先包含头文件，然后遵守协议&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&lt;span class=&quot;preprocessor&quot;&gt;#import &lt;span class=&quot;title&quot;&gt;&amp;lt;MessageUI/MessageUI.h&amp;gt;&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;class&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;@interface&lt;/span&gt; &lt;span class=&quot;title&quot;&gt;ViewController&lt;/span&gt; () &amp;lt;&lt;span class=&quot;title&quot;&gt;MFMailComposeViewControllerDelegate&lt;/span&gt;&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;keyword&quot;&gt;@end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;编写邮件内容，设置收件人&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&lt;span class=&quot;comment&quot;&gt;// 判断是否允许发邮件&lt;/span&gt;
+&lt;span class=&quot;keyword&quot;&gt;if&lt;/span&gt; ([MFMailComposeViewController canSendMail]) {
+    MFMailComposeViewController *mvc = [[MFMailComposeViewController alloc] init];
+    &lt;span class=&quot;comment&quot;&gt;//设置邮件主题&lt;/span&gt;
+    [mvc &lt;span class=&quot;string&quot;&gt;setSubject:&lt;/span&gt;@&lt;span class=&quot;string&quot;&gt;&quot;测试会议&quot;&lt;/span&gt;];
+    &lt;span class=&quot;comment&quot;&gt;//设置邮件内容&lt;/span&gt;
+    [mvc &lt;span class=&quot;string&quot;&gt;setMessageBody:&lt;/span&gt;@&lt;span class=&quot;string&quot;&gt;&quot;开会&quot;&lt;/span&gt; &lt;span class=&quot;string&quot;&gt;isHTML:&lt;/span&gt;NO];
+    &lt;span class=&quot;comment&quot;&gt;//设置收件人列表&lt;/span&gt;
+    [mvc &lt;span class=&quot;string&quot;&gt;setToRecipients:&lt;/span&gt;@[@&lt;span class=&quot;string&quot;&gt;&quot;test@qq.com&quot;&lt;/span&gt;]];
+    &lt;span class=&quot;comment&quot;&gt;//设置抄送人列表&lt;/span&gt;
+    [mvc &lt;span class=&quot;string&quot;&gt;setCcRecipients:&lt;/span&gt;@[@&lt;span class=&quot;string&quot;&gt;&quot;test1@qq.com&quot;&lt;/span&gt;]];
+    mvc.mailComposeDelegate = self;
+    [self &lt;span class=&quot;string&quot;&gt;presentViewController:&lt;/span&gt;mvc &lt;span class=&quot;string&quot;&gt;animated:&lt;/span&gt;YES &lt;span class=&quot;string&quot;&gt;completion:&lt;/span&gt;nil];
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;实现协议方法&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;- (&lt;span class=&quot;type&quot;&gt;void&lt;/span&gt;)mailComposeController:(&lt;span class=&quot;type&quot;&gt;MFMailComposeViewController&lt;/span&gt; *)controller didFinishWithResult:(&lt;span class=&quot;type&quot;&gt;MFMailComposeResult&lt;/span&gt;)&lt;span class=&quot;literal&quot;&gt;result&lt;/span&gt; error:(nullable &lt;span class=&quot;type&quot;&gt;NSError&lt;/span&gt; *)error {
+    &lt;span class=&quot;keyword&quot;&gt;if&lt;/span&gt; (error) {
+        &lt;span class=&quot;type&quot;&gt;NSLog&lt;/span&gt;(@&lt;span class=&quot;string&quot;&gt;&quot;发送失败&quot;&lt;/span&gt;);
+    } &lt;span class=&quot;keyword&quot;&gt;else&lt;/span&gt; {
+        &lt;span class=&quot;type&quot;&gt;NSLog&lt;/span&gt;(@&lt;span class=&quot;string&quot;&gt;&quot;发送成功&quot;&lt;/span&gt;);
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&quot;Safari打开网址&quot;&gt;Safari打开网址&lt;/h3&gt;&lt;p&gt;通过Safari打开网址只需要调用openURL:方法即可。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&lt;span class=&quot;string&quot;&gt;[[UIApplication sharedApplication] openURL:[NSURL URLWithString:url]]&lt;/span&gt;;
+&lt;/code&gt;&lt;/pre&gt;&lt;h3 id=&quot;打开App_Store&quot;&gt;打开App Store&lt;/h3&gt;&lt;ol&gt;
+&lt;li&gt;&lt;p&gt;跳转AppStore首页&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;NSString *str = [NSString stringWithFormat:
+                     @&lt;span class=&quot;string&quot;&gt;&quot;itms-apps://itunes.apple.com&quot;&lt;/span&gt;];
+&lt;span class=&quot;string&quot;&gt;[[UIApplication sharedApplication] openURL:[NSURL URLWithString:str]]&lt;/span&gt;;
+&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;找到应用程序的描述链接，然后将&lt;code&gt;http://&lt;/code&gt;替换为&lt;code&gt;itms://&lt;/code&gt;或者&lt;code&gt;itms-apps://:&lt;/code&gt;。或者在iTunes Connect中找到应用程序id进行拼接。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;NSString *str = [NSString stringWithFormat:@&lt;span class=&quot;string&quot;&gt;&quot;itms-apps://itunes.apple.com/app/id%@&quot;&lt;/span&gt;,appleID];  
+&lt;span class=&quot;string&quot;&gt;[[UIApplication sharedApplication] openURL:[NSURL URLWithString:str]]&lt;/span&gt;; 
+&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
+&lt;/ol&gt;
+</content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;前面讲沙盒目录的时候说过，iOS应用都是被一个小箱子锁起来的独立个体，里面的数据出不来，外面的数据进不去，除了某些特殊的情况。&lt;a href=&quot;http://www.hackmz.com/2016/07/25/沙盒目录和应用程序包/&quot;&gt;博客传送门&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;我们在开发App的时候可以预留一些Api用来与其他应用进行交互，而对于系统应用来说，比如地图，相册，照相机这些预装应用，苹果也为我们提供了一些工具来访问它们。&lt;/p&gt;
+&lt;p&gt;那怎么做呢？&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;PS:&lt;/strong&gt;以下代码大部分均需在真机上调试才有效果。&lt;/p&gt;
+    
+    </summary>
+    
+      <category term="iOS笔记" scheme="http://hackmz.com/categories/iOS%E7%AC%94%E8%AE%B0/"/>
+    
+    
+      <category term="UIImage" scheme="http://hackmz.com/tags/UIImage/"/>
+    
+      <category term="iOS" scheme="http://hackmz.com/tags/iOS/"/>
+    
+      <category term="图片" scheme="http://hackmz.com/tags/%E5%9B%BE%E7%89%87/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>iOS数据持久化的几种方式</title>
+    <link href="http://hackmz.com/2016/07/26/iOS%E6%95%B0%E6%8D%AE%E6%8C%81%E4%B9%85%E5%8C%96%E7%9A%84%E5%87%A0%E7%A7%8D%E6%96%B9%E5%BC%8F/"/>
+    <id>http://hackmz.com/2016/07/26/iOS数据持久化的几种方式/</id>
+    <published>2016-07-26T02:13:11.000Z</published>
+    <updated>2016-07-26T03:57:37.000Z</updated>
+    
+    <content type="html">&lt;p&gt;数据持久化又称数据序列化，指的是一种将数据长久的保存起来的方式。&lt;/p&gt;
+&lt;p&gt;一般我们保存数据的方式都是将数据保存在本地磁盘上或者是服务器上。对比内存中的数据来说，更安全，也不易丢失。&lt;/p&gt;
+&lt;p&gt;以下列举了几种常见的保存数据的方式，每种方式各有优缺点，使用的时候我们可以根据数据的大小类型格式要求等综合考虑。&lt;/p&gt;
+&lt;a id=&quot;more&quot;&gt;&lt;/a&gt;
+&lt;h3 id=&quot;本地数据存储&quot;&gt;本地数据存储&lt;/h3&gt;&lt;p&gt;本地数据存储都是存储在沙盒目录的，关于沙盒目录的介绍，请看&lt;a href=&quot;http://www.hackmz.com/2016/07/25/沙盒目录和应用程序包/&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;沙盒目录和应用程序包&lt;/a&gt;。&lt;/p&gt;
+&lt;p&gt;优点：加载速度快、节省流量、不需要网络就能获取、不需要服务器、操作简单。&lt;/p&gt;
+&lt;p&gt;缺点：占用内存、数据无法共享、App卸载之后数据就消失了。&lt;/p&gt;
+&lt;p&gt;对于iOS应用来讲，本地数据存储的方式大致有以下几种：&lt;/p&gt;
+&lt;h4 id=&quot;普通文件方式(文本文件)&quot;&gt;普通文件方式(文本文件)&lt;/h4&gt;&lt;p&gt;一般存储比较大型的数据时，我们采用这种方式，具体的操作原理请看&lt;a href=&quot;http://www.hackmz.com/2016/07/22/iOS开发本地缓存管理/&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;iOS开发本地缓存管理&lt;/a&gt;。&lt;/p&gt;
+&lt;h4 id=&quot;plist文件（属性列表）&quot;&gt;plist文件（属性列表）&lt;/h4&gt;&lt;p&gt;对于plist文件来说，它只能使用NSArray或NSDictionary作为根(root)。同时保存的数据类型也比较有限，只能是NSArray、NSMutableArray、NSDictionary、NSMutableDictionary、NSData、NSMutableData、NSString、NSMutableString、NSNumber和NSDate，无法保存自定义的对象。&lt;/p&gt;
+&lt;p&gt;使用方法：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&lt;span class=&quot;comment&quot;&gt;// 1.获取存储路径&lt;/span&gt;
+&lt;span class=&quot;built_in&quot;&gt;NSString&lt;/span&gt; *doc = NSHomeDirectory();
+doc = [doc stringByAppendingPathComponent:&lt;span class=&quot;string&quot;&gt;@&quot;Documents&quot;&lt;/span&gt;];
+&lt;span class=&quot;built_in&quot;&gt;NSString&lt;/span&gt; *file = [doc stringByAppendingPathComponent:&lt;span class=&quot;string&quot;&gt;@&quot;user.plist&quot;&lt;/span&gt;];
+&lt;span class=&quot;comment&quot;&gt;// 2.读取数据，如果根是数组，则将plist文件读成数组，如果是字典，则读成字典&lt;/span&gt;
+&lt;span class=&quot;built_in&quot;&gt;NSMutableArray&lt;/span&gt; *infoArray = [&lt;span class=&quot;built_in&quot;&gt;NSMutableArray&lt;/span&gt; arrayWithContentsOfFile:file];
+&lt;span class=&quot;comment&quot;&gt;// 3.判断数据是否存在    &lt;/span&gt;
+&lt;span class=&quot;keyword&quot;&gt;if&lt;/span&gt; (infoArray == &lt;span class=&quot;literal&quot;&gt;nil&lt;/span&gt;) {
+    infoArray = [&lt;span class=&quot;built_in&quot;&gt;NSMutableArray&lt;/span&gt; array];
+}
+&lt;span class=&quot;comment&quot;&gt;// 4.往数组/字典里添加数据&lt;/span&gt;
+&lt;span class=&quot;comment&quot;&gt;// ...........&lt;/span&gt;
+&lt;span class=&quot;comment&quot;&gt;// 5.将数据写入Plist文件&lt;/span&gt;
+[infoArray writeToFile:file atomically:&lt;span class=&quot;literal&quot;&gt;YES&lt;/span&gt;];
+&lt;/code&gt;&lt;/pre&gt;&lt;h4 id=&quot;NSUserDefault_(preference、偏好设置)&quot;&gt;NSUserDefault (preference、偏好设置)&lt;/h4&gt;&lt;p&gt;NSUserDefault是一个单例，它本身维护着一个plist文件，根是一个字典。&lt;/p&gt;
+&lt;p&gt;它是专门用来保存应用程序的配置信息的，一般不要在偏好设置中保存其他数据。&lt;/p&gt;
+&lt;p&gt;如果没有调用synchronize方法，系统会根据I/O情况不定时刻地保存到文件中。所以如果需要立即写入文件的就必须调用synchronize方法。&lt;/p&gt;
+&lt;p&gt;偏好设置会将所有数据保存到同一个文件中，即preference目录下的一个以此应用包名来命名的plist文件。&lt;/p&gt;
+&lt;p&gt;使用方法：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&lt;span class=&quot;comment&quot;&gt;// 1.获取userDefault单例对象&lt;/span&gt;
+&lt;span class=&quot;built_in&quot;&gt;NSUserDefaults&lt;/span&gt; *ud = [&lt;span class=&quot;built_in&quot;&gt;NSUserDefaults&lt;/span&gt; standardUserDefaults];
+&lt;span class=&quot;comment&quot;&gt;// 2.获取单例对象里的值，因为是字典，因此使用objectForKey:获取单例里的值&lt;/span&gt;
+&lt;span class=&quot;built_in&quot;&gt;NSString&lt;/span&gt; *valueString = [ud objectForKey:&lt;span class=&quot;string&quot;&gt;@&quot;demo&quot;&lt;/span&gt;];
+&lt;span class=&quot;built_in&quot;&gt;NSLog&lt;/span&gt;(&lt;span class=&quot;string&quot;&gt;@&quot;%@&quot;&lt;/span&gt;, valueString);
+&lt;span class=&quot;comment&quot;&gt;// 3.写入数据到单例对象中&lt;/span&gt;
+[ud setObject:&lt;span class=&quot;string&quot;&gt;@&quot;麦子&quot;&lt;/span&gt; forKey:&lt;span class=&quot;string&quot;&gt;@&quot;demo&quot;&lt;/span&gt;];
+&lt;span class=&quot;comment&quot;&gt;// 3.将单例同步到文件中(写文件)&lt;/span&gt;
+[ud synchronize];
+&lt;/code&gt;&lt;/pre&gt;&lt;h4 id=&quot;归档和解档&quot;&gt;归档和解档&lt;/h4&gt;&lt;p&gt;plist文件只能保存有限的数据格式，对自定义类的对象就无能为力了。而归档则可以归档我们自定义的类的对象。&lt;/p&gt;
+&lt;p&gt;要想实现归档和解档，首先需要遵守NSCoding协议，而对于系统大部分类来说都遵循了NSCoding协议，因此可以直接进行归档和解档操作。而对于自定义类来说，则需要我们自己遵守NSCoding协议，这里以自定义类进行举例。&lt;/p&gt;
+&lt;p&gt;使用方法：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;p&gt;自定义类，要想进行归档，需要遵守NSCoding协议&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&lt;span class=&quot;comment&quot;&gt;// 这里以MZDataModel这个类为例&lt;/span&gt;
+&lt;span class=&quot;variable&quot;&gt;@interface&lt;/span&gt; &lt;span class=&quot;attribute&quot;&gt;MZDataModel &lt;/span&gt;: NSObject &amp;lt;NSCoding&amp;gt;
+&lt;span class=&quot;variable&quot;&gt;@property&lt;/span&gt; (nonatomic, copy) NSString *name;
+&lt;span class=&quot;variable&quot;&gt;@property&lt;/span&gt; (nonatomic, copy) NSString *password;
+&lt;span class=&quot;variable&quot;&gt;@property&lt;/span&gt; (nonatomic, assign) NSInteger age;
+&lt;span class=&quot;variable&quot;&gt;@end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;在自定义类里，实现encodeWithCoder:和initWithCoder:两个协议方法&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&lt;span class=&quot;comment&quot;&gt;// 归档的时候，会自动调用这个方法&lt;/span&gt;
+- (&lt;span class=&quot;typename&quot;&gt;void&lt;/span&gt;)&lt;span class=&quot;string&quot;&gt;encodeWithCoder:&lt;/span&gt;(NSCoder *)aCoder {
+    [aCoder &lt;span class=&quot;string&quot;&gt;encodeObject:&lt;/span&gt;self.name &lt;span class=&quot;string&quot;&gt;forKey:&lt;/span&gt;@&lt;span class=&quot;string&quot;&gt;&quot;name1&quot;&lt;/span&gt;];
+    [aCoder &lt;span class=&quot;string&quot;&gt;encodeObject:&lt;/span&gt;self.password &lt;span class=&quot;string&quot;&gt;forKey:&lt;/span&gt;@&lt;span class=&quot;string&quot;&gt;&quot;password1&quot;&lt;/span&gt;];
+    [aCoder &lt;span class=&quot;string&quot;&gt;encodeInteger:&lt;/span&gt;self.age &lt;span class=&quot;string&quot;&gt;forKey:&lt;/span&gt;@&lt;span class=&quot;string&quot;&gt;&quot;age1&quot;&lt;/span&gt;];
+}
+&lt;span class=&quot;comment&quot;&gt;// 解档的时候，会自动调用这个方法&lt;/span&gt;
+- (id)&lt;span class=&quot;string&quot;&gt;initWithCoder:&lt;/span&gt;(NSCoder *)aDecoder {
+    &lt;span class=&quot;comment&quot;&gt;// 这里，因为我们的父类是NSObject，如果父类也是自定义的，那么这里要调用&lt;/span&gt;
+    &lt;span class=&quot;comment&quot;&gt;// [super initWithCoder:aDecoder];&lt;/span&gt;
+    &lt;span class=&quot;keyword&quot;&gt;if&lt;/span&gt; (self = [&lt;span class=&quot;keyword&quot;&gt;super&lt;/span&gt; init]) {
+        self.name = [aDecoder &lt;span class=&quot;string&quot;&gt;decodeObjectForKey:&lt;/span&gt;@&lt;span class=&quot;string&quot;&gt;&quot;name1&quot;&lt;/span&gt;];
+        self.password = [aDecoder &lt;span class=&quot;string&quot;&gt;decodeObjectForKey:&lt;/span&gt;@&lt;span class=&quot;string&quot;&gt;&quot;password1&quot;&lt;/span&gt;];
+        self.age = [aDecoder &lt;span class=&quot;string&quot;&gt;decodeIntegerForKey:&lt;/span&gt;@&lt;span class=&quot;string&quot;&gt;&quot;age1&quot;&lt;/span&gt;];
+    }
+    &lt;span class=&quot;keyword&quot;&gt;return&lt;/span&gt; self;
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;归档&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;// 获取文件路径
+NSString *&lt;span class=&quot;variable&quot;&gt;file =&lt;/span&gt; [NSHomeDirectory() stringByAppendingPathComponent:@&lt;span class=&quot;string&quot;&gt;&quot;Documents&quot;&lt;/span&gt;];
+&lt;span class=&quot;variable&quot;&gt;file =&lt;/span&gt; [file stringByAppendingPathComponent:@&lt;span class=&quot;string&quot;&gt;&quot;user.archiver&quot;&lt;/span&gt;];
+MZDataModel *&lt;span class=&quot;variable&quot;&gt;model =&lt;/span&gt; [[MZDataModel alloc] init];
+model.&lt;span class=&quot;variable&quot;&gt;age =&lt;/span&gt; &lt;span class=&quot;number&quot;&gt;18&lt;/span&gt;;
+model.&lt;span class=&quot;variable&quot;&gt;name =&lt;/span&gt; @&lt;span class=&quot;string&quot;&gt;&quot;麦子&quot;&lt;/span&gt;;
+model.&lt;span class=&quot;variable&quot;&gt;password =&lt;/span&gt; @&lt;span class=&quot;string&quot;&gt;&quot;888888&quot;&lt;/span&gt;;
+[NSKeyedArchiver archiveRootObject:model toFile:file];
+&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;解档&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;NSString *&lt;span class=&quot;keyword&quot;&gt;file&lt;/span&gt; = [NSHomeDirectory() stringByAppendingPathComponent:@&lt;span class=&quot;string&quot;&gt;&quot;Documents&quot;&lt;/span&gt;];
+&lt;span class=&quot;keyword&quot;&gt;file&lt;/span&gt; = [&lt;span class=&quot;keyword&quot;&gt;file&lt;/span&gt; stringByAppendingPathComponent:@&lt;span class=&quot;string&quot;&gt;&quot;user.archiver&quot;&lt;/span&gt;];
+MZDataModel *model = [NSKeyedUnarchiver unarchiveObjectWithFile:&lt;span class=&quot;keyword&quot;&gt;file&lt;/span&gt;];
+&lt;span class=&quot;comment&quot;&gt;// 判断数据是否存在&lt;/span&gt;
+&lt;span class=&quot;keyword&quot;&gt;if&lt;/span&gt; (model) {
+    NSLog(@&lt;span class=&quot;string&quot;&gt;&quot;%ld&quot;&lt;/span&gt;, model.age);
+    NSLog(@&lt;span class=&quot;string&quot;&gt;&quot;%@&quot;&lt;/span&gt;, model.name);
+    NSLog(@&lt;span class=&quot;string&quot;&gt;&quot;%@&quot;&lt;/span&gt;, model.password);
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h4 id=&quot;数据库&quot;&gt;数据库&lt;/h4&gt;&lt;p&gt;数据库类别多中多样，iOS常用的数据库存储方式主要sqlite、FMDB和core data等。以上存储方式只适合存储少量数据，因为每次增加或者修改某个文件里的数据，都必须将原文件整个取出，然后覆盖写入。而数据库则很好的解决了这一问题，它适合存储大量的数据，而且能够方便的对每条数据单独的进行增删改查的操作。关于数据库的操作以后有时间再写。&lt;/p&gt;
+&lt;h3 id=&quot;数据存储到服务器&quot;&gt;数据存储到服务器&lt;/h3&gt;&lt;p&gt;这是最常用的数据存储方式，对于网络数据来说，目前比较流行的是AFNetworking库，感兴趣的可以去研究研究，关于网络数据方面的内容，以后会单独提及。&lt;/p&gt;
+&lt;p&gt;优点：不需要占用内存、数据能够共享、能够长久的保存数据。&lt;/p&gt;
+&lt;p&gt;缺点：网络慢时加载较慢、耗费流量、需要购买服务器、需要进行后台管理、操作复杂。&lt;/p&gt;
+</content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;数据持久化又称数据序列化，指的是一种将数据长久的保存起来的方式。&lt;/p&gt;
+&lt;p&gt;一般我们保存数据的方式都是将数据保存在本地磁盘上或者是服务器上。对比内存中的数据来说，更安全，也不易丢失。&lt;/p&gt;
+&lt;p&gt;以下列举了几种常见的保存数据的方式，每种方式各有优缺点，使用的时候我们可以根据数据的大小类型格式要求等综合考虑。&lt;/p&gt;
+    
+    </summary>
+    
+      <category term="iOS笔记" scheme="http://hackmz.com/categories/iOS%E7%AC%94%E8%AE%B0/"/>
+    
+    
+      <category term="iOS" scheme="http://hackmz.com/tags/iOS/"/>
+    
+      <category term="存储" scheme="http://hackmz.com/tags/%E5%AD%98%E5%82%A8/"/>
+    
+      <category term="数据" scheme="http://hackmz.com/tags/%E6%95%B0%E6%8D%AE/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>沙盒目录和应用程序包</title>
+    <link href="http://hackmz.com/2016/07/25/%E6%B2%99%E7%9B%92%E7%9B%AE%E5%BD%95%E5%92%8C%E5%BA%94%E7%94%A8%E7%A8%8B%E5%BA%8F%E5%8C%85/"/>
+    <id>http://hackmz.com/2016/07/25/沙盒目录和应用程序包/</id>
+    <published>2016-07-25T09:20:09.000Z</published>
+    <updated>2016-07-26T02:15:08.000Z</updated>
+    
+    <content type="html">&lt;p&gt;iOS应用程序的所有数据都是保存在沙盒目录的，那么什么是沙盒目录？它的作用是什么？&lt;/p&gt;
+&lt;p&gt;每个应用程序存储在手机上，这些程序都是由苹果系统去管理的。为了防止应用程序相互破坏，相互影响，苹果为每个应用程序，创建了一个保险箱。一个程序在一个保险箱里，这个保险箱就是沙盒目录。 &lt;/p&gt;
+&lt;p&gt;它的作用是：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;其他应用程序无法访问该沙盒目录&lt;/li&gt;
+&lt;li&gt;该应用程序也无法访问其他沙盒目录&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;也就是说，在苹果手机上的两个应用，他们的数据是不能共享的，你再也无法使用迅雷下载一个视频然后使用优酷打开播放。当然，我们可以通过苹果官方提供的一些有限接口，来访问相册，电话簿，短信, 地理位置等应用，甚至在被授权的情况下，和其他应用程序进行有限的交互，但这些交互是有限的，且建立在双方信任允许的前提下。&lt;/p&gt;
+&lt;a id=&quot;more&quot;&gt;&lt;/a&gt;
+&lt;h3 id=&quot;沙盒目录&quot;&gt;沙盒目录&lt;/h3&gt;&lt;p&gt;我们可以通过以下代码获取应用程序的沙盒目录，当然模拟器和真机的沙盒路径是不一样的。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&lt;span class=&quot;tag&quot;&gt;NSLog&lt;/span&gt;(&lt;span class=&quot;at_rule&quot;&gt;@&lt;span class=&quot;keyword&quot;&gt;&quot;%@&quot;,&lt;/span&gt; &lt;span class=&quot;function&quot;&gt;NSHomeDirectory&lt;/span&gt;())&lt;/span&gt;;
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;打开沙盒目录，我们可以看到三个子文件夹Documents、Library和tmp，每个文件夹的作用是不同的，以下分别介绍这三个子文件夹。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;/img/沙盒目录和应用程序包01.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
+&lt;p&gt;获取沙盒目录子文件夹路径可以使用&lt;code&gt;NSHomeDirectory&lt;/code&gt;方法然后拼接&lt;code&gt;Documents/ Library / tmp&lt;/code&gt;字符串的方式，也可以使用&lt;code&gt;NSSearchPathForDirectoriesInDomains&lt;/code&gt;方法直接获取。&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;p&gt;Documents目录&lt;/p&gt;
+&lt;p&gt; 可读写的文件夹，可以用来存放图片，视频和其他重要数据。通过iTunes备份，应用程序升级时，不会改变里面的内容。&lt;/p&gt;
+&lt;p&gt; 获取Documents文件夹的代码：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&lt;span class=&quot;built_in&quot;&gt;NSString&lt;/span&gt; *documents = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, &lt;span class=&quot;literal&quot;&gt;YES&lt;/span&gt;) firstObject];
+&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Library&lt;/p&gt;
+&lt;p&gt; 获取Library文件夹的代码：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&lt;span class=&quot;title&quot;&gt;NSString&lt;/span&gt; *library = [NSSearchPathForDirectoriesInDomains(NSLibraryDirectory, NSUserDomainMask, YES) &lt;span class=&quot;built_in&quot;&gt;last&lt;/span&gt;Object];    
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt; 打开文件夹，可以看到，Library文件夹下有两个子文件夹Preference和Cache。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;Preference&lt;/p&gt;
+&lt;p&gt;  主要用来存放配置文件、NSUserDefault 、plist文件等，通过iTunes备份，应用升级时，不会改变里面的内容。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Cache &lt;/p&gt;
+&lt;p&gt;  Cache多用来保存临时数据、缓存文件等，iTunes不会备份此文件夹下的内容，有有效期限制。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;tmp &lt;/p&gt;
+&lt;p&gt; 存放临时数据，iTunes不会备份此文件夹下的内容，当应用程序关闭时，文件就被清空了。&lt;/p&gt;
+&lt;p&gt; 获取tmp文件夹的代码：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&lt;span class=&quot;function&quot;&gt;NSLog&lt;/span&gt;(&lt;span class=&quot;at_rule&quot;&gt;@&lt;span class=&quot;string&quot;&gt;&quot;%@&quot;&lt;/span&gt;,&lt;span class=&quot;function&quot;&gt;NSTemporaryDirectory&lt;/span&gt;());&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3 id=&quot;应用程序包&quot;&gt;应用程序包&lt;/h3&gt;&lt;p&gt;沙盒目录是用来保存App运行过程中产生的数据的，除了沙盒目录以外，App还有一个应用程序包目录，该目录不可读写，主要用来保存我们编写的程序、资源、xib文件等，比如我们在编写程序时拖入Xcode的图片资源就存放在这个包目录里。&lt;/p&gt;
+&lt;p&gt;每次应用启动时，会对包里面的所有数据进行CRC校验，如果增加、删除、修改里面的内容，则CRC校验，就会识别，应用程序将无法启动。&lt;/p&gt;
+&lt;p&gt;通常我们想要获取App目录里的内容，都是使用NSBundle获取。&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;p&gt;使用NSBundle加载图片&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&lt;span class=&quot;built_in&quot;&gt;NSBundle&lt;/span&gt; *bundle = [&lt;span class=&quot;built_in&quot;&gt;NSBundle&lt;/span&gt; mainBundle];
+&lt;span class=&quot;built_in&quot;&gt;NSString&lt;/span&gt; *imageNamed = [bundle pathForResource:&lt;span class=&quot;string&quot;&gt;@&quot;麦子&quot;&lt;/span&gt; ofType:&lt;span class=&quot;string&quot;&gt;@&quot;jpg&quot;&lt;/span&gt;];
+&lt;span class=&quot;comment&quot;&gt;//通过文件全路径加载图片，无缓存&lt;/span&gt;
+&lt;span class=&quot;comment&quot;&gt;//imageNamed方法有缓存&lt;/span&gt;
+&lt;span class=&quot;built_in&quot;&gt;UIImage&lt;/span&gt; *image = [&lt;span class=&quot;built_in&quot;&gt;UIImage&lt;/span&gt; imageWithContentsOfFile:imageNamed];
+&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;使用NSBundle加载xib文件&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;NSArray* nibViews =  [[NSBundle mainBundle] &lt;span class=&quot;string&quot;&gt;loadNibNamed:&lt;/span&gt;@&lt;span class=&quot;string&quot;&gt;&quot;CenterView&quot;&lt;/span&gt; &lt;span class=&quot;string&quot;&gt;owner:&lt;/span&gt;nil &lt;span class=&quot;string&quot;&gt;options:&lt;/span&gt;nil];
+CenterView *cv =[nibViews &lt;span class=&quot;string&quot;&gt;objectAtIndex:&lt;/span&gt;&lt;span class=&quot;number&quot;&gt;0&lt;/span&gt;];
+&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
+&lt;/ol&gt;
+</content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;iOS应用程序的所有数据都是保存在沙盒目录的，那么什么是沙盒目录？它的作用是什么？&lt;/p&gt;
+&lt;p&gt;每个应用程序存储在手机上，这些程序都是由苹果系统去管理的。为了防止应用程序相互破坏，相互影响，苹果为每个应用程序，创建了一个保险箱。一个程序在一个保险箱里，这个保险箱就是沙盒目录。 &lt;/p&gt;
+&lt;p&gt;它的作用是：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;其他应用程序无法访问该沙盒目录&lt;/li&gt;
+&lt;li&gt;该应用程序也无法访问其他沙盒目录&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;也就是说，在苹果手机上的两个应用，他们的数据是不能共享的，你再也无法使用迅雷下载一个视频然后使用优酷打开播放。当然，我们可以通过苹果官方提供的一些有限接口，来访问相册，电话簿，短信, 地理位置等应用，甚至在被授权的情况下，和其他应用程序进行有限的交互，但这些交互是有限的，且建立在双方信任允许的前提下。&lt;/p&gt;
+    
+    </summary>
+    
+      <category term="iOS笔记" scheme="http://hackmz.com/categories/iOS%E7%AC%94%E8%AE%B0/"/>
+    
+    
+      <category term="iOS" scheme="http://hackmz.com/tags/iOS/"/>
+    
+      <category term="数据" scheme="http://hackmz.com/tags/%E6%95%B0%E6%8D%AE/"/>
+    
+      <category term="沙盒" scheme="http://hackmz.com/tags/%E6%B2%99%E7%9B%92/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>iOS开发本地缓存管理</title>
+    <link href="http://hackmz.com/2016/07/22/iOS%E5%BC%80%E5%8F%91%E6%9C%AC%E5%9C%B0%E7%BC%93%E5%AD%98%E7%AE%A1%E7%90%86/"/>
+    <id>http://hackmz.com/2016/07/22/iOS开发本地缓存管理/</id>
+    <published>2016-07-22T08:56:19.000Z</published>
+    <updated>2016-07-25T09:17:52.000Z</updated>
+    
+    <content type="html">&lt;p&gt;移动应用在请求网络数据时，为了提高应用性能，节省流量，一般都会做数据缓存处理。最常见的就是图片和视频缓存，目前很流行的图片处理框架SDWebImage便自带图片缓存。&lt;/p&gt;
+&lt;p&gt;对于阅读、资讯类App来说，数据缓存和清理缓存几乎是必不可少的两种功能。&lt;/p&gt;
+&lt;p&gt;关于缓存，系统提供了NSFileManager API来方便我们管理，这里介绍这两种功能的简单实现（以普通文件格式存储在沙盒目录）。&lt;/p&gt;
+&lt;a id=&quot;more&quot;&gt;&lt;/a&gt;
+&lt;h3 id=&quot;创建缓存目录&quot;&gt;创建缓存目录&lt;/h3&gt;&lt;p&gt;第一步当然是创建缓存文件夹，用来集中管理应用的缓存文件。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&lt;span class=&quot;preprocessor&quot;&gt;#pragma mark -- 创建缓存文件夹&lt;/span&gt;
+- (&lt;span class=&quot;keyword&quot;&gt;void&lt;/span&gt;)createCacheDirectory {
+    &lt;span class=&quot;built_in&quot;&gt;NSString&lt;/span&gt; *cachePath = [NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, &lt;span class=&quot;literal&quot;&gt;YES&lt;/span&gt;) lastObject];
+    &lt;span class=&quot;comment&quot;&gt;// 保存缓存路径&lt;/span&gt;
+    &lt;span class=&quot;keyword&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;variable&quot;&gt;.cacheDirectoryPath&lt;/span&gt; = [cachePath stringByAppendingPathComponent:&lt;span class=&quot;string&quot;&gt;&quot;AppCache&quot;&lt;/span&gt;];
+    &lt;span class=&quot;built_in&quot;&gt;NSFileManager&lt;/span&gt; *fm = [&lt;span class=&quot;built_in&quot;&gt;NSFileManager&lt;/span&gt; defaultManager];
+    &lt;span class=&quot;built_in&quot;&gt;BOOL&lt;/span&gt; isExist = &lt;span class=&quot;literal&quot;&gt;NO&lt;/span&gt;;
+    &lt;span class=&quot;comment&quot;&gt;// 判断文件夹是否存在&lt;/span&gt;
+    [fm fileExistsAtPath:&lt;span class=&quot;keyword&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;variable&quot;&gt;.cacheDirectoryPath&lt;/span&gt; isDirectory:&amp;amp;isExist];
+    &lt;span class=&quot;keyword&quot;&gt;if&lt;/span&gt; (!isExist) {
+        &lt;span class=&quot;comment&quot;&gt;// 如果不存在，则创建缓存文件夹 &lt;/span&gt;
+        [fm createDirectoryAtPath:&lt;span class=&quot;keyword&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;variable&quot;&gt;.cacheDirectoryPath&lt;/span&gt; withIntermediateDirectories:&lt;span class=&quot;literal&quot;&gt;YES&lt;/span&gt; attributes:&lt;span class=&quot;literal&quot;&gt;nil&lt;/span&gt; error:&lt;span class=&quot;literal&quot;&gt;nil&lt;/span&gt;];
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;h3 id=&quot;缓存文件&quot;&gt;缓存文件&lt;/h3&gt;&lt;p&gt;创建好缓存文件夹后，首先下载数据。&lt;/p&gt;
+&lt;p&gt;然后判断数据缓存是否存在或过期。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&lt;span class=&quot;preprocessor&quot;&gt;#pragma mark -- 判断文件是否存在和过期&lt;/span&gt;
+&lt;span class=&quot;comment&quot;&gt;// urlString：缓存文件名  time：超时时间&lt;/span&gt;
+- (&lt;span class=&quot;built_in&quot;&gt;BOOL&lt;/span&gt;)isOutTimeWithUrl:(&lt;span class=&quot;built_in&quot;&gt;NSString&lt;/span&gt; *)urlString time:(&lt;span class=&quot;built_in&quot;&gt;NSTimeInterval&lt;/span&gt;)time{
+    &lt;span class=&quot;built_in&quot;&gt;BOOL&lt;/span&gt; isTimeOut = &lt;span class=&quot;literal&quot;&gt;YES&lt;/span&gt;;
+    &lt;span class=&quot;comment&quot;&gt;// 根据文件名获取缓存地址&lt;/span&gt;
+    &lt;span class=&quot;built_in&quot;&gt;NSString&lt;/span&gt; *pathName = [&lt;span class=&quot;keyword&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;variable&quot;&gt;.cacheDirectoryPath&lt;/span&gt; stringByAppendingPathComponent:urlString];
+    &lt;span class=&quot;comment&quot;&gt;// 判断文件是否存在&lt;/span&gt;
+    &lt;span class=&quot;keyword&quot;&gt;if&lt;/span&gt; ([[&lt;span class=&quot;built_in&quot;&gt;NSFileManager&lt;/span&gt; defaultManager] fileExistsAtPath: pathName]) {
+        &lt;span class=&quot;built_in&quot;&gt;NSFileManager&lt;/span&gt; *fm = [&lt;span class=&quot;built_in&quot;&gt;NSFileManager&lt;/span&gt; defaultManager];
+        &lt;span class=&quot;built_in&quot;&gt;NSDictionary&lt;/span&gt; *attribute = [fm attributesOfItemAtPath:pathName error:&lt;span class=&quot;literal&quot;&gt;nil&lt;/span&gt;];
+        &lt;span class=&quot;comment&quot;&gt;// 获取文件的创建日期&lt;/span&gt;
+        &lt;span class=&quot;built_in&quot;&gt;NSDate&lt;/span&gt; *date = attribute[NSFileCreationDate];
+        &lt;span class=&quot;built_in&quot;&gt;NSTimeInterval&lt;/span&gt; interval = [[&lt;span class=&quot;built_in&quot;&gt;NSDate&lt;/span&gt; date] timeIntervalSinceDate:date];
+        &lt;span class=&quot;comment&quot;&gt;// 判断是否过期&lt;/span&gt;
+        isTimeOut = interval &amp;gt; time;
+    }
+    &lt;span class=&quot;keyword&quot;&gt;return&lt;/span&gt; isTimeOut;
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;如果不存在或已过期，则缓存文件。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&lt;span class=&quot;preprocessor&quot;&gt;#pragma mark -- 缓存url接口对应的数据&lt;/span&gt;
+- (void)cacheData:(&lt;span class=&quot;type&quot;&gt;NSData&lt;/span&gt; *)&lt;span class=&quot;typedef&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;data&lt;/span&gt; forUrl:&lt;span class=&quot;container&quot;&gt;(&lt;span class=&quot;type&quot;&gt;NSString&lt;/span&gt; *)&lt;/span&gt;urlString &lt;span class=&quot;container&quot;&gt;{
+    &lt;span class=&quot;type&quot;&gt;NSString&lt;/span&gt; *&lt;span class=&quot;title&quot;&gt;pathName&lt;/span&gt; = [&lt;span class=&quot;title&quot;&gt;self&lt;/span&gt;.&lt;span class=&quot;title&quot;&gt;cacheDirectoryPath&lt;/span&gt; &lt;span class=&quot;title&quot;&gt;stringByAppendingPathComponent&lt;/span&gt;: &lt;span class=&quot;title&quot;&gt;urlString&lt;/span&gt;];
+    [&lt;span class=&quot;title&quot;&gt;data&lt;/span&gt; &lt;span class=&quot;title&quot;&gt;writeToFile&lt;/span&gt;:&lt;span class=&quot;title&quot;&gt;pathName&lt;/span&gt; &lt;span class=&quot;title&quot;&gt;atomically&lt;/span&gt;:&lt;span class=&quot;type&quot;&gt;YES&lt;/span&gt;];
+}&lt;/span&gt;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;h3 id=&quot;计算缓存大小&quot;&gt;计算缓存大小&lt;/h3&gt;&lt;p&gt;计算缓存大小有两种方式，计算单个文件大小，计算所有文件大小。&lt;/p&gt;
+&lt;p&gt;计算单个文件大小。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;#pragma mark -- 计算单个文件大小
+- (&lt;span class=&quot;typename&quot;&gt;float&lt;/span&gt;)&lt;span class=&quot;string&quot;&gt;fileSizeAtPath:&lt;/span&gt;(NSString *)path {
+    NSFileManager *fileManager=[NSFileManager defaultManager];
+    &lt;span class=&quot;keyword&quot;&gt;if&lt;/span&gt;([fileManager &lt;span class=&quot;string&quot;&gt;fileExistsAtPath:&lt;/span&gt;path]) {
+        &lt;span class=&quot;typename&quot;&gt;long&lt;/span&gt; &lt;span class=&quot;typename&quot;&gt;long&lt;/span&gt; size=[fileManager &lt;span class=&quot;string&quot;&gt;attributesOfItemAtPath:&lt;/span&gt;path &lt;span class=&quot;string&quot;&gt;error:&lt;/span&gt;nil].fileSize;
+        &lt;span class=&quot;keyword&quot;&gt;return&lt;/span&gt; size&lt;span class=&quot;regexp&quot;&gt;/1024.0/&lt;/span&gt;&lt;span class=&quot;number&quot;&gt;1024.0&lt;/span&gt;;
+    }
+    &lt;span class=&quot;keyword&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;number&quot;&gt;0&lt;/span&gt;;
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;计算所有文件大小。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&lt;span class=&quot;preprocessor&quot;&gt;#pragma mark -- 计算所有文件大小&lt;/span&gt;
+- (&lt;span class=&quot;keyword&quot;&gt;float&lt;/span&gt;)folderSizeAtPath:(&lt;span class=&quot;built_in&quot;&gt;NSString&lt;/span&gt; *)path {
+    &lt;span class=&quot;built_in&quot;&gt;NSFileManager&lt;/span&gt; *fileManager=[&lt;span class=&quot;built_in&quot;&gt;NSFileManager&lt;/span&gt; defaultManager];
+    &lt;span class=&quot;keyword&quot;&gt;float&lt;/span&gt; folderSize;
+    &lt;span class=&quot;keyword&quot;&gt;if&lt;/span&gt; ([fileManager fileExistsAtPath:&lt;span class=&quot;keyword&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;variable&quot;&gt;.cacheDirectoryPath&lt;/span&gt;]) {
+        &lt;span class=&quot;built_in&quot;&gt;NSArray&lt;/span&gt; *childerFiles=[fileManager subpathsAtPath:&lt;span class=&quot;keyword&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;variable&quot;&gt;.cacheDirectoryPath&lt;/span&gt;];
+        &lt;span class=&quot;keyword&quot;&gt;for&lt;/span&gt; (&lt;span class=&quot;built_in&quot;&gt;NSString&lt;/span&gt; *fileName &lt;span class=&quot;keyword&quot;&gt;in&lt;/span&gt; childerFiles) {
+            &lt;span class=&quot;built_in&quot;&gt;NSString&lt;/span&gt; *absolutePath=[&lt;span class=&quot;keyword&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;variable&quot;&gt;.cacheDirectoryPath&lt;/span&gt; stringByAppendingPathComponent:fileName];
+            folderSize +=[&lt;span class=&quot;keyword&quot;&gt;self&lt;/span&gt; fileSizeAtPath:absolutePath];
+        }
+        &lt;span class=&quot;keyword&quot;&gt;return&lt;/span&gt; folderSize;
+    }
+    &lt;span class=&quot;keyword&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;number&quot;&gt;0&lt;/span&gt;;
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;如果使用了SDWebImage框架，还要计算SDWebImage缓存大小。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&lt;span class=&quot;attribute&quot;&gt;folderSize +&lt;/span&gt;=&lt;span class=&quot;string&quot;&gt; [[SDImageCache sharedImageCache] getSize]/1024.0/1024.0;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;h3 id=&quot;清空缓存&quot;&gt;清空缓存&lt;/h3&gt;&lt;p&gt;同样的，清空缓存也有两种方式。&lt;/p&gt;
+&lt;p&gt;清空单个文件。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&lt;span class=&quot;preprocessor&quot;&gt;#pragma mark -- 清空url接口对应的数据&lt;/span&gt;
+- (&lt;span class=&quot;keyword&quot;&gt;void&lt;/span&gt;)clearDataWithUrl:(&lt;span class=&quot;built_in&quot;&gt;NSString&lt;/span&gt; *)urlString {
+    &lt;span class=&quot;built_in&quot;&gt;NSString&lt;/span&gt; *pathName = [&lt;span class=&quot;keyword&quot;&gt;self&lt;/span&gt; getPathWithUrl:urlString];
+    &lt;span class=&quot;keyword&quot;&gt;if&lt;/span&gt; ([[&lt;span class=&quot;built_in&quot;&gt;NSFileManager&lt;/span&gt; defaultManager] fileExistsAtPath:pathName]) {
+        &lt;span class=&quot;built_in&quot;&gt;NSFileManager&lt;/span&gt; *fm = [&lt;span class=&quot;built_in&quot;&gt;NSFileManager&lt;/span&gt; defaultManager];
+        [fm removeItemAtPath:pathName error:&lt;span class=&quot;literal&quot;&gt;nil&lt;/span&gt;];
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;全部清空。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&lt;span class=&quot;preprocessor&quot;&gt;#pragma mark -- 清空全部缓存&lt;/span&gt;
+- (&lt;span class=&quot;keyword&quot;&gt;void&lt;/span&gt;)clearAllData {
+    &lt;span class=&quot;built_in&quot;&gt;NSFileManager&lt;/span&gt; *fm = [&lt;span class=&quot;built_in&quot;&gt;NSFileManager&lt;/span&gt; defaultManager];
+    [fm removeItemAtPath:&lt;span class=&quot;keyword&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;variable&quot;&gt;.cacheDirectoryPath&lt;/span&gt; error:&lt;span class=&quot;literal&quot;&gt;nil&lt;/span&gt;];
+    [&lt;span class=&quot;keyword&quot;&gt;self&lt;/span&gt; createCacheDirectory];
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;如果使用了SDWebImage框架，同样的，也需要清除该缓存。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&lt;span class=&quot;collection&quot;&gt;[&lt;span class=&quot;collection&quot;&gt;[SDImageCache sharedImageCache]&lt;/span&gt; cleanDisk]&lt;/span&gt;&lt;span class=&quot;comment&quot;&gt;;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;</content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;移动应用在请求网络数据时，为了提高应用性能，节省流量，一般都会做数据缓存处理。最常见的就是图片和视频缓存，目前很流行的图片处理框架SDWebImage便自带图片缓存。&lt;/p&gt;
+&lt;p&gt;对于阅读、资讯类App来说，数据缓存和清理缓存几乎是必不可少的两种功能。&lt;/p&gt;
+&lt;p&gt;关于缓存，系统提供了NSFileManager API来方便我们管理，这里介绍这两种功能的简单实现（以普通文件格式存储在沙盒目录）。&lt;/p&gt;
+    
+    </summary>
+    
+      <category term="iOS笔记" scheme="http://hackmz.com/categories/iOS%E7%AC%94%E8%AE%B0/"/>
+    
+    
+      <category term="iOS" scheme="http://hackmz.com/tags/iOS/"/>
+    
+      <category term="笔记" scheme="http://hackmz.com/tags/%E7%AC%94%E8%AE%B0/"/>
+    
+      <category term="缓存" scheme="http://hackmz.com/tags/%E7%BC%93%E5%AD%98/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Masonry使用总结</title>
+    <link href="http://hackmz.com/2016/07/21/Masonry%E4%BD%BF%E7%94%A8%E6%80%BB%E7%BB%93/"/>
+    <id>http://hackmz.com/2016/07/21/Masonry使用总结/</id>
+    <published>2016-07-21T08:23:43.000Z</published>
+    <updated>2016-07-22T01:38:44.000Z</updated>
+    
+    <content type="html">&lt;p&gt;Masonry是AutoLayout的一个第三方类库，也是目前最流行的AutoLayout框架。熟练使用Masonry进行页面布局，能够减少很多不必要的宽高坐标值计算。&lt;/p&gt;
+&lt;a id=&quot;more&quot;&gt;&lt;/a&gt;
+&lt;h3 id=&quot;Masonry的属性&quot;&gt;Masonry的属性&lt;/h3&gt;&lt;p&gt;Masonry共提供了11种基本属性，分别是：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&lt;span class=&quot;comment&quot;&gt;// 左边界&lt;/span&gt;
+&lt;span class=&quot;keyword&quot;&gt;@property&lt;/span&gt; (&lt;span class=&quot;keyword&quot;&gt;nonatomic&lt;/span&gt;, &lt;span class=&quot;keyword&quot;&gt;strong&lt;/span&gt;, &lt;span class=&quot;keyword&quot;&gt;readonly&lt;/span&gt;) MASConstraint *left;
+&lt;span class=&quot;comment&quot;&gt;// 上边界&lt;/span&gt;
+&lt;span class=&quot;keyword&quot;&gt;@property&lt;/span&gt; (&lt;span class=&quot;keyword&quot;&gt;nonatomic&lt;/span&gt;, &lt;span class=&quot;keyword&quot;&gt;strong&lt;/span&gt;, &lt;span class=&quot;keyword&quot;&gt;readonly&lt;/span&gt;) MASConstraint *top;
+&lt;span class=&quot;comment&quot;&gt;// 右边界&lt;/span&gt;
+&lt;span class=&quot;keyword&quot;&gt;@property&lt;/span&gt; (&lt;span class=&quot;keyword&quot;&gt;nonatomic&lt;/span&gt;, &lt;span class=&quot;keyword&quot;&gt;strong&lt;/span&gt;, &lt;span class=&quot;keyword&quot;&gt;readonly&lt;/span&gt;) MASConstraint *right;
+&lt;span class=&quot;comment&quot;&gt;// 下边界&lt;/span&gt;
+&lt;span class=&quot;keyword&quot;&gt;@property&lt;/span&gt; (&lt;span class=&quot;keyword&quot;&gt;nonatomic&lt;/span&gt;, &lt;span class=&quot;keyword&quot;&gt;strong&lt;/span&gt;, &lt;span class=&quot;keyword&quot;&gt;readonly&lt;/span&gt;) MASConstraint *bottom;
+&lt;span class=&quot;comment&quot;&gt;// 首部&lt;/span&gt;
+&lt;span class=&quot;keyword&quot;&gt;@property&lt;/span&gt; (&lt;span class=&quot;keyword&quot;&gt;nonatomic&lt;/span&gt;, &lt;span class=&quot;keyword&quot;&gt;strong&lt;/span&gt;, &lt;span class=&quot;keyword&quot;&gt;readonly&lt;/span&gt;) MASConstraint *leading;
+&lt;span class=&quot;comment&quot;&gt;// 尾部&lt;/span&gt;
+&lt;span class=&quot;keyword&quot;&gt;@property&lt;/span&gt; (&lt;span class=&quot;keyword&quot;&gt;nonatomic&lt;/span&gt;, &lt;span class=&quot;keyword&quot;&gt;strong&lt;/span&gt;, &lt;span class=&quot;keyword&quot;&gt;readonly&lt;/span&gt;) MASConstraint *trailing;
+&lt;span class=&quot;comment&quot;&gt;// 宽度&lt;/span&gt;
+&lt;span class=&quot;keyword&quot;&gt;@property&lt;/span&gt; (&lt;span class=&quot;keyword&quot;&gt;nonatomic&lt;/span&gt;, &lt;span class=&quot;keyword&quot;&gt;strong&lt;/span&gt;, &lt;span class=&quot;keyword&quot;&gt;readonly&lt;/span&gt;) MASConstraint *width;
+&lt;span class=&quot;comment&quot;&gt;// 高度&lt;/span&gt;
+&lt;span class=&quot;keyword&quot;&gt;@property&lt;/span&gt; (&lt;span class=&quot;keyword&quot;&gt;nonatomic&lt;/span&gt;, &lt;span class=&quot;keyword&quot;&gt;strong&lt;/span&gt;, &lt;span class=&quot;keyword&quot;&gt;readonly&lt;/span&gt;) MASConstraint *height;
+&lt;span class=&quot;comment&quot;&gt;// x坐标中心&lt;/span&gt;
+&lt;span class=&quot;keyword&quot;&gt;@property&lt;/span&gt; (&lt;span class=&quot;keyword&quot;&gt;nonatomic&lt;/span&gt;, &lt;span class=&quot;keyword&quot;&gt;strong&lt;/span&gt;, &lt;span class=&quot;keyword&quot;&gt;readonly&lt;/span&gt;) MASConstraint *centerX;
+&lt;span class=&quot;comment&quot;&gt;// y坐标中心&lt;/span&gt;
+&lt;span class=&quot;keyword&quot;&gt;@property&lt;/span&gt; (&lt;span class=&quot;keyword&quot;&gt;nonatomic&lt;/span&gt;, &lt;span class=&quot;keyword&quot;&gt;strong&lt;/span&gt;, &lt;span class=&quot;keyword&quot;&gt;readonly&lt;/span&gt;) MASConstraint *centerY;
+&lt;span class=&quot;comment&quot;&gt;// 文本基线&lt;/span&gt;
+&lt;span class=&quot;keyword&quot;&gt;@property&lt;/span&gt; (&lt;span class=&quot;keyword&quot;&gt;nonatomic&lt;/span&gt;, &lt;span class=&quot;keyword&quot;&gt;strong&lt;/span&gt;, &lt;span class=&quot;keyword&quot;&gt;readonly&lt;/span&gt;) MASConstraint *baseline;
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;除了11种基本属性外，还提供了3种复合属性，用来快速设置控件的frame：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&lt;span class=&quot;comment&quot;&gt;// (top, left, bottom, right)&lt;/span&gt;
+&lt;span class=&quot;keyword&quot;&gt;@property&lt;/span&gt; (&lt;span class=&quot;keyword&quot;&gt;nonatomic&lt;/span&gt;, &lt;span class=&quot;keyword&quot;&gt;strong&lt;/span&gt;, &lt;span class=&quot;keyword&quot;&gt;readonly&lt;/span&gt;) MASConstraint *edges;
+&lt;span class=&quot;comment&quot;&gt;// (width, height)&lt;/span&gt;
+&lt;span class=&quot;keyword&quot;&gt;@property&lt;/span&gt; (&lt;span class=&quot;keyword&quot;&gt;nonatomic&lt;/span&gt;, &lt;span class=&quot;keyword&quot;&gt;strong&lt;/span&gt;, &lt;span class=&quot;keyword&quot;&gt;readonly&lt;/span&gt;) MASConstraint *size;
+&lt;span class=&quot;comment&quot;&gt;// (centerX, centerY)&lt;/span&gt;
+&lt;span class=&quot;keyword&quot;&gt;@property&lt;/span&gt; (&lt;span class=&quot;keyword&quot;&gt;nonatomic&lt;/span&gt;, &lt;span class=&quot;keyword&quot;&gt;strong&lt;/span&gt;, &lt;span class=&quot;keyword&quot;&gt;readonly&lt;/span&gt;) MASConstraint *center;
+&lt;/code&gt;&lt;/pre&gt;&lt;h3 id=&quot;Masonry的基本方法&quot;&gt;Masonry的基本方法&lt;/h3&gt;&lt;p&gt;熟悉了基本属性之后，我们还需要学习如何去使用这些基本属性去设置控件的约束。同样的，Masonry提供了三种方法来设置控件的约束，我们需要根据不同的情况去使用它。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&lt;span class=&quot;comment&quot;&gt;// 新增约束&lt;/span&gt;
+- (NSArray *)mas_makeConstraints:(&lt;span class=&quot;keyword&quot;&gt;void&lt;/span&gt;(^)(MASConstraintMaker *make))block;
+&lt;span class=&quot;comment&quot;&gt;// 更新约束（不删除以前的约束）&lt;/span&gt;
+- (NSArray *)mas_updateConstraints:(&lt;span class=&quot;keyword&quot;&gt;void&lt;/span&gt;(^)(MASConstraintMaker *make))block;
+&lt;span class=&quot;comment&quot;&gt;// 重写约束（删除以前的约束）&lt;/span&gt;
+- (NSArray *)mas_remakeConstraints:(&lt;span class=&quot;keyword&quot;&gt;void&lt;/span&gt;(^)(MASConstraintMaker *make))block;
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;从结果上来看，大部分情况下，使用上面三种方法都能得到我们想要的效果。但他们的功能却是不一样的，从应用性考虑，我们也不能乱用。&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;mas_makeConstraints:&lt;/code&gt;：新增约束，该方法只执行一次，适合用于初次设置约束的时候使用，循环调用，会生成许多无谓的约束。&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;mas_updateConstraints:&lt;/code&gt;：更新约束，该方法可执行多次，适用于部分约束改变的情况，比如需要根据字体的多少，动态的改变Label的高度。&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;mas_remakeConstraints:&lt;/code&gt;：重写约束，该方法会删除原有的约束，避免生成多余的约束，适用于控件的约束改动较大的地方，或代码重复调用的地方，比如cell的复用。&lt;/p&gt;
+&lt;h3 id=&quot;Masonry使用方法&quot;&gt;Masonry使用方法&lt;/h3&gt;&lt;h4 id=&quot;常用属性用法&quot;&gt;常用属性用法&lt;/h4&gt;&lt;p&gt;在开始写之前，先将Masonry库文件拖入工程，并包含头文件&lt;code&gt;Masonry.h&lt;/code&gt;，我们以给一个UIView添加约束为例。&lt;/p&gt;
+&lt;h5 id=&quot;offset设置偏移&quot;&gt;offset设置偏移&lt;/h5&gt;&lt;pre&gt;&lt;code&gt;&lt;span class=&quot;comment&quot;&gt;// 1.创建UI控件&lt;/span&gt;
+&lt;span class=&quot;built_in&quot;&gt;UIView&lt;/span&gt; *demoView = [[&lt;span class=&quot;built_in&quot;&gt;UIView&lt;/span&gt; alloc] init];
+demoView&lt;span class=&quot;variable&quot;&gt;.backgroundColor&lt;/span&gt; = [&lt;span class=&quot;built_in&quot;&gt;UIColor&lt;/span&gt; yellowColor];
+&lt;span class=&quot;comment&quot;&gt;// 2.将UI控件加入父视图&lt;/span&gt;
+[&lt;span class=&quot;keyword&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;variable&quot;&gt;.view&lt;/span&gt; addSubview:demoView];
+__&lt;span class=&quot;keyword&quot;&gt;weak&lt;/span&gt; &lt;span class=&quot;keyword&quot;&gt;typeof&lt;/span&gt;(&lt;span class=&quot;keyword&quot;&gt;self&lt;/span&gt;) weakSelf = &lt;span class=&quot;keyword&quot;&gt;self&lt;/span&gt;;
+&lt;span class=&quot;comment&quot;&gt;// 3.创建控件约束&lt;/span&gt;
+[demoView mas_makeConstraints:^(MASConstraintMaker *make) {
+    make&lt;span class=&quot;variable&quot;&gt;.left&lt;/span&gt;&lt;span class=&quot;variable&quot;&gt;.equalTo&lt;/span&gt;(weakSelf&lt;span class=&quot;variable&quot;&gt;.view&lt;/span&gt;&lt;span class=&quot;variable&quot;&gt;.mas_left&lt;/span&gt;)&lt;span class=&quot;variable&quot;&gt;.offset&lt;/span&gt;(&lt;span class=&quot;number&quot;&gt;30&lt;/span&gt;);
+    make&lt;span class=&quot;variable&quot;&gt;.right&lt;/span&gt;&lt;span class=&quot;variable&quot;&gt;.equalTo&lt;/span&gt;(weakSelf&lt;span class=&quot;variable&quot;&gt;.view&lt;/span&gt;&lt;span class=&quot;variable&quot;&gt;.mas_right&lt;/span&gt;)&lt;span class=&quot;variable&quot;&gt;.offset&lt;/span&gt;(-&lt;span class=&quot;number&quot;&gt;30&lt;/span&gt;);
+    make&lt;span class=&quot;variable&quot;&gt;.top&lt;/span&gt;&lt;span class=&quot;variable&quot;&gt;.equalTo&lt;/span&gt;(weakSelf&lt;span class=&quot;variable&quot;&gt;.view&lt;/span&gt;&lt;span class=&quot;variable&quot;&gt;.mas_top&lt;/span&gt;)&lt;span class=&quot;variable&quot;&gt;.offset&lt;/span&gt;(&lt;span class=&quot;number&quot;&gt;30&lt;/span&gt;);
+    make&lt;span class=&quot;variable&quot;&gt;.bottom&lt;/span&gt;&lt;span class=&quot;variable&quot;&gt;.equalTo&lt;/span&gt;(weakSelf&lt;span class=&quot;variable&quot;&gt;.view&lt;/span&gt;&lt;span class=&quot;variable&quot;&gt;.mas_bottom&lt;/span&gt;)&lt;span class=&quot;variable&quot;&gt;.offset&lt;/span&gt;(-&lt;span class=&quot;number&quot;&gt;30&lt;/span&gt;);
+}];
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;控件坐标的计算方法如下：&lt;/p&gt;
+&lt;p&gt;控件的边界 = 参考控件的边界 + 偏移值&lt;/p&gt;
+&lt;p&gt;效果图：&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;/img/Masonry用法01.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
+&lt;h5 id=&quot;multipliedBy设置偏移&quot;&gt;multipliedBy设置偏移&lt;/h5&gt;&lt;pre&gt;&lt;code&gt;&lt;span class=&quot;comment&quot;&gt;// 1.创建UI控件&lt;/span&gt;
+&lt;span class=&quot;built_in&quot;&gt;UIView&lt;/span&gt; *demoView = [[&lt;span class=&quot;built_in&quot;&gt;UIView&lt;/span&gt; alloc] init];
+demoView&lt;span class=&quot;variable&quot;&gt;.backgroundColor&lt;/span&gt; = [&lt;span class=&quot;built_in&quot;&gt;UIColor&lt;/span&gt; yellowColor];
+&lt;span class=&quot;comment&quot;&gt;// 2.将UI控件加入父视图&lt;/span&gt;
+[&lt;span class=&quot;keyword&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;variable&quot;&gt;.view&lt;/span&gt; addSubview:demoView];
+__&lt;span class=&quot;keyword&quot;&gt;weak&lt;/span&gt; &lt;span class=&quot;keyword&quot;&gt;typeof&lt;/span&gt;(&lt;span class=&quot;keyword&quot;&gt;self&lt;/span&gt;) weakSelf = &lt;span class=&quot;keyword&quot;&gt;self&lt;/span&gt;;
+&lt;span class=&quot;comment&quot;&gt;// 3.创建控件约束&lt;/span&gt;
+[demoView mas_makeConstraints:^(MASConstraintMaker *make) {
+    make&lt;span class=&quot;variable&quot;&gt;.centerX&lt;/span&gt;&lt;span class=&quot;variable&quot;&gt;.equalTo&lt;/span&gt;(weakSelf&lt;span class=&quot;variable&quot;&gt;.view&lt;/span&gt;&lt;span class=&quot;variable&quot;&gt;.mas_centerX&lt;/span&gt;);
+    make&lt;span class=&quot;variable&quot;&gt;.centerY&lt;/span&gt;&lt;span class=&quot;variable&quot;&gt;.equalTo&lt;/span&gt;(weakSelf&lt;span class=&quot;variable&quot;&gt;.view&lt;/span&gt;&lt;span class=&quot;variable&quot;&gt;.mas_centerY&lt;/span&gt;);
+     make&lt;span class=&quot;variable&quot;&gt;.height&lt;/span&gt;&lt;span class=&quot;variable&quot;&gt;.equalTo&lt;/span&gt;(weakSelf&lt;span class=&quot;variable&quot;&gt;.view&lt;/span&gt;&lt;span class=&quot;variable&quot;&gt;.mas_height&lt;/span&gt;)&lt;span class=&quot;variable&quot;&gt;.multipliedBy&lt;/span&gt;(&lt;span class=&quot;number&quot;&gt;0.5&lt;/span&gt;);
+    make&lt;span class=&quot;variable&quot;&gt;.width&lt;/span&gt;&lt;span class=&quot;variable&quot;&gt;.equalTo&lt;/span&gt;(weakSelf&lt;span class=&quot;variable&quot;&gt;.view&lt;/span&gt;&lt;span class=&quot;variable&quot;&gt;.mas_width&lt;/span&gt;)&lt;span class=&quot;variable&quot;&gt;.multipliedBy&lt;/span&gt;(&lt;span class=&quot;number&quot;&gt;0.5&lt;/span&gt;);
+}];
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;控件坐标的计算方法如下：&lt;/p&gt;
+&lt;p&gt;控件的边界 = 参考控件的边界 * 偏移倍数&lt;/p&gt;
+&lt;p&gt;效果图：&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;/img/Masonry用法02.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
+&lt;h4 id=&quot;复合属性用法&quot;&gt;复合属性用法&lt;/h4&gt;&lt;pre&gt;&lt;code&gt;&lt;span class=&quot;built_in&quot;&gt;UIView&lt;/span&gt; *demoView = [[&lt;span class=&quot;built_in&quot;&gt;UIView&lt;/span&gt; alloc] init];
+demoView&lt;span class=&quot;variable&quot;&gt;.backgroundColor&lt;/span&gt; = [&lt;span class=&quot;built_in&quot;&gt;UIColor&lt;/span&gt; yellowColor];
+[&lt;span class=&quot;keyword&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;variable&quot;&gt;.view&lt;/span&gt; addSubview:demoView];
+__&lt;span class=&quot;keyword&quot;&gt;weak&lt;/span&gt; &lt;span class=&quot;keyword&quot;&gt;typeof&lt;/span&gt;(&lt;span class=&quot;keyword&quot;&gt;self&lt;/span&gt;) weakSelf = &lt;span class=&quot;keyword&quot;&gt;self&lt;/span&gt;;
+[demoView mas_makeConstraints:^(MASConstraintMaker *make) {
+    make&lt;span class=&quot;variable&quot;&gt;.edges&lt;/span&gt;&lt;span class=&quot;variable&quot;&gt;.equalTo&lt;/span&gt;(weakSelf&lt;span class=&quot;variable&quot;&gt;.view&lt;/span&gt;)&lt;span class=&quot;variable&quot;&gt;.insets&lt;/span&gt;(UIEdgeInsetsMake(&lt;span class=&quot;number&quot;&gt;30&lt;/span&gt;, &lt;span class=&quot;number&quot;&gt;30&lt;/span&gt;, &lt;span class=&quot;number&quot;&gt;30&lt;/span&gt;, &lt;span class=&quot;number&quot;&gt;30&lt;/span&gt;));
+}];
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;效果图：&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;/img/Masonry用法01.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
+&lt;h3 id=&quot;问题汇总&quot;&gt;问题汇总&lt;/h3&gt;&lt;h4 id=&quot;动画问题&quot;&gt;动画问题&lt;/h4&gt;&lt;p&gt;Masonry动画和我们使用frame来创建动画的方式差不多，需要注意的是，在修改约束后，调用&lt;code&gt;layoutIfNeeded&lt;/code&gt;方法。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&lt;span class=&quot;list&quot;&gt;[&lt;span class=&quot;keyword&quot;&gt;UIView&lt;/span&gt; animateWithDuration:0.6 animations:^{
+    &lt;span class=&quot;list&quot;&gt;[&lt;span class=&quot;keyword&quot;&gt;loginView&lt;/span&gt; mas_updateConstraints:^&lt;span class=&quot;list&quot;&gt;(&lt;span class=&quot;keyword&quot;&gt;MASConstraintMaker&lt;/span&gt; *make)&lt;/span&gt; {
+        make.top.equalTo&lt;span class=&quot;list&quot;&gt;(&lt;span class=&quot;keyword&quot;&gt;self.view.mas_top&lt;/span&gt;)&lt;/span&gt;.offset&lt;span class=&quot;list&quot;&gt;(&lt;span class=&quot;keyword&quot;&gt;224.f/667.f*SCREEN_HEIGHT&lt;/span&gt;)&lt;/span&gt;&lt;span class=&quot;comment&quot;&gt;;&lt;/span&gt;
+    }]&lt;span class=&quot;comment&quot;&gt;;&lt;/span&gt;
+    logoImage.alpha = &lt;span class=&quot;number&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;comment&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;list&quot;&gt;[&lt;span class=&quot;keyword&quot;&gt;loginView.superview&lt;/span&gt; layoutIfNeeded]&lt;span class=&quot;comment&quot;&gt;;//强制绘制&lt;/span&gt;
+}]&lt;span class=&quot;comment&quot;&gt;;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;h4 id=&quot;frame问题&quot;&gt;frame问题&lt;/h4&gt;&lt;p&gt;有时候我们需要根据控件的frame进行一些操作，比如设置控件的圆角，然而在约束设置完成之后，并不能立刻得到它的frame。如果需要立刻得到它的frame，可以调用：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&lt;span class=&quot;title&quot;&gt;[view.superview layoutIfNeeded]&lt;/span&gt;&lt;span class=&quot;comment&quot;&gt;;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;</content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;Masonry是AutoLayout的一个第三方类库，也是目前最流行的AutoLayout框架。熟练使用Masonry进行页面布局，能够减少很多不必要的宽高坐标值计算。&lt;/p&gt;
+    
+    </summary>
+    
+      <category term="iOS笔记" scheme="http://hackmz.com/categories/iOS%E7%AC%94%E8%AE%B0/"/>
+    
+    
+      <category term="iOS" scheme="http://hackmz.com/tags/iOS/"/>
+    
+      <category term="三方库" scheme="http://hackmz.com/tags/%E4%B8%89%E6%96%B9%E5%BA%93/"/>
+    
+      <category term="笔记" scheme="http://hackmz.com/tags/%E7%AC%94%E8%AE%B0/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>UIView布局之layout方法总结</title>
+    <link href="http://hackmz.com/2016/07/05/UIView%E5%B8%83%E5%B1%80%E4%B9%8Blayout%E6%96%B9%E6%B3%95%E6%80%BB%E7%BB%93/"/>
+    <id>http://hackmz.com/2016/07/05/UIView布局之layout方法总结/</id>
+    <published>2016-07-05T07:42:23.000Z</published>
+    <updated>2016-07-07T03:55:22.000Z</updated>
+    
+    <content type="html">&lt;p&gt;最近接触了用到constraint的动画，写的时候遇到了一点问题，于是整理研究了一些关于UIView布局的layout方法，这里分享给大家，对于控件的约束，这里用到的是目前比较流行的Masonry库。&lt;/p&gt;
+&lt;a id=&quot;more&quot;&gt;&lt;/a&gt;
+&lt;p&gt;下面列举了一些常见的与UIView的layout相关的方法。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;layoutSubviews&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;layoutIfNeeded&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;setNeedsLayout&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;setNeedsDisplay&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;drawRect&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;sizeThatFits&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;sizeToFit&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&quot;layoutSubviews&quot;&gt;layoutSubviews&lt;/h3&gt;&lt;h4 id=&quot;相关介绍&quot;&gt;相关介绍&lt;/h4&gt;&lt;pre&gt;&lt;code&gt;- (&lt;span class=&quot;keyword&quot;&gt;void&lt;/span&gt;)layoutSubviews; 
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;layoutSubviews方法默认是不做任何事情的，但是在iOS6以后，当UIView上存在约束条件时，它会使用这些约束去决定subviews的position和size。而当UIView的子类需要对其subviews进行更精确的布局时，则可以重写此方法，在此方法中直接设置subviews的frame。&lt;/p&gt;
+&lt;p&gt;通过该方法可以对subviews重新布局，更新子视图，但是不能直接调用此方法，如果你想强制更新布局，你可以调用setNeedsLayout方法；如果你想立即数显你的views，你需要调用layoutIfNeeded方法。&lt;/p&gt;
+&lt;h4 id=&quot;被调用的情况&quot;&gt;被调用的情况&lt;/h4&gt;&lt;p&gt;苹果官方文档强调，不能直接调用layoutSubviews对子视图进行重新布局，layoutSubviews只有在以下情况下才会被调用。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;调用layoutIfNeeded时。&lt;/li&gt;
+&lt;li&gt;addSubview的时候。&lt;/li&gt;
+&lt;li&gt;当view的frame发生改变的时候。&lt;/li&gt;
+&lt;li&gt;滑动UIScrollView的时候。&lt;/li&gt;
+&lt;li&gt;旋转Screen会触发父UIView上的layoutSubviews事件。&lt;/li&gt;
+&lt;li&gt;改变一个UIView大小的时候也会触发父UIView上的layoutSubviews事件。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&quot;setNeedsLayout&quot;&gt;setNeedsLayout&lt;/h3&gt;&lt;pre&gt;&lt;code&gt;- (&lt;span class=&quot;keyword&quot;&gt;void&lt;/span&gt;)setNeedsLayout;
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;它的作用是将控件标记为“需要刷新”，然后异步调用layoutIfNeeded重新布局，不立即刷新，在系统runloop的下一个周期自动调用layoutSubviews。&lt;/p&gt;
+&lt;p&gt;如果更改了控件上的约束，会自动调用setNeedsLayout方法，将其标记为“需要刷新”。&lt;/p&gt;
+&lt;h3 id=&quot;layoutIfNeeded&quot;&gt;layoutIfNeeded&lt;/h3&gt;&lt;pre&gt;&lt;code&gt;- (&lt;span class=&quot;keyword&quot;&gt;void&lt;/span&gt;)layoutIfNeeded;
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;立即刷新，调用该方法，如果有“需要刷新”的标记，会立即调用layoutSubviews进行布局，反之则不会。&lt;/p&gt;
+&lt;p&gt;因此如果要立即刷新，首先需要调用setNeedsLayout方法将控件标记为“需要刷新”，然后调用layoutIfNeeded方法重新布局。当然，在视图第一次显示之前，标记总是“需要刷新”的，可以直接调用layoutIfNeeded。&lt;/p&gt;
+&lt;h3 id=&quot;代码说明&quot;&gt;代码说明&lt;/h3&gt;&lt;pre&gt;&lt;code&gt;- (&lt;span class=&quot;built_in&quot;&gt;BOOL&lt;/span&gt;)textFieldShouldBeginEditing:(UITextField *)textField {
+    &lt;span class=&quot;keyword&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;variable&quot;&gt;.editing&lt;/span&gt; = textField;
+    [&lt;span class=&quot;built_in&quot;&gt;UIView&lt;/span&gt; animateWithDuration:&lt;span class=&quot;number&quot;&gt;0.6&lt;/span&gt; animations:^{
+        [&lt;span class=&quot;keyword&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;variable&quot;&gt;.loginView&lt;/span&gt; mas_updateConstraints:^(MASConstraintMaker *make) {
+            make&lt;span class=&quot;variable&quot;&gt;.top&lt;/span&gt;&lt;span class=&quot;variable&quot;&gt;.equalTo&lt;/span&gt;(&lt;span class=&quot;keyword&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;variable&quot;&gt;.view&lt;/span&gt;&lt;span class=&quot;variable&quot;&gt;.mas_top&lt;/span&gt;)&lt;span class=&quot;variable&quot;&gt;.offset&lt;/span&gt;(&lt;span class=&quot;number&quot;&gt;154.&lt;/span&gt;f/&lt;span class=&quot;number&quot;&gt;667.&lt;/span&gt;f*SCREEN_HEIGHT);
+        }]; &lt;span class=&quot;comment&quot;&gt;// 更改约束&lt;/span&gt;
+        &lt;span class=&quot;keyword&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;variable&quot;&gt;.logoImage&lt;/span&gt;&lt;span class=&quot;variable&quot;&gt;.alpha&lt;/span&gt; = &lt;span class=&quot;number&quot;&gt;0&lt;/span&gt;;
+        [&lt;span class=&quot;keyword&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;variable&quot;&gt;.loginView&lt;/span&gt;&lt;span class=&quot;variable&quot;&gt;.superview&lt;/span&gt; layoutIfNeeded];&lt;span class=&quot;comment&quot;&gt;//立即刷新&lt;/span&gt;
+    }];
+    &lt;span class=&quot;keyword&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;literal&quot;&gt;YES&lt;/span&gt;;
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;以上是通过Masonry库更新约束条件写的一个小动画，它的执行过程如下。&lt;/p&gt;
+&lt;p&gt;首先通过Masonry库更新self.loginView的约束，默认会调用setNeedsLayout方法，并将其标记为“需要刷新”。&lt;/p&gt;
+&lt;p&gt;然后通过父控件self.loginView.superview调用layoutIfNeeded，立即刷新父控件里的所有子控件，对子控件重新布局。&lt;/p&gt;
+&lt;h3 id=&quot;drawRect&quot;&gt;drawRect&lt;/h3&gt;&lt;p&gt;使用drawRect方法来执行重绘的任务。&lt;/p&gt;
+&lt;h4 id=&quot;被调用的情况-1&quot;&gt;被调用的情况&lt;/h4&gt;&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;如果初始化时设置了View的大小，则会调用。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;该方法在调用sizeToFit后会被自动调用。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;通过设置contentMode属性值为UIViewContentModeRedraw，那么将在每次设置或更改frame的时候自动调用drawRect方法。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;直接调用setNeedsDisplay，或者setNeedsDisplayInRect时。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id=&quot;使用注意情况&quot;&gt;使用注意情况&lt;/h4&gt;&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;若使用UIView绘图，只能在drawRect方法中获取相应的contextRef并绘图。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;drawRect方法不能直接调用，必须通过调用setNeedsDisplay或者 setNeedsDisplayInRect，让系统自动调用该方法。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;若使用calayer绘图，只能在drawInContext方法中绘制，同样也是调用setNeedDisplay。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;若要实时画图，不能使用gestureRecognizer，只能使用touchesBegan等方法来掉用setNeedsDisplay实时刷新屏幕。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&quot;sizeToFit&quot;&gt;sizeToFit&lt;/h3&gt;&lt;p&gt;使用sizeToFit需要注意以下几点：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;sizeToFit会自动调用sizeThatFits方法。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;sizeToFit不应该在子类中被重写，应该重写sizeThatFits。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;sizeThatFits传入的参数是receiver当前的size，返回一个适合的size。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+</content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;最近接触了用到constraint的动画，写的时候遇到了一点问题，于是整理研究了一些关于UIView布局的layout方法，这里分享给大家，对于控件的约束，这里用到的是目前比较流行的Masonry库。&lt;/p&gt;
+    
+    </summary>
+    
+      <category term="iOS笔记" scheme="http://hackmz.com/categories/iOS%E7%AC%94%E8%AE%B0/"/>
+    
+    
+      <category term="Layout" scheme="http://hackmz.com/tags/Layout/"/>
+    
+      <category term="iOS" scheme="http://hackmz.com/tags/iOS/"/>
+    
+      <category term="笔记" scheme="http://hackmz.com/tags/%E7%AC%94%E8%AE%B0/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>UITableView上取消UITextField第一响应者的问题</title>
+    <link href="http://hackmz.com/2016/07/04/UITableView%E4%B8%8A%E5%8F%96%E6%B6%88UITextField%E7%AC%AC%E4%B8%80%E5%93%8D%E5%BA%94%E8%80%85%E7%9A%84%E9%97%AE%E9%A2%98/"/>
+    <id>http://hackmz.com/2016/07/04/UITableView上取消UITextField第一响应者的问题/</id>
+    <published>2016-07-04T09:24:59.000Z</published>
+    <updated>2016-07-05T01:33:45.000Z</updated>
+    
+    <content type="html">&lt;p&gt;使用系统自带键盘时，不可避免的经常需要我们人为的去收起键盘。类似点击空白或者输入框以外的地方将键盘收起，因为键盘的存在不仅影响界面美观，同时也因为我们需要在该界面进行其它操作，而键盘会遮挡部分视图，使这些操作进行的不是那么方便。而收起键盘的问题，本质上就是取消第一响应者的问题。&lt;/p&gt;
+&lt;a id=&quot;more&quot;&gt;&lt;/a&gt;
+&lt;h3 id=&quot;取消第一响应者的方法&quot;&gt;取消第一响应者的方法&lt;/h3&gt;&lt;p&gt;系统提供了两种方法来取消控件的第一响应者。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;- (BOOL)endEditing:(BOOL)force;    &lt;/p&gt;
+&lt;p&gt;   该方法用来强制取消某个控件和其所有的子控件的第一响应者。&lt;/p&gt;
+&lt;p&gt;   使用方式如&lt;code&gt;[self.view endEditing:YES];&lt;/code&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;- (BOOL)resignFirstResponder;&lt;/p&gt;
+&lt;p&gt;  该方法则是用来单独取消某个控件的第一响应者。&lt;/p&gt;
+&lt;p&gt;  使用方式如&lt;code&gt;[self.view resignFirstResponder];&lt;/code&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&quot;点击ViewController空白部分收起键盘&quot;&gt;点击ViewController空白部分收起键盘&lt;/h3&gt;&lt;p&gt;解决点击控制器空白部分收起键盘应该是我们最常见到的需求之一了。解决办法也很简单，在控制器的&lt;code&gt;touchesBegan&lt;/code&gt;方法里，调用&lt;code&gt;endEditing&lt;/code&gt;或&lt;code&gt;resignFirstResponder&lt;/code&gt;方法即可搞定。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&lt;span class=&quot;tag&quot;&gt;-&lt;/span&gt; (void)&lt;span class=&quot;tag&quot;&gt;touchesBegan&lt;/span&gt;:(NSSet&amp;lt;UITouch *&amp;gt; *)&lt;span class=&quot;tag&quot;&gt;touches&lt;/span&gt; &lt;span class=&quot;tag&quot;&gt;withEvent&lt;/span&gt;:(UIEvent *)&lt;span class=&quot;tag&quot;&gt;event&lt;/span&gt; {
+    &lt;span class=&quot;attr_selector&quot;&gt;[super touchesBegan:touches withEvent:event]&lt;/span&gt;;
+    &lt;span class=&quot;attr_selector&quot;&gt;[self.view endEditing:YES]&lt;/span&gt;;
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;h3 id=&quot;点击其他控件收起键盘&quot;&gt;点击其他控件收起键盘&lt;/h3&gt;&lt;p&gt;当然也有可能遇到一些其他需求，类似点击图片或者按钮什么的，将键盘收起。这个就需要分别在控件的点击事件里调用&lt;code&gt;endEditing&lt;/code&gt;方法或&lt;code&gt;resignFirstResponder&lt;/code&gt;方法来实现。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&lt;span class=&quot;comment&quot;&gt;// UIButton的点击事件&lt;/span&gt;
+&lt;span class=&quot;tag&quot;&gt;-&lt;/span&gt; (void)&lt;span class=&quot;tag&quot;&gt;buttonClick&lt;/span&gt;:(UIButton *)&lt;span class=&quot;tag&quot;&gt;sender&lt;/span&gt; {
+    &lt;span class=&quot;attr_selector&quot;&gt;[self.view endEditing:YES]&lt;/span&gt;;
+}
+
+&lt;span class=&quot;comment&quot;&gt;// UIImageView的手势&lt;/span&gt;
+&lt;span class=&quot;tag&quot;&gt;-&lt;/span&gt; (void)&lt;span class=&quot;tag&quot;&gt;tapClick&lt;/span&gt;:(UIGestureRecognizer *)&lt;span class=&quot;tag&quot;&gt;tap&lt;/span&gt; {
+    &lt;span class=&quot;attr_selector&quot;&gt;[self.view endEditing:YES]&lt;/span&gt;;
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;h3 id=&quot;点击UITableView收起键盘&quot;&gt;点击UITableView收起键盘&lt;/h3&gt;&lt;p&gt;UITableView作为开发中最常见的控件之一，当然也经常会遇到需要键盘收起的问题。相较于其他控件来说，UITableView比较尴尬。因为该控件分为很多个部分，表头、表尾、组头、组尾以及表中的Cell，我们不可能分别去处理UITableView各个部分的点击事件，然后在点击事件里取消第一响应者。根据UITableView里控件结构的复杂程度，这是一个不可预估的工作量。&lt;/p&gt;
+&lt;p&gt;如果只是在cell的点击事件中取消第一响应者的身份，那还勉强能接受，只需要在&lt;code&gt;didSelectRowAtIndexPath&lt;/code&gt;代理方法中调用&lt;code&gt;endEditing&lt;/code&gt;方法即可。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&lt;span class=&quot;tag&quot;&gt;-&lt;/span&gt; (void)&lt;span class=&quot;tag&quot;&gt;tableView&lt;/span&gt;:(UITableView *)&lt;span class=&quot;tag&quot;&gt;tableView&lt;/span&gt; &lt;span class=&quot;tag&quot;&gt;didSelectRowAtIndexPath&lt;/span&gt;:(NSIndexPath *)&lt;span class=&quot;tag&quot;&gt;indexPath&lt;/span&gt; {
+    &lt;span class=&quot;attr_selector&quot;&gt;[self.view endEditing:YES]&lt;/span&gt;;
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;如果情况稍微复杂一点就不行了，比如点击TableView下面的空白部分，或者点击组头组尾的时候取消第一响应者。&lt;/p&gt;
+&lt;p&gt;然后有人开始需找一劳永逸的方法，尝试在UITableView上添加点击手势。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;- (&lt;span class=&quot;keyword&quot;&gt;void&lt;/span&gt;)createTableView {
+    &lt;span class=&quot;keyword&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;variable&quot;&gt;.tableView&lt;/span&gt; = [[MZTableView alloc] initWithFrame:CGRectMake(&lt;span class=&quot;number&quot;&gt;0&lt;/span&gt;, &lt;span class=&quot;number&quot;&gt;100&lt;/span&gt;, &lt;span class=&quot;keyword&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;variable&quot;&gt;.view&lt;/span&gt;&lt;span class=&quot;variable&quot;&gt;.frame&lt;/span&gt;&lt;span class=&quot;variable&quot;&gt;.size&lt;/span&gt;&lt;span class=&quot;variable&quot;&gt;.width&lt;/span&gt;, &lt;span class=&quot;number&quot;&gt;400&lt;/span&gt;)];
+    &lt;span class=&quot;keyword&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;variable&quot;&gt;.tableView&lt;/span&gt;&lt;span class=&quot;variable&quot;&gt;.delegate&lt;/span&gt; = &lt;span class=&quot;keyword&quot;&gt;self&lt;/span&gt;;
+    &lt;span class=&quot;keyword&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;variable&quot;&gt;.tableView&lt;/span&gt;&lt;span class=&quot;variable&quot;&gt;.dataSource&lt;/span&gt; = &lt;span class=&quot;keyword&quot;&gt;self&lt;/span&gt;;
+    UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:&lt;span class=&quot;keyword&quot;&gt;self&lt;/span&gt; action:&lt;span class=&quot;keyword&quot;&gt;@selector&lt;/span&gt;(tapClick:)];
+    [&lt;span class=&quot;keyword&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;variable&quot;&gt;.tableView&lt;/span&gt; addGestureRecognizer:tap];
+    [&lt;span class=&quot;keyword&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;variable&quot;&gt;.view&lt;/span&gt; addSubview:&lt;span class=&quot;keyword&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;variable&quot;&gt;.tableView&lt;/span&gt;];
+}
+
+- (&lt;span class=&quot;keyword&quot;&gt;void&lt;/span&gt;)tapClick:(UITapGestureRecognizer *)tap {
+    [&lt;span class=&quot;keyword&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;variable&quot;&gt;.view&lt;/span&gt; endEditing:&lt;span class=&quot;literal&quot;&gt;YES&lt;/span&gt;];
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;这样能够解决问题，但又会迎来新的问题，你会发现点击cell的时候，&lt;code&gt;didSelectRowAtIndexPath&lt;/code&gt;这个代理方法不执行了，原因是你新加的手势覆盖了TableView里面自带的手势，当然如果你不需要用到&lt;code&gt;didSelectRowAtIndexPath&lt;/code&gt;代理方法的话，倒是可以这么做。&lt;/p&gt;
+&lt;p&gt;正确的做法应该是通过查找事件源，在事件响应之前，取消UITextField的第一响应者的身份，具体步骤是新建一个UITableView的继承类，然后在该类中重写如下方法。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;- (UIView *)&lt;span class=&quot;string&quot;&gt;hitTest:&lt;/span&gt;(CGPoint)point &lt;span class=&quot;string&quot;&gt;withEvent:&lt;/span&gt;(UIEvent *)event {
+    id view = [&lt;span class=&quot;keyword&quot;&gt;super&lt;/span&gt; &lt;span class=&quot;string&quot;&gt;hitTest:&lt;/span&gt;point &lt;span class=&quot;string&quot;&gt;withEvent:&lt;/span&gt;event];
+    &lt;span class=&quot;keyword&quot;&gt;if&lt;/span&gt; (![view &lt;span class=&quot;string&quot;&gt;isKindOfClass:&lt;/span&gt;[UITextField &lt;span class=&quot;class&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;class&lt;/span&gt;]]) {&lt;/span&gt;
+        [self &lt;span class=&quot;string&quot;&gt;endEditing:&lt;/span&gt;YES];
+    }
+    &lt;span class=&quot;keyword&quot;&gt;return&lt;/span&gt; view;
+}
+&lt;/code&gt;&lt;/pre&gt;</content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;使用系统自带键盘时，不可避免的经常需要我们人为的去收起键盘。类似点击空白或者输入框以外的地方将键盘收起，因为键盘的存在不仅影响界面美观，同时也因为我们需要在该界面进行其它操作，而键盘会遮挡部分视图，使这些操作进行的不是那么方便。而收起键盘的问题，本质上就是取消第一响应者的问题。&lt;/p&gt;
+    
+    </summary>
+    
+      <category term="疑难杂症" scheme="http://hackmz.com/categories/%E7%96%91%E9%9A%BE%E6%9D%82%E7%97%87/"/>
+    
+    
+      <category term="UITextField" scheme="http://hackmz.com/tags/UITextField/"/>
+    
+      <category term="iOS" scheme="http://hackmz.com/tags/iOS/"/>
+    
+      <category term="技巧" scheme="http://hackmz.com/tags/%E6%8A%80%E5%B7%A7/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>UIAppearance UI全局设置</title>
+    <link href="http://hackmz.com/2016/07/04/UIAppearance-UI%E5%85%A8%E5%B1%80%E8%AE%BE%E7%BD%AE/"/>
+    <id>http://hackmz.com/2016/07/04/UIAppearance-UI全局设置/</id>
+    <published>2016-07-04T02:57:19.000Z</published>
+    <updated>2016-07-05T01:26:15.000Z</updated>
+    
+    <content type="html">&lt;p&gt;在开发中，如果想要对一些控件类，比如UIImageView、UILabel、UINavigationBar等，做一些全局的改变，通常的做法都是通过继承的方式重写该类，这样新建一个一个文件，做的多了，会感觉很麻烦。在iOS5以后，苹果提供了更简单的方式，通过UIAppearance，你可以很轻松的管理你的界面。UIAppearance提供了两个方法：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;+ (id)appearance&lt;/li&gt;
+&lt;li&gt;+ (id)appearanceWhenContainedIn:(Class &amp;lt;&amp;gt;)ContainerClass,…&lt;/li&gt;
+&lt;/ul&gt;
+&lt;a id=&quot;more&quot;&gt;&lt;/a&gt;
+&lt;h3 id=&quot;appearance使用&quot;&gt;appearance使用&lt;/h3&gt;&lt;p&gt;appearance方法使用简单，比如要定制应用中所有UIBarButtonItem的颜色，可以在UIBarButtonItem的外观代理中设置tintColor。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&lt;span class=&quot;string&quot;&gt;[[UINavigationBar appearance] setBarTintColor:[UIColor grayColor]]&lt;/span&gt;;
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;或者你也可以这样写：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&lt;span class=&quot;built_in&quot;&gt;UINavigationBar&lt;/span&gt; *appearance = [&lt;span class=&quot;built_in&quot;&gt;UINavigationBar&lt;/span&gt; appearance];
+[appearance setBarTintColor:[&lt;span class=&quot;built_in&quot;&gt;UIColor&lt;/span&gt; grayColor]];
+&lt;/code&gt;&lt;/pre&gt;&lt;h3 id=&quot;appearanceWhenContainedIn使用&quot;&gt;appearanceWhenContainedIn使用&lt;/h3&gt;&lt;p&gt;这个方法可以用来设置某个类在其他类里的改变。&lt;/p&gt;
+&lt;p&gt;比如我想设置UIBarButtonItem在UINavigationBar、UIPopoverController、UITabbar中的TintColor，而在其他地方则保持不变。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&lt;span class=&quot;collection&quot;&gt;[&lt;span class=&quot;collection&quot;&gt;[UIBarButtonItem appearanceWhenContainedIn:&lt;span class=&quot;collection&quot;&gt;[UINavigationBar class]&lt;/span&gt;, &lt;span class=&quot;collection&quot;&gt;[UIPopoverController class]&lt;/span&gt;,&lt;span class=&quot;collection&quot;&gt;[UITabBar class]&lt;/span&gt;, &lt;span class=&quot;literal&quot;&gt;nil&lt;/span&gt;]&lt;/span&gt; setTintColor:&lt;span class=&quot;collection&quot;&gt;[UIColor clearColor]&lt;/span&gt;]&lt;/span&gt;&lt;span class=&quot;comment&quot;&gt;;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;h3 id=&quot;自定义类实现UIAppearance&quot;&gt;自定义类实现UIAppearance&lt;/h3&gt;&lt;p&gt;如果想要在我们自定义的类中实现UIAppearance，需要在的类中实现UIAppearanceContainer协议，同时，在Objective-C中，还需要将相关的方法用UI_APPEARANCE_SELECTOR来标记，在Swift中，则需要在对应的属性或方法前面加上dynamic。&lt;/p&gt;
+&lt;p&gt;但实际上，UIView已经实现了UIAppearance和UIAppearanceContainer协议。因此，我们在其子类中不再需要显式地去声明实现这两个接口。&lt;/p&gt;
+&lt;p&gt;比如自定义Cell时，通过UIAppearance设置图片的圆角。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&lt;span class=&quot;comment&quot;&gt;// DateCell.h&lt;/span&gt;
+&lt;span class=&quot;preprocessor&quot;&gt;#import &lt;span class=&quot;title&quot;&gt;&amp;lt;UIKit/UIKit.h&amp;gt;&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;class&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;@interface&lt;/span&gt; &lt;span class=&quot;title&quot;&gt;DateCell&lt;/span&gt; : &lt;span class=&quot;title&quot;&gt;UITableViewCell&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;keyword&quot;&gt;@property&lt;/span&gt; (&lt;span class=&quot;keyword&quot;&gt;nonatomic&lt;/span&gt;, &lt;span class=&quot;keyword&quot;&gt;strong&lt;/span&gt;) &lt;span class=&quot;built_in&quot;&gt;UIImageView&lt;/span&gt; *imageV;
+&lt;span class=&quot;keyword&quot;&gt;@property&lt;/span&gt; (&lt;span class=&quot;keyword&quot;&gt;nonatomic&lt;/span&gt;, &lt;span class=&quot;keyword&quot;&gt;assign&lt;/span&gt;) &lt;span class=&quot;built_in&quot;&gt;CGFloat&lt;/span&gt; radios UI_APPEARANCE_SELECTOR;
+&lt;span class=&quot;keyword&quot;&gt;@end&lt;/span&gt;
+
+&lt;span class=&quot;comment&quot;&gt;// DateCell.m&lt;/span&gt;
+- (&lt;span class=&quot;keyword&quot;&gt;void&lt;/span&gt;)setRadios:(&lt;span class=&quot;built_in&quot;&gt;CGFloat&lt;/span&gt;)radios {
+    _radios = radios;
+    &lt;span class=&quot;keyword&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;variable&quot;&gt;.imageV&lt;/span&gt;&lt;span class=&quot;variable&quot;&gt;.layer&lt;/span&gt;&lt;span class=&quot;variable&quot;&gt;.cornerRadius&lt;/span&gt; = radios;
+    &lt;span class=&quot;keyword&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;variable&quot;&gt;.imageV&lt;/span&gt;&lt;span class=&quot;variable&quot;&gt;.layer&lt;/span&gt;&lt;span class=&quot;variable&quot;&gt;.masksToBounds&lt;/span&gt; = &lt;span class=&quot;literal&quot;&gt;YES&lt;/span&gt;;
+}
+
+&lt;span class=&quot;comment&quot;&gt;// 在控制器的viewDidLoad方法里&lt;/span&gt;
+[DateCell appearance]&lt;span class=&quot;variable&quot;&gt;.radios&lt;/span&gt; = &lt;span class=&quot;number&quot;&gt;20&lt;/span&gt;;
+&lt;/code&gt;&lt;/pre&gt;&lt;h3 id=&quot;注意事项&quot;&gt;注意事项&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;使用UIAppearance设置UI效果最好采用全局的设置，在所有界面初始化前开始设置。对于在使用UIAppearance之前已经添加到界面上的控件，则没有效果。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;对于自定义的UI控件，使用UIAppearance无法直接改变UI控件的子控件。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&lt;span class=&quot;comment&quot;&gt;// 自定义了一个Cell，在Cell中有一个UIImageView。&lt;/span&gt;
+&lt;span class=&quot;preprocessor&quot;&gt;#import &lt;span class=&quot;title&quot;&gt;&amp;lt;UIKit/UIKit.h&amp;gt;&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;class&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;@interface&lt;/span&gt; &lt;span class=&quot;title&quot;&gt;DateCell&lt;/span&gt; : &lt;span class=&quot;title&quot;&gt;UITableViewCell&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;keyword&quot;&gt;@property&lt;/span&gt; (&lt;span class=&quot;keyword&quot;&gt;nonatomic&lt;/span&gt;, &lt;span class=&quot;keyword&quot;&gt;strong&lt;/span&gt;) &lt;span class=&quot;built_in&quot;&gt;UIImageView&lt;/span&gt; *imageV;
+&lt;span class=&quot;keyword&quot;&gt;@end&lt;/span&gt;
+
+&lt;span class=&quot;comment&quot;&gt;// 在控制器的viewDidLoad方法里，直接设置imageV的圆角。&lt;/span&gt;
+[DateCell appearance]&lt;span class=&quot;variable&quot;&gt;.imageV&lt;/span&gt;&lt;span class=&quot;variable&quot;&gt;.layer&lt;/span&gt;&lt;span class=&quot;variable&quot;&gt;.cornerRadius&lt;/span&gt; = &lt;span class=&quot;number&quot;&gt;20&lt;/span&gt;;
+[DateCell appearance]&lt;span class=&quot;variable&quot;&gt;.imageV&lt;/span&gt;&lt;span class=&quot;variable&quot;&gt;.layer&lt;/span&gt;&lt;span class=&quot;variable&quot;&gt;.masksToBounds&lt;/span&gt; = &lt;span class=&quot;literal&quot;&gt;YES&lt;/span&gt;;
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;  这种方法并不能达到预期的效果，因此我们需要给cell添加一个额外的属性，重写该属性的set方法，间接更改imageV的圆角。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&lt;span class=&quot;comment&quot;&gt;// DateCell.h&lt;/span&gt;
+&lt;span class=&quot;preprocessor&quot;&gt;#import &lt;span class=&quot;title&quot;&gt;&amp;lt;UIKit/UIKit.h&amp;gt;&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;class&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;@interface&lt;/span&gt; &lt;span class=&quot;title&quot;&gt;DateCell&lt;/span&gt; : &lt;span class=&quot;title&quot;&gt;UITableViewCell&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;keyword&quot;&gt;@property&lt;/span&gt; (&lt;span class=&quot;keyword&quot;&gt;nonatomic&lt;/span&gt;, &lt;span class=&quot;keyword&quot;&gt;strong&lt;/span&gt;) &lt;span class=&quot;built_in&quot;&gt;UIImageView&lt;/span&gt; *imageV;
+&lt;span class=&quot;keyword&quot;&gt;@property&lt;/span&gt; (&lt;span class=&quot;keyword&quot;&gt;nonatomic&lt;/span&gt;, &lt;span class=&quot;keyword&quot;&gt;assign&lt;/span&gt;) &lt;span class=&quot;built_in&quot;&gt;CGFloat&lt;/span&gt; radios UI_APPEARANCE_SELECTOR;
+&lt;span class=&quot;keyword&quot;&gt;@end&lt;/span&gt;
+
+&lt;span class=&quot;comment&quot;&gt;// DateCell.m&lt;/span&gt;
+- (&lt;span class=&quot;keyword&quot;&gt;void&lt;/span&gt;)setRadios:(&lt;span class=&quot;built_in&quot;&gt;CGFloat&lt;/span&gt;)radios {
+    _radios = radios;
+    &lt;span class=&quot;keyword&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;variable&quot;&gt;.imageV&lt;/span&gt;&lt;span class=&quot;variable&quot;&gt;.layer&lt;/span&gt;&lt;span class=&quot;variable&quot;&gt;.cornerRadius&lt;/span&gt; = radios;
+    &lt;span class=&quot;keyword&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;variable&quot;&gt;.imageV&lt;/span&gt;&lt;span class=&quot;variable&quot;&gt;.layer&lt;/span&gt;&lt;span class=&quot;variable&quot;&gt;.masksToBounds&lt;/span&gt; = &lt;span class=&quot;literal&quot;&gt;YES&lt;/span&gt;;
+}
+
+&lt;span class=&quot;comment&quot;&gt;// 在控制器的viewDidLoad方法里&lt;/span&gt;
+[DateCell appearance]&lt;span class=&quot;variable&quot;&gt;.radios&lt;/span&gt; = &lt;span class=&quot;number&quot;&gt;20&lt;/span&gt;;
+&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&quot;参考&quot;&gt;参考&lt;/h3&gt;&lt;p&gt;&lt;a href=&quot;https://developer.apple.com/library/ios/documentation/UIKit/Reference/UIAppearance_Protocol/index.html#//apple_ref/occ/intfcm/UIAppearance/appearanceForTraitCollection:&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;UIAppearance&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;http://www.cocoachina.com/ios/20150723/12671.html&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;自定义系统控件的外观：UIApearance&lt;/a&gt;&lt;/p&gt;
+</content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;在开发中，如果想要对一些控件类，比如UIImageView、UILabel、UINavigationBar等，做一些全局的改变，通常的做法都是通过继承的方式重写该类，这样新建一个一个文件，做的多了，会感觉很麻烦。在iOS5以后，苹果提供了更简单的方式，通过UIAppearance，你可以很轻松的管理你的界面。UIAppearance提供了两个方法：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;+ (id)appearance&lt;/li&gt;
+&lt;li&gt;+ (id)appearanceWhenContainedIn:(Class &amp;lt;&amp;gt;)ContainerClass,…&lt;/li&gt;
+&lt;/ul&gt;
+    
+    </summary>
+    
+      <category term="iOS笔记" scheme="http://hackmz.com/categories/iOS%E7%AC%94%E8%AE%B0/"/>
+    
+    
+      <category term="iOS" scheme="http://hackmz.com/tags/iOS/"/>
+    
+      <category term="笔记" scheme="http://hackmz.com/tags/%E7%AC%94%E8%AE%B0/"/>
+    
+      <category term="系统类" scheme="http://hackmz.com/tags/%E7%B3%BB%E7%BB%9F%E7%B1%BB/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>如何新建一个Github开源项目</title>
+    <link href="http://hackmz.com/2016/06/28/%E5%A6%82%E4%BD%95%E6%96%B0%E5%BB%BA%E4%B8%80%E4%B8%AAGithub%E5%BC%80%E6%BA%90%E9%A1%B9%E7%9B%AE/"/>
+    <id>http://hackmz.com/2016/06/28/如何新建一个Github开源项目/</id>
+    <published>2016-06-28T09:52:18.000Z</published>
+    <updated>2016-06-29T03:27:48.000Z</updated>
+    
+    <content type="html">&lt;p&gt;空闲的时候，很多人都会自己动手写点框架或项目什么的，既能学习打发时间，又能以备不时之需，方便开发。对于优秀的代码，我们也可以分享出来，就像学习别人的代码一样，供其他开发者参考，最后说不定还能和志同道合者擦出幸福的火花呢，想想是不是有点小激动，心动不如行动。现在就让我们去Github新建我们的第一个开源项目吧，嗯，祝你好运。&lt;/p&gt;
+&lt;a id=&quot;more&quot;&gt;&lt;/a&gt;
+&lt;h3 id=&quot;如何新建一个Github开源项目&quot;&gt;如何新建一个Github开源项目&lt;/h3&gt;&lt;ol&gt;
+&lt;li&gt;&lt;p&gt;首先你需要有一个Github的账号，这是打开新世界大门的钥匙，没有的先去注册一个。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;注册完帐号之后创建一个新的工作空间，用来存放我们的项目。&lt;/p&gt;
+&lt;p&gt; &lt;img src=&quot;/img/Github新建开源项目01.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;填写项目创建的信息。&lt;/p&gt;
+&lt;p&gt; &lt;img src=&quot;/img/Github新建开源项目02.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;项目空间创建完成之后，复制该空间的地址，用来下载克隆空间里的内容。&lt;/p&gt;
+&lt;p&gt; &lt;img src=&quot;/img/Github新建开源项目03.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;打开终端，按照以下步骤，将项目空间克隆到本地。&lt;/p&gt;
+&lt;p&gt; &lt;img src=&quot;/img/Github新建开源项目04.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;下载成功之后，本地会出现一个以项目名称命名的文件夹，点击进入这个文件夹。&lt;/p&gt;
+&lt;p&gt; &lt;img src=&quot;/img/Github新建开源项目05.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;使用Xcode创建一个工程，将工程保存到该文件夹内。&lt;/p&gt;
+&lt;p&gt; &lt;img src=&quot;/img/Github新建开源项目06.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;工程创建成功之后进入Xcode。&lt;/p&gt;
+&lt;p&gt; &lt;img src=&quot;/img/Github新建开源项目07.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;编写我们的项目代码，然后点击Source Control—&amp;gt;Commit进行提交。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;填写相关的说明, 如果仅仅是上传自己的项目就勾选push，push是将本地服务器的代码上传到远程服务器。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;/img/Github新建开源项目08.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;如果勾选了push，按照提示输入github的帐号和密码。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;/img/Github新建开源项目09.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;提交成功之后可以看到，文件后面的标识没有了。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;/img/Github新建开源项目10.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;打开Github项目空间，可以看到我们上传的代码。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;/img/Github新建开源项目11.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3 id=&quot;项目地址&quot;&gt;项目地址&lt;/h3&gt;&lt;p&gt;&lt;a href=&quot;https://github.com/MrWheat/MZHelpCenterDemo&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;我的帮助工具类&lt;/a&gt;&lt;/p&gt;
+</content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;空闲的时候，很多人都会自己动手写点框架或项目什么的，既能学习打发时间，又能以备不时之需，方便开发。对于优秀的代码，我们也可以分享出来，就像学习别人的代码一样，供其他开发者参考，最后说不定还能和志同道合者擦出幸福的火花呢，想想是不是有点小激动，心动不如行动。现在就让我们去Github新建我们的第一个开源项目吧，嗯，祝你好运。&lt;/p&gt;
+    
+    </summary>
+    
+      <category term="项目开发" scheme="http://hackmz.com/categories/%E9%A1%B9%E7%9B%AE%E5%BC%80%E5%8F%91/"/>
+    
+    
+      <category term="Github" scheme="http://hackmz.com/tags/Github/"/>
+    
+      <category term="开源" scheme="http://hackmz.com/tags/%E5%BC%80%E6%BA%90/"/>
+    
+      <category term="教程" scheme="http://hackmz.com/tags/%E6%95%99%E7%A8%8B/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>本地搭建IPv6测试环境</title>
+    <link href="http://hackmz.com/2016/06/28/%E6%9C%AC%E5%9C%B0%E6%90%AD%E5%BB%BAIPv6%E6%B5%8B%E8%AF%95%E7%8E%AF%E5%A2%83/"/>
+    <id>http://hackmz.com/2016/06/28/本地搭建IPv6测试环境/</id>
+    <published>2016-06-28T06:17:59.000Z</published>
+    <updated>2016-07-05T01:27:18.000Z</updated>
+    
+    <content type="html">&lt;p&gt;从6月初开始，苹果修改了App Store应用审核政策，规定所有提交审核的iOS应用都必须支持IPv6-only连网标准。虽然苹果早在去年的在WWDC2015大会上就宣布过iOS 9将转用IPv6-only网络服务，但是该消息来的依旧是如此的突然，导致大部分开发者毫无一丝防备。&lt;/p&gt;
+&lt;a id=&quot;more&quot;&gt;&lt;/a&gt;
+&lt;h3 id=&quot;什么是IPv6&quot;&gt;什么是IPv6&lt;/h3&gt;&lt;p&gt;IPv6是Internet Protocol version 6的缩写，全名为互联网通讯协议第6版，是互联网协议的最新版本，用于分组交换互联网络的网络层协议，旨在解决IPv4地址枯竭问题。&lt;/p&gt;
+&lt;p&gt;IPv6采用128位的地址，而IPv4使用的是32位。相对于IPv4，IPv6具有更大的地址空间，使用更小的路由表，并且具有更高的安全性。&lt;/p&gt;
+&lt;p&gt;当然，以上只是官方对于IPv6的定义，不知道你们看完之后会不会露出，哦~原来如此的表情。那么IPv6具体长啥样？具体一点，IPv6就是我们看到的类似这样&lt;code&gt;2001:da8:215:4009:250:56ff:fe97:40c7&lt;/code&gt;的地址。而IPv4则是&lt;code&gt;114.255.40.66&lt;/code&gt;这样的地址，是不是很熟悉。&lt;/p&gt;
+&lt;p&gt;目前来说，一个网卡会同时使用这两种地址，但在未来，一个网卡可能就仅支持IPv6地址， 并且使用这两种地址的设备是不能互相访问的，除了某些过渡的技术让他们在特定情况下可以互相访问，比如DNS64/NAT64。&lt;/p&gt;
+&lt;h3 id=&quot;如何兼容IPv6&quot;&gt;如何兼容IPv6&lt;/h3&gt;&lt;p&gt;其实在大多数情况下，我们并不需要做什么，就可以兼容IPv6。比如目前使用的最多的网络库AFNetworking3.0就已经支持IPv6，我们只需在开发中注意一下以下的细节并做出一些改动就可以了。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;使用更高层次的网络API，避免使用socket API。&lt;/li&gt;
+&lt;li&gt;在你的应用中使用域名，不要在任何地方使用 IPv4地址。&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;参照IPv4-&amp;gt;IPv6类型对照表，修改IPv4代码，删掉不兼容IPv6的代码。&lt;/p&gt;
+&lt;p&gt;  IPv4-&amp;gt;IPv6类型对照表&lt;/p&gt;
+&lt;p&gt;  &lt;img src=&quot;/img/IPv4-&amp;gt;IPv6类型对照表.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
+&lt;p&gt;  不兼容IPv6的API&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;title&quot;&gt;inet_addr&lt;/span&gt;&lt;span class=&quot;params&quot;&gt;()&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;title&quot;&gt;inet_aton&lt;/span&gt;&lt;span class=&quot;params&quot;&gt;()&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;title&quot;&gt;inet_lnaof&lt;/span&gt;&lt;span class=&quot;params&quot;&gt;()&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;title&quot;&gt;inet_makeaddr&lt;/span&gt;&lt;span class=&quot;params&quot;&gt;()&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;title&quot;&gt;inet_netof&lt;/span&gt;&lt;span class=&quot;params&quot;&gt;()&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;title&quot;&gt;inet_network&lt;/span&gt;&lt;span class=&quot;params&quot;&gt;()&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;title&quot;&gt;inet_ntoa&lt;/span&gt;&lt;span class=&quot;params&quot;&gt;()&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;title&quot;&gt;inet_ntoa_r&lt;/span&gt;&lt;span class=&quot;params&quot;&gt;()&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;title&quot;&gt;bindresvport&lt;/span&gt;&lt;span class=&quot;params&quot;&gt;()&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;title&quot;&gt;getipv4sourcefilter&lt;/span&gt;&lt;span class=&quot;params&quot;&gt;()&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;title&quot;&gt;setipv4sourcefilter&lt;/span&gt;&lt;span class=&quot;params&quot;&gt;()&lt;/span&gt;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&quot;搭建IPv6测试环境&quot;&gt;搭建IPv6测试环境&lt;/h3&gt;&lt;p&gt;如果想测试一下自己的应用是否支持IPv6，不如自己搭建一个测试环境。MacOS提供了创造IPv6-only测试环境的功能，操作很简单。&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;p&gt;首先我们将Mac连接网线上网，关闭Wifi。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;打开系统偏好设置，按住Option键打开共享。&lt;/p&gt;
+&lt;p&gt; &lt;img src=&quot;/img/搭建IPv6测试环境01.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;勾选创建NAT64网络，打开互联网共享，即使用Mac做一个Wifi热点。&lt;/p&gt;
+&lt;p&gt; &lt;img src=&quot;/img/搭建IPv6测试环境02.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;最后使用iPhone连接上这个刚创建好的热点就可以测试了。和平常创建Wifi热点的区别是，这次我们创建的是一个本地的IPv6 DNS64/NAT64网络。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+</content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;从6月初开始，苹果修改了App Store应用审核政策，规定所有提交审核的iOS应用都必须支持IPv6-only连网标准。虽然苹果早在去年的在WWDC2015大会上就宣布过iOS 9将转用IPv6-only网络服务，但是该消息来的依旧是如此的突然，导致大部分开发者毫无一丝防备。&lt;/p&gt;
+    
+    </summary>
+    
+      <category term="疑难杂症" scheme="http://hackmz.com/categories/%E7%96%91%E9%9A%BE%E6%9D%82%E7%97%87/"/>
+    
+    
+      <category term="iOS" scheme="http://hackmz.com/tags/iOS/"/>
+    
+      <category term="上线" scheme="http://hackmz.com/tags/%E4%B8%8A%E7%BA%BF/"/>
+    
+      <category term="审核" scheme="http://hackmz.com/tags/%E5%AE%A1%E6%A0%B8/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>用CocoaPods管理你的第三方库</title>
+    <link href="http://hackmz.com/2016/06/27/%E7%94%A8CocoaPods%E7%AE%A1%E7%90%86%E4%BD%A0%E7%9A%84%E7%AC%AC%E4%B8%89%E6%96%B9%E5%BA%93/"/>
+    <id>http://hackmz.com/2016/06/27/用CocoaPods管理你的第三方库/</id>
+    <published>2016-06-27T06:30:16.000Z</published>
+    <updated>2016-06-29T02:00:11.000Z</updated>
+    
+    <content type="html">&lt;p&gt;在开发一个iOS应用时，不可避免的会使用很多的第三方库，而一个一个的手动下载和添加是很麻烦的，通过CocoaPods则可以让我们很方便的下载和管理这些第三方依赖库。好吧，又一个懒人科技。&lt;/p&gt;
+&lt;a id=&quot;more&quot;&gt;&lt;/a&gt;
+&lt;h3 id=&quot;CocoaPods安装&quot;&gt;CocoaPods安装&lt;/h3&gt;&lt;p&gt;CocoaPods是依赖于Ruby实现的，因此在使用CocoaPods时，我们还需要事先搭建好Ruby环境，Mac OS本身自带Ruby，为了确保Ruby是最新的，还是更新一下比较好。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&lt;span class=&quot;variable&quot;&gt;$ruby&lt;/span&gt; -v    &lt;span class=&quot;comment&quot;&gt;// 查看ruby版本的命令 &lt;/span&gt;
+&lt;span class=&quot;variable&quot;&gt;$sudo&lt;/span&gt; gem update —&lt;span class=&quot;keyword&quot;&gt;system&lt;/span&gt;    &lt;span class=&quot;comment&quot;&gt;// 更新ruby，需要管理员权限&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;安装CocoaPods需要访问cocoapods.org，因为墙的存在，可能导致速度很慢，因此在安装之前先更换下载源。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&lt;span class=&quot;variable&quot;&gt;$gem&lt;/span&gt; sources --remove https:&lt;span class=&quot;comment&quot;&gt;//rubygems.org/    // 移除现有 Ruby 默认源&lt;/span&gt;
+&lt;span class=&quot;variable&quot;&gt;$gem&lt;/span&gt; sources -&lt;span class=&quot;tag&quot;&gt;a&lt;/span&gt; https:&lt;span class=&quot;comment&quot;&gt;//ruby.taobao.org/    // 使用新的源&lt;/span&gt;
+&lt;span class=&quot;variable&quot;&gt;$gem&lt;/span&gt; sources -l    &lt;span class=&quot;comment&quot;&gt;// 验证新源是否替换成功&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;提示如下则代表替换成功。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&lt;span class=&quot;keyword&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;keyword&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;keyword&quot;&gt;*&lt;/span&gt; CURRENT SOURCES &lt;span class=&quot;keyword&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;keyword&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;keyword&quot;&gt;*&lt;/span&gt;
+http://ruby.taobao.org/
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;安装CocoaPods，耐心等待。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&lt;span class=&quot;variable&quot;&gt;$sudo&lt;/span&gt; gem install cocoapods
+&lt;span class=&quot;variable&quot;&gt;$pod&lt;/span&gt; setup
+&lt;/code&gt;&lt;/pre&gt;&lt;h3 id=&quot;CocoaPods使用方法&quot;&gt;CocoaPods使用方法&lt;/h3&gt;&lt;p&gt;搜索需要的类库，使用如下命令，将会输出搜索到的所有类库版本和信息。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&lt;span class=&quot;label&quot;&gt;$pod&lt;/span&gt; &lt;span class=&quot;keyword&quot;&gt;search&lt;/span&gt; 类库名
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;使用cd命令到工程目录下，并创建Podfile文件&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&lt;span class=&quot;variable&quot;&gt;$touch&lt;/span&gt; Podfile
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;打开并编辑Podfile文件&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&lt;span class=&quot;variable&quot;&gt;$vim&lt;/span&gt; Podfile
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;下面提供了几个编辑Podfile文件的模板&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;p&gt;单个target中使用Pods依赖库&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&lt;span class=&quot;built_in&quot;&gt;platform&lt;/span&gt; :ios, &lt;span class=&quot;string&quot;&gt;&#39;8.0&#39;&lt;/span&gt;   &lt;span class=&quot;comment&quot;&gt; // 所有库支持的IOS最低版本&lt;/span&gt;
+target &lt;span class=&quot;string&quot;&gt;&#39;MyApp&#39;&lt;/span&gt; &lt;span class=&quot;built_in&quot;&gt;do&lt;/span&gt;       &lt;span class=&quot;comment&quot;&gt; // &#39;MyApp&#39;是项目工程的target&lt;/span&gt;
+    pod &lt;span class=&quot;string&quot;&gt;&#39;AFNetworking&#39;&lt;/span&gt;, &lt;span class=&quot;string&quot;&gt;&#39;~&amp;gt; 2.6&#39;&lt;/span&gt;
+    pod &lt;span class=&quot;string&quot;&gt;&#39;ORStackView&#39;&lt;/span&gt;, &lt;span class=&quot;string&quot;&gt;&#39;~&amp;gt; 3.0&#39;&lt;/span&gt;
+    pod &lt;span class=&quot;string&quot;&gt;&#39;SwiftyJSON&#39;&lt;/span&gt;, &lt;span class=&quot;string&quot;&gt;&#39;~&amp;gt; 2.3&#39;&lt;/span&gt;
+&lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;end&lt;/span&gt;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;多个target中使用相同的Pods依赖库        &lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;link_with ‘TargetOne’, ‘TargetTwo’    &lt;span class=&quot;comment&quot;&gt;//使用link_with关键字来实现&lt;/span&gt;
+&lt;span class=&quot;string&quot;&gt;platform :&lt;/span&gt;ios
+    pod &lt;span class=&quot;string&quot;&gt;&#39;Reachability&#39;&lt;/span&gt;, &lt;span class=&quot;string&quot;&gt;&#39;~&amp;gt; 3.0.0&#39;&lt;/span&gt;
+    pod &lt;span class=&quot;string&quot;&gt;&#39;SBJson&#39;&lt;/span&gt;, &lt;span class=&quot;string&quot;&gt;&#39;~&amp;gt; 4.0.0&#39;&lt;/span&gt;
+&lt;span class=&quot;string&quot;&gt;platform :&lt;/span&gt;ios, &lt;span class=&quot;string&quot;&gt;&#39;7.0&#39;&lt;/span&gt;
+    pod &lt;span class=&quot;string&quot;&gt;&#39;AFNetworking&#39;&lt;/span&gt;, &lt;span class=&quot;string&quot;&gt;&#39;~&amp;gt; 2.0&#39;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;不同的target使用完全不同的Pods依赖库&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;target :&lt;span class=&quot;string&quot;&gt;&#39;TargetOne&#39;&lt;/span&gt; &lt;span class=&quot;built_in&quot;&gt;do&lt;/span&gt;
+&lt;span class=&quot;built_in&quot;&gt;platform&lt;/span&gt; :ios
+    pod &lt;span class=&quot;string&quot;&gt;&#39;Reachability&#39;&lt;/span&gt;, &lt;span class=&quot;string&quot;&gt;&#39;~&amp;gt; 3.0.0&#39;&lt;/span&gt;
+    pod &lt;span class=&quot;string&quot;&gt;&#39;SBJson&#39;&lt;/span&gt;, &lt;span class=&quot;string&quot;&gt;&#39;~&amp;gt; 4.0.0&#39;&lt;/span&gt;
+&lt;span class=&quot;built_in&quot;&gt;platform&lt;/span&gt; :ios, &lt;span class=&quot;string&quot;&gt;&#39;7.0&#39;&lt;/span&gt;
+    pod &lt;span class=&quot;string&quot;&gt;&#39;AFNetworking&#39;&lt;/span&gt;, &lt;span class=&quot;string&quot;&gt;&#39;~&amp;gt; 2.0&#39;&lt;/span&gt;
+&lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;end&lt;/span&gt;&lt;/span&gt;
+target :&lt;span class=&quot;string&quot;&gt;&#39;TargetTwo&#39;&lt;/span&gt; &lt;span class=&quot;built_in&quot;&gt;do&lt;/span&gt;
+    pod &lt;span class=&quot;string&quot;&gt;&#39;OpenUDID&#39;&lt;/span&gt;, &lt;span class=&quot;string&quot;&gt;&#39;~&amp;gt; 1.0.0&#39;&lt;/span&gt;
+&lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;end&lt;/span&gt;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;将第三方库导入工程&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&lt;span class=&quot;variable&quot;&gt;$pod&lt;/span&gt; install    &lt;span class=&quot;comment&quot;&gt;// 每次更改Podfile文件都需要重新执行&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;最后通过workspace文件打开工程。&lt;/p&gt;
+&lt;h3 id=&quot;CocoaPods常用命令&quot;&gt;CocoaPods常用命令&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;pod install&lt;/p&gt;
+&lt;p&gt;  根据Podfile文件指定的内容，安装依赖库，如果有Podfile.lock文件而且对应的Podfile文件未被修改，则会根据Podfile.lock文件指定的版本安装。&lt;/p&gt;
+&lt;p&gt;  每次更新了Podfile文件时，都需要重新执行该命令，以便重新安装Pods依赖库。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;pod update&lt;/p&gt;
+&lt;p&gt;  若果Podfile中指定的依赖库版本不是写死的，当对应的依赖库有了更新，无论有没有Podfile.lock文件都会去获取Podfile文件描述的允许获取到的最新依赖库版本。也可以使用&lt;code&gt;pod update 库名&lt;/code&gt;的方式对某个依赖库进行单独更新。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;pod search 类库名&lt;/p&gt;
+&lt;p&gt;  搜索得到类库的版本信息，然后编写Podfile文件，具体写法和表示含义有：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;pod ‘AFNetworking’      &lt;span class=&quot;comment&quot;&gt;//不显式指定依赖库版本，表示每次都获取最新版本&lt;/span&gt;
+pod ‘AFNetworking’, ‘&lt;span class=&quot;number&quot;&gt;2.0&lt;/span&gt;’        &lt;span class=&quot;comment&quot;&gt;//只使用2.0版本&lt;/span&gt;
+pod ‘AFNetworking’, ‘&amp;gt; &lt;span class=&quot;number&quot;&gt;2.0&lt;/span&gt;’        &lt;span class=&quot;comment&quot;&gt;//使用高于2.0的版本&lt;/span&gt;
+pod ‘AFNetworking’, ‘&amp;gt;= &lt;span class=&quot;number&quot;&gt;2.0&lt;/span&gt;’     &lt;span class=&quot;comment&quot;&gt;//使用大于或等于2.0的版本&lt;/span&gt;
+pod ‘AFNetworking’, ‘&amp;lt; &lt;span class=&quot;number&quot;&gt;2.0&lt;/span&gt;’        &lt;span class=&quot;comment&quot;&gt;//使用小于2.0的版本&lt;/span&gt;
+pod ‘AFNetworking’, ‘&amp;lt;= &lt;span class=&quot;number&quot;&gt;2.0&lt;/span&gt;’     &lt;span class=&quot;comment&quot;&gt;//使用小于或等于2.0的版本&lt;/span&gt;
+pod ‘AFNetworking’, ‘~&amp;gt; &lt;span class=&quot;number&quot;&gt;0.1&lt;/span&gt;.&lt;span class=&quot;number&quot;&gt;2&lt;/span&gt;’   &lt;span class=&quot;comment&quot;&gt;//使用大于等于0.1.2但小于0.2的版本&lt;/span&gt;
+pod ‘AFNetworking’, ‘~&amp;gt;&lt;span class=&quot;number&quot;&gt;0.1&lt;/span&gt;’     &lt;span class=&quot;comment&quot;&gt;//使用大于等于0.1但小于1.0的版本&lt;/span&gt;
+pod ‘AFNetworking’, ‘~&amp;gt;&lt;span class=&quot;number&quot;&gt;0&lt;/span&gt;’         &lt;span class=&quot;comment&quot;&gt;//高于0的版本，写这个限制和什么都不写是一个效果，都表示使用最新版本&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;pod setup&lt;/p&gt;
+&lt;p&gt;  用于跟新本地电脑上的保存的Pods依赖库tree。由于每天有很多人会创建或者更新Pods依赖库，这条命令执行的时候会相当慢，还请耐心等待。我们需要经常执行这条命令，否则有新的Pods依赖库的时候，执行pod search命令是搜不出来的。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&quot;错误汇总&quot;&gt;错误汇总&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;https协议&lt;/p&gt;
+&lt;p&gt;  &lt;strong&gt;错误描述：&lt;/strong&gt;Error fetching &lt;a href=&quot;http://ruby.taobao.org/:bad&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;http://ruby.taobao.org/:bad&lt;/a&gt; response Not Found 404 (&lt;a href=&quot;http://ruby.taobao.org/specs.4.8.gz&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;http://ruby.taobao.org/specs.4.8.gz&lt;/a&gt;)&lt;/p&gt;
+&lt;p&gt;  &lt;strong&gt;解决方案：&lt;/strong&gt;把安装流程中&lt;code&gt;gem sources -a http://ruby.taobao.org/&lt;/code&gt;改为：&lt;code&gt;gem sources -a https://ruby.taobao.org/&lt;/code&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;苹果OS X EL Capitan系统问题&lt;/p&gt;
+&lt;p&gt;  &lt;strong&gt;错误描述：&lt;/strong&gt;ERROR:  While executing gem … (Errno::EPERM)Operation not permitted - /usr/bin/pod&lt;/p&gt;
+&lt;p&gt;  &lt;strong&gt;解决方案：&lt;/strong&gt;苹果系统升级OS X EL Capitan后会出现的插件错误，将安装流程&lt;code&gt;sudo gem install cocoapods&lt;/code&gt;改为&lt;code&gt;sudo gem install -n /usr/local/bin cocoapods&lt;/code&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;添加平台版本号&lt;/p&gt;
+&lt;p&gt;  &lt;strong&gt;错误描述：&lt;/strong&gt;[!] Unable to satisfy the following requirements:- `AFNetworking (~&amp;gt; 2.3.1)` required by `Podfile` Specs satisfying the `AFNetworking (~&amp;gt; 2.3.1)` dependency were found, but they required a higher minimum deployment target.&lt;/p&gt;
+&lt;p&gt;  &lt;strong&gt;解决方案：&lt;/strong&gt;Podfile文件中platform:ios,‘8.0’后边的8.0是平台版本号，一定要加上。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;指明target&lt;/p&gt;
+&lt;p&gt;  &lt;strong&gt;错误描述&lt;/strong&gt;：The dependency `` is not used in any concrete target&lt;/p&gt;
+&lt;p&gt;  &lt;strong&gt;解决方案：&lt;/strong&gt; Podfile升级之后到最新版本，pod里的内容必须明确指出所用第三方库的target。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&lt;span class=&quot;label&quot;&gt;$pod&lt;/span&gt; --&lt;span class=&quot;keyword&quot;&gt;version&lt;/span&gt;    &lt;span class=&quot;comment&quot;&gt;//查看pod版本&lt;/span&gt;
+&lt;span class=&quot;label&quot;&gt;$sudo&lt;/span&gt; gem install cocoapods --pre    &lt;span class=&quot;comment&quot;&gt;// pod升级&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;  Podfile文件使用如下格式：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&lt;span class=&quot;built_in&quot;&gt;platform&lt;/span&gt; :ios, &lt;span class=&quot;string&quot;&gt;&#39;8.0&#39;&lt;/span&gt;
+target &lt;span class=&quot;string&quot;&gt;&#39;MyApp&#39;&lt;/span&gt; &lt;span class=&quot;built_in&quot;&gt;do&lt;/span&gt;   &lt;span class=&quot;comment&quot;&gt; // &#39;MyApp&#39;是项目工程的target&lt;/span&gt;
+      pod &lt;span class=&quot;string&quot;&gt;&#39;AFNetworking&#39;&lt;/span&gt;, &lt;span class=&quot;string&quot;&gt;&#39;~&amp;gt; 2.6&#39;&lt;/span&gt;
+      pod &lt;span class=&quot;string&quot;&gt;&#39;ORStackView&#39;&lt;/span&gt;, &lt;span class=&quot;string&quot;&gt;&#39;~&amp;gt; 3.0&#39;&lt;/span&gt;
+      pod &lt;span class=&quot;string&quot;&gt;&#39;SwiftyJSON&#39;&lt;/span&gt;, &lt;span class=&quot;string&quot;&gt;&#39;~&amp;gt; 2.3&#39;&lt;/span&gt;
+&lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;end&lt;/span&gt;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;  或者&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&lt;span class=&quot;built_in&quot;&gt;platform&lt;/span&gt; :ios, &lt;span class=&quot;string&quot;&gt;&#39;8.0&#39;&lt;/span&gt;
+def pods
+      pod &lt;span class=&quot;string&quot;&gt;&#39;AFNetworking&#39;&lt;/span&gt;, &lt;span class=&quot;string&quot;&gt;&#39;~&amp;gt; 2.6&#39;&lt;/span&gt;
+      pod &lt;span class=&quot;string&quot;&gt;&#39;ORStackView&#39;&lt;/span&gt;, &lt;span class=&quot;string&quot;&gt;&#39;~&amp;gt; 3.0&#39;&lt;/span&gt;
+      pod &lt;span class=&quot;string&quot;&gt;&#39;SwiftyJSON&#39;&lt;/span&gt;, &lt;span class=&quot;string&quot;&gt;&#39;~&amp;gt; 2.3&#39;&lt;/span&gt;
+&lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;end&lt;/span&gt;&lt;/span&gt;
+target &lt;span class=&quot;string&quot;&gt;&#39;MyApp&#39;&lt;/span&gt; &lt;span class=&quot;built_in&quot;&gt;do&lt;/span&gt;
+      pods
+&lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;end&lt;/span&gt;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&quot;参考&quot;&gt;参考&lt;/h3&gt;&lt;p&gt;&lt;a href=&quot;https://ruby.taobao.org&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;RubyGems 镜像&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;http://www.jianshu.com/p/7884ec8da77e&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;cocoapods使用指南&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;http://www.exiatian.com/cocoapods安装使用及配置私有库/&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;CocoaPods安装使用及配置私有库&lt;/a&gt;&lt;/p&gt;
+</content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;在开发一个iOS应用时，不可避免的会使用很多的第三方库，而一个一个的手动下载和添加是很麻烦的，通过CocoaPods则可以让我们很方便的下载和管理这些第三方依赖库。好吧，又一个懒人科技。&lt;/p&gt;
+    
+    </summary>
+    
+      <category term="Xcode配置" scheme="http://hackmz.com/categories/Xcode%E9%85%8D%E7%BD%AE/"/>
+    
+    
+      <category term="iOS" scheme="http://hackmz.com/tags/iOS/"/>
+    
+      <category term="工具" scheme="http://hackmz.com/tags/%E5%B7%A5%E5%85%B7/"/>
+    
+      <category term="开发" scheme="http://hackmz.com/tags/%E5%BC%80%E5%8F%91/"/>
+    
+      <category term="管理" scheme="http://hackmz.com/tags/%E7%AE%A1%E7%90%86/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>OC中使用宏定义进行调试</title>
+    <link href="http://hackmz.com/2016/06/02/OC%E4%B8%AD%E4%BD%BF%E7%94%A8%E5%AE%8F%E5%AE%9A%E4%B9%89%E8%BF%9B%E8%A1%8C%E8%B0%83%E8%AF%95/"/>
+    <id>http://hackmz.com/2016/06/02/OC中使用宏定义进行调试/</id>
+    <published>2016-06-02T10:01:46.000Z</published>
+    <updated>2016-07-11T06:51:03.000Z</updated>
+    
+    <content type="html">&lt;p&gt;想了想还是把OC中经常用到的宏定义语法单独列了一章出来，毕竟对于不同的语言，不同的平台，使用起来还是千差万别的，如果对&lt;code&gt;#define&lt;/code&gt;还不熟悉的朋友可以参看以前写的一篇博客&lt;a href=&quot;http://www.hackmz.com/2015/05/21/define用法总结/&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;#define用法总结&lt;/a&gt;。&lt;/p&gt;
+&lt;a id=&quot;more&quot;&gt;&lt;/a&gt;
+&lt;h3 id=&quot;…的用法&quot;&gt;…的用法&lt;/h3&gt;&lt;p&gt;代码调试，用的最多的方法就是打印数据，对于输出方法来说，参数一般都是可变的，在调试程序时，你可能希望自己定义参数可变的输出函数，那么可变参数宏会是一个选择。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&lt;span class=&quot;id&quot;&gt;#define&lt;/span&gt; &lt;span class=&quot;tag&quot;&gt;FMWLog&lt;/span&gt;(id, ...) &lt;span class=&quot;tag&quot;&gt;NSLog&lt;/span&gt;((@&lt;span class=&quot;string&quot;&gt;&quot;%s [Line %d] &quot;&lt;/span&gt; id),__PRETTY_FUNCTION__, __LINE__, ##__VA_ARGS__);
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;其中…表示可变的参数列表，##&lt;strong&gt;VA_ARGS&lt;/strong&gt;在预处理中为实际的参数集。&lt;/p&gt;
+&lt;h3 id=&quot;宏定义过滤NSLog&quot;&gt;宏定义过滤NSLog&lt;/h3&gt;&lt;p&gt;应用开发过程中，不可避免的会大量使用NSLog打印数据，但是在项目上线或是release的时候为了提高应用的执行效率，我们需要去掉这些打印方法。此时你辛辛苦苦写了那么多的NSLog，我们不可能手动去注释，有些做法是设一个开关变量，企图用这个总开关开启或注释NSLog。但更方便的则是利用宏定义进行设置。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;对于系统的NSLog方法&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&lt;span class=&quot;preprocessor&quot;&gt;#ifndef __OPTIMIZE__&lt;/span&gt;
+&lt;span class=&quot;preprocessor&quot;&gt;#define NSLog(...) NSLog(__VA_ARGS__)&lt;/span&gt;
+&lt;span class=&quot;preprocessor&quot;&gt;#else&lt;/span&gt;
+&lt;span class=&quot;preprocessor&quot;&gt;#define NSLog(...) {}&lt;/span&gt;
+&lt;span class=&quot;preprocessor&quot;&gt;#endif&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;如果是自定义输出方法&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&lt;span class=&quot;preprocessor&quot;&gt;#&lt;span class=&quot;keyword&quot;&gt;if&lt;/span&gt; DEBUG    &lt;span class=&quot;comment&quot;&gt;// 也可用#ifndef __OPTIMIZE__来代替&lt;/span&gt;&lt;/span&gt;
+    &lt;span class=&quot;preprocessor&quot;&gt;#&lt;span class=&quot;keyword&quot;&gt;define&lt;/span&gt; FMWLog(id, ...) NSLog((@&quot;%s [Line %d] &quot; id),__PRETTY_FUNCTION__, __LINE__, ##__VA_ARGS__);&lt;/span&gt;
+&lt;span class=&quot;preprocessor&quot;&gt;#&lt;span class=&quot;keyword&quot;&gt;else&lt;/span&gt;&lt;/span&gt;
+    &lt;span class=&quot;preprocessor&quot;&gt;#&lt;span class=&quot;keyword&quot;&gt;define&lt;/span&gt; FMWLog(id, ...)&lt;/span&gt;
+&lt;span class=&quot;preprocessor&quot;&gt;#&lt;span class=&quot;keyword&quot;&gt;endif&lt;/span&gt;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;这样设置后，只需要在Product -&amp;gt;Scheme-&amp;gt;Edit Scheme -&amp;gt;info选择，是release ,还是debug版本即可。如果是debug版本，则打印数据，如果是release版本则不打印。&lt;/p&gt;
+&lt;p&gt;我们发布到appstore上的版本均是release版本，这里简单说下这两个版本的差异。release是发行版本，比debug版本要小一些，他们调用两个不同底层库，debug包含的信息多，可以断点调试，单步执行，使用TRACE/ASSERT等调试输出语句，但是release 版本不包含调试信息，运行速度比较快。&lt;/p&gt;
+&lt;p&gt;另外在此处设置的DEBUG参数可以在下面的路径进行设置：&lt;code&gt;工程-&amp;gt;Target-&amp;gt;Build Setting -&amp;gt;Preprocessor Macros&lt;/code&gt;。默认系统已经给出了DEBUG的参数。如果要增加新的参数，则在那里进行增加。&lt;/p&gt;
+&lt;h3 id=&quot;__OBJC__宏定义&quot;&gt;__OBJC__宏定义&lt;/h3&gt;&lt;p&gt;我们经常会见到在.pch文件中加上&lt;code&gt;#ifdef __OBJC__&lt;/code&gt;这句宏定义，它的作用是什么呢？&lt;/p&gt;
+&lt;p&gt;因为在一个OC工程中，可能包含.m、.mm、.c、.cpp四类编译文件，这四类文件均会引用.pch预编译头。在编译.c、.cpp时，因为语法不兼容OC，所以预编译头中不能包含objc代码。&lt;/p&gt;
+&lt;p&gt;而.pch是多类源文件共用的，所以在pch中，oc头文件要用__OBJC__包含起来，表示宏内引用的文件确保只被使用Objective-C语言的文件所引用，保证引用关系的清晰。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&lt;span class=&quot;id&quot;&gt;#ifdef&lt;/span&gt; __OBJC__
+&lt;span class=&quot;id&quot;&gt;#import&lt;/span&gt; &amp;lt;UIKit/UIKit.h&amp;gt;
+&lt;span class=&quot;id&quot;&gt;#import&lt;/span&gt; &lt;span class=&quot;string&quot;&gt;&quot;AcctConst.h&quot;&lt;/span&gt;
+&lt;span class=&quot;id&quot;&gt;#import&lt;/span&gt; &lt;span class=&quot;string&quot;&gt;&quot;AcctHeader.h&quot;&lt;/span&gt;
+&lt;span class=&quot;id&quot;&gt;#import&lt;/span&gt; &lt;span class=&quot;string&quot;&gt;&quot;AcctMacro.h&quot;&lt;/span&gt;
+&lt;span class=&quot;id&quot;&gt;#import&lt;/span&gt; &lt;span class=&quot;string&quot;&gt;&quot;EMSDK.h&quot;&lt;/span&gt;
+#endif
+&lt;/code&gt;&lt;/pre&gt;&lt;h3 id=&quot;宏定义指令&quot;&gt;宏定义指令&lt;/h3&gt;&lt;pre&gt;&lt;code&gt;&lt;span class=&quot;preprocessor&quot;&gt;#&lt;span class=&quot;keyword&quot;&gt;define&lt;/span&gt; 定义一个预处理宏&lt;/span&gt;
+&lt;span class=&quot;preprocessor&quot;&gt;#&lt;span class=&quot;keyword&quot;&gt;undef&lt;/span&gt; 取消宏的定义&lt;/span&gt;
+&lt;span class=&quot;preprocessor&quot;&gt;#include 包含文件命令&lt;/span&gt;
+&lt;span class=&quot;preprocessor&quot;&gt;#include_next 与#include相似, 但它有着特殊的用途&lt;/span&gt;
+&lt;span class=&quot;preprocessor&quot;&gt;#&lt;span class=&quot;keyword&quot;&gt;if&lt;/span&gt; 编译预处理中的条件命令, 相当于C语法中的&lt;span class=&quot;keyword&quot;&gt;if&lt;/span&gt;语句&lt;/span&gt;
+&lt;span class=&quot;preprocessor&quot;&gt;#ifdef 判断某个宏是否被定义, 若已定义, 执行随后的语句&lt;/span&gt;
+&lt;span class=&quot;preprocessor&quot;&gt;#ifndef 与#ifdef相反, 判断某个宏是否未被定义&lt;/span&gt;
+&lt;span class=&quot;preprocessor&quot;&gt;#&lt;span class=&quot;keyword&quot;&gt;elif&lt;/span&gt; 若#&lt;span class=&quot;keyword&quot;&gt;if&lt;/span&gt;, #ifdef, #ifndef或前面的#&lt;span class=&quot;keyword&quot;&gt;elif&lt;/span&gt;条件不满足, 则执行#&lt;span class=&quot;keyword&quot;&gt;elif&lt;/span&gt;之后的语句, 相当于C语法中的&lt;span class=&quot;keyword&quot;&gt;else&lt;/span&gt;-&lt;span class=&quot;keyword&quot;&gt;if&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;preprocessor&quot;&gt;#&lt;span class=&quot;keyword&quot;&gt;else&lt;/span&gt; 与#&lt;span class=&quot;keyword&quot;&gt;if&lt;/span&gt;, #ifdef, #ifndef对应, 若这些条件不满足, 则执行#&lt;span class=&quot;keyword&quot;&gt;else&lt;/span&gt;之后的语句, 相当于C语法中的&lt;span class=&quot;keyword&quot;&gt;else&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;preprocessor&quot;&gt;#&lt;span class=&quot;keyword&quot;&gt;endif&lt;/span&gt; #&lt;span class=&quot;keyword&quot;&gt;if&lt;/span&gt;, #ifdef, #ifndef这些条件命令的结束标志.&lt;/span&gt;
+&lt;span class=&quot;preprocessor&quot;&gt;#defined 与#&lt;span class=&quot;keyword&quot;&gt;if&lt;/span&gt;, #&lt;span class=&quot;keyword&quot;&gt;elif&lt;/span&gt;配合使用, 判断某个宏是否被定义&lt;/span&gt;
+&lt;span class=&quot;preprocessor&quot;&gt;#&lt;span class=&quot;keyword&quot;&gt;line&lt;/span&gt; 标志该语句所在的行号&lt;/span&gt;
+&lt;span class=&quot;preprocessor&quot;&gt;# 将宏参数替代为以参数值为内容的字符窜常量&lt;/span&gt;
+&lt;span class=&quot;preprocessor&quot;&gt;## 将两个相邻的标记(token)连接为一个单独的标记&lt;/span&gt;
+&lt;span class=&quot;preprocessor&quot;&gt;#&lt;span class=&quot;keyword&quot;&gt;pragma&lt;/span&gt; 说明编译器信息&lt;/span&gt;
+&lt;span class=&quot;preprocessor&quot;&gt;#&lt;span class=&quot;keyword&quot;&gt;warning&lt;/span&gt; 显示编译警告信息&lt;/span&gt;
+&lt;span class=&quot;preprocessor&quot;&gt;#&lt;span class=&quot;keyword&quot;&gt;error&lt;/span&gt; 显示编译错误信息&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;h3 id=&quot;一些系统宏定义&quot;&gt;一些系统宏定义&lt;/h3&gt;&lt;pre&gt;&lt;code&gt;&lt;span class=&quot;comment&quot;&gt;##__VA_ARGS__    // __VA_ARGS__ 是一个可变参数的宏。宏前面加 上##的作用在于，当可变参数的个数为0时，这里的##起到把前面多余的&quot;,&quot;去掉的作用,否则会编译出错。&lt;/span&gt;
+
+&lt;span class=&quot;keyword&quot;&gt;__FILE__&lt;/span&gt;    &lt;span class=&quot;comment&quot;&gt;// 在预编译时会替换成当前的源文件名&lt;/span&gt;
+
+&lt;span class=&quot;keyword&quot;&gt;__LINE__&lt;/span&gt;    &lt;span class=&quot;comment&quot;&gt;// 在预编译时会替换成当前的行号&lt;/span&gt;
+
+&lt;span class=&quot;keyword&quot;&gt;__FUNCTION__&lt;/span&gt;    &lt;span class=&quot;comment&quot;&gt;// 在预编译时会替换成当前的函数名称&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;h3 id=&quot;开发常见的宏定义&quot;&gt;开发常见的宏定义&lt;/h3&gt;&lt;pre&gt;&lt;code&gt;&lt;span class=&quot;comment&quot;&gt;//AppDelegate&lt;/span&gt;
+&lt;span class=&quot;preprocessor&quot;&gt;#&lt;span class=&quot;keyword&quot;&gt;define&lt;/span&gt; APPDELEGATE [(AppDelegate*)[UIApplication sharedApplication]  delegate]&lt;/span&gt;
+&lt;span class=&quot;comment&quot;&gt;//----------------------系统设备相关----------------------------&lt;/span&gt;
+&lt;span class=&quot;comment&quot;&gt;//获取设备屏幕尺寸&lt;/span&gt;
+&lt;span class=&quot;preprocessor&quot;&gt;#&lt;span class=&quot;keyword&quot;&gt;define&lt;/span&gt; SCREEN_WIDTH ([UIScreen mainScreen].bounds.size.width)&lt;/span&gt;
+&lt;span class=&quot;preprocessor&quot;&gt;#&lt;span class=&quot;keyword&quot;&gt;define&lt;/span&gt; SCREEN_HEIGHT ([UIScreen mainScreen].bounds.size.height)&lt;span class=&quot;comment&quot;&gt;//应用尺寸&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;preprocessor&quot;&gt;#&lt;span class=&quot;keyword&quot;&gt;define&lt;/span&gt; APP_WIDTH [[UIScreen mainScreen]applicationFrame].size.width&lt;/span&gt;
+&lt;span class=&quot;preprocessor&quot;&gt;#&lt;span class=&quot;keyword&quot;&gt;define&lt;/span&gt; APP_HEIGHT [[UIScreen mainScreen]applicationFrame].size.height&lt;/span&gt;
+&lt;span class=&quot;comment&quot;&gt;//获取系统版本&lt;/span&gt;
+&lt;span class=&quot;preprocessor&quot;&gt;#&lt;span class=&quot;keyword&quot;&gt;define&lt;/span&gt; IOS_VERSION [[[UIDevice currentDevice] systemVersion] floatValue]&lt;/span&gt;
+&lt;span class=&quot;preprocessor&quot;&gt;#&lt;span class=&quot;keyword&quot;&gt;define&lt;/span&gt; CurrentSystemVersion [[UIDevice currentDevice] systemVersion]&lt;/span&gt;
+&lt;span class=&quot;preprocessor&quot;&gt;#&lt;span class=&quot;keyword&quot;&gt;define&lt;/span&gt; isIOS4 ([[[UIDevice currentDevice] systemVersion] intValue]==4)&lt;/span&gt;
+&lt;span class=&quot;preprocessor&quot;&gt;#&lt;span class=&quot;keyword&quot;&gt;define&lt;/span&gt; isIOS5 ([[[UIDevice currentDevice] systemVersion] intValue]==5)&lt;/span&gt;
+&lt;span class=&quot;preprocessor&quot;&gt;#&lt;span class=&quot;keyword&quot;&gt;define&lt;/span&gt; isIOS6 ([[[UIDevice currentDevice] systemVersion] intValue]==6)&lt;/span&gt;
+&lt;span class=&quot;preprocessor&quot;&gt;#&lt;span class=&quot;keyword&quot;&gt;define&lt;/span&gt; isAfterIOS4 ([[[UIDevice currentDevice] systemVersion] intValue]&amp;gt;4)&lt;/span&gt;
+&lt;span class=&quot;preprocessor&quot;&gt;#&lt;span class=&quot;keyword&quot;&gt;define&lt;/span&gt; isAfterIOS5 ([[[UIDevice currentDevice] systemVersion] intValue]&amp;gt;5)&lt;/span&gt;
+&lt;span class=&quot;preprocessor&quot;&gt;#&lt;span class=&quot;keyword&quot;&gt;define&lt;/span&gt; isAfterIOS6 ([[[UIDevice currentDevice] systemVersion] intValue]&amp;gt;6)&lt;/span&gt;
+&lt;span class=&quot;comment&quot;&gt;//获取当前语言&lt;/span&gt;
+&lt;span class=&quot;preprocessor&quot;&gt;#&lt;span class=&quot;keyword&quot;&gt;define&lt;/span&gt; CurrentLanguage ([[NSLocale preferredLanguages] objectAtIndex:0])&lt;/span&gt;
+
+&lt;span class=&quot;comment&quot;&gt;//判断是否 Phone 4/5/6 是否是iPad&lt;/span&gt;
+&lt;span class=&quot;preprocessor&quot;&gt;#&lt;span class=&quot;keyword&quot;&gt;define&lt;/span&gt; Phone4 ([UIScreen instancesRespondToSelector:@selector(currentMode)] ? CGSizeEqualToSize(CGSizeMake(640, 960), [[UIScreen mainScreen] currentMode].size) : NO)&lt;/span&gt;
+&lt;span class=&quot;preprocessor&quot;&gt;#&lt;span class=&quot;keyword&quot;&gt;define&lt;/span&gt; Phone5 ([UIScreen instancesRespondToSelector:@selector(currentMode)] ? CGSizeEqualToSize(CGSizeMake(640, 1136), [[UIScreen mainScreen] currentMode].size) : NO)&lt;/span&gt;
+&lt;span class=&quot;preprocessor&quot;&gt;#&lt;span class=&quot;keyword&quot;&gt;define&lt;/span&gt; Phone6 ([UIScreen instancesRespondToSelector:@selector(currentMode)] ? CGSizeEqualToSize(CGSizeMake(750, 1334), [[UIScreen mainScreen] currentMode].size) : NO)&lt;/span&gt;
+&lt;span class=&quot;preprocessor&quot;&gt;#&lt;span class=&quot;keyword&quot;&gt;define&lt;/span&gt; Phone6Plus ([UIScreen instancesRespondToSelector:@selector(currentMode)] ? CGSizeEqualToSize(CGSizeMake(1242,2208), [[UIScreen mainScreen] currentMode].size) : NO)&lt;/span&gt;
+&lt;span class=&quot;preprocessor&quot;&gt;#&lt;span class=&quot;keyword&quot;&gt;define&lt;/span&gt; isPad (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)&lt;/span&gt;
+&lt;span class=&quot;comment&quot;&gt;//判断是真机还是模拟器&lt;/span&gt;
+&lt;span class=&quot;preprocessor&quot;&gt;#&lt;span class=&quot;keyword&quot;&gt;if&lt;/span&gt; TARGET_OS_IPHONE&lt;/span&gt;
+&lt;span class=&quot;comment&quot;&gt;//iPhone Device&lt;/span&gt;
+&lt;span class=&quot;preprocessor&quot;&gt;#&lt;span class=&quot;keyword&quot;&gt;endif&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;preprocessor&quot;&gt;#&lt;span class=&quot;keyword&quot;&gt;if&lt;/span&gt; TARGET_IPHONE_SIMULATOR&lt;/span&gt;
+&lt;span class=&quot;comment&quot;&gt;//iPhone Simulator&lt;/span&gt;
+&lt;span class=&quot;preprocessor&quot;&gt;#&lt;span class=&quot;keyword&quot;&gt;endif&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;comment&quot;&gt;//----------------------系统设备相关----------------------------&lt;/span&gt;
+
+&lt;span class=&quot;comment&quot;&gt;//----------------------内存相关----------------------------&lt;/span&gt;
+&lt;span class=&quot;comment&quot;&gt;//使用ARC和不使用ARC&lt;/span&gt;
+&lt;span class=&quot;preprocessor&quot;&gt;#&lt;span class=&quot;keyword&quot;&gt;if&lt;/span&gt; __has_feature(objc_arc)&lt;/span&gt;
+&lt;span class=&quot;comment&quot;&gt;//compiling with ARC&lt;/span&gt;
+&lt;span class=&quot;preprocessor&quot;&gt;#&lt;span class=&quot;keyword&quot;&gt;else&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;comment&quot;&gt;// compiling without ARC&lt;/span&gt;
+&lt;span class=&quot;preprocessor&quot;&gt;#&lt;span class=&quot;keyword&quot;&gt;endif&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;comment&quot;&gt;//释放一个对象&lt;/span&gt;
+&lt;span class=&quot;preprocessor&quot;&gt;#&lt;span class=&quot;keyword&quot;&gt;define&lt;/span&gt; SAFE_DELETE(P) &lt;span class=&quot;keyword&quot;&gt;if&lt;/span&gt;(P) { [P release], P = nil; }&lt;/span&gt;
+&lt;span class=&quot;preprocessor&quot;&gt;#&lt;span class=&quot;keyword&quot;&gt;define&lt;/span&gt; SAFE_RELEASE(x) [x release];x=nil&lt;/span&gt;
+&lt;span class=&quot;comment&quot;&gt;//----------------------内存相关----------------------------&lt;/span&gt;
+
+&lt;span class=&quot;comment&quot;&gt;//----------------------图片相关----------------------------&lt;/span&gt;
+&lt;span class=&quot;comment&quot;&gt;//读取本地图片&lt;/span&gt;
+&lt;span class=&quot;preprocessor&quot;&gt;#&lt;span class=&quot;keyword&quot;&gt;define&lt;/span&gt; LOADIMAGE(file,ext) [UIImage imageWithContentsOfFile:[[NSBundle mainBundle]pathForResource:file ofType:ext]]&lt;/span&gt;
+&lt;span class=&quot;comment&quot;&gt;//定义UIImage对象&lt;/span&gt;
+&lt;span class=&quot;preprocessor&quot;&gt;#&lt;span class=&quot;keyword&quot;&gt;define&lt;/span&gt; IMAGE(A) [UIImage imageWithContentsOfFile:[[NSBundle mainBundle] pathForResource:A ofType:nil]]&lt;/span&gt;
+&lt;span class=&quot;comment&quot;&gt;//定义UIImage对象&lt;/span&gt;
+&lt;span class=&quot;preprocessor&quot;&gt;#&lt;span class=&quot;keyword&quot;&gt;define&lt;/span&gt; ImageNamed(_pointer) [UIImage imageNamed:_pointer]&lt;/span&gt;
+&lt;span class=&quot;comment&quot;&gt;//可拉伸的图片&lt;/span&gt;
+&lt;span class=&quot;preprocessor&quot;&gt;#&lt;span class=&quot;keyword&quot;&gt;define&lt;/span&gt; ResizableImage(name,top,left,bottom,right) [[UIImage imageNamed:name] resizableImageWithCapInsets:UIEdgeInsetsMake(top,left,bottom,right)]&lt;/span&gt;
+&lt;span class=&quot;preprocessor&quot;&gt;#&lt;span class=&quot;keyword&quot;&gt;define&lt;/span&gt; ResizableImageWithMode(name,top,left,bottom,right,mode) [[UIImage imageNamed:name] resizableImageWithCapInsets:UIEdgeInsetsMake(top,left,bottom,right) resizingMode:mode]&lt;/span&gt;
+&lt;span class=&quot;comment&quot;&gt;//建议使用前两种宏定义,性能高于后者&lt;/span&gt;
+&lt;span class=&quot;comment&quot;&gt;//----------------------图片相关----------------------------&lt;/span&gt;
+
+&lt;span class=&quot;comment&quot;&gt;//----------------------颜色相关---------------------------&lt;/span&gt;
+&lt;span class=&quot;comment&quot;&gt;// rgb颜色转换（16进制-&amp;gt;10进制）&lt;/span&gt;
+&lt;span class=&quot;preprocessor&quot;&gt;#&lt;span class=&quot;keyword&quot;&gt;define&lt;/span&gt; UIColorFromRGB(rgbValue) [UIColor colorWithRed:((float)((rgbValue &amp;amp; 0xFF0000) &amp;gt;&amp;gt; 16))/255.0 green:((float)((rgbValue &amp;amp; 0xFF00) &amp;gt;&amp;gt; 8))/255.0 blue:((float)(rgbValue &amp;amp; 0xFF))/255.0 alpha:1.0]&lt;/span&gt;
+&lt;span class=&quot;comment&quot;&gt;// 获取RGB颜色&lt;/span&gt;
+&lt;span class=&quot;preprocessor&quot;&gt;#&lt;span class=&quot;keyword&quot;&gt;define&lt;/span&gt; RGBA(r,g,b,a) [UIColor colorWithRed:r/255.0f green:g/255.0f blue:b/255.0f alpha:a]&lt;/span&gt;
+&lt;span class=&quot;preprocessor&quot;&gt;#&lt;span class=&quot;keyword&quot;&gt;define&lt;/span&gt; RGB(r,g,b) RGBA(r,g,b,1.0f)&lt;/span&gt;
+&lt;span class=&quot;comment&quot;&gt;//背景色&lt;/span&gt;
+&lt;span class=&quot;preprocessor&quot;&gt;#&lt;span class=&quot;keyword&quot;&gt;define&lt;/span&gt; BACKGROUND_COLOR [UIColor colorWithRed:242.0/255.0 green:236.0/255.0 blue:231.0/255.0 alpha:1.0]&lt;/span&gt;
+&lt;span class=&quot;comment&quot;&gt;//清除背景色&lt;/span&gt;
+&lt;span class=&quot;preprocessor&quot;&gt;#&lt;span class=&quot;keyword&quot;&gt;define&lt;/span&gt; CLEARCOLOR [UIColor clearColor]&lt;/span&gt;
+&lt;span class=&quot;comment&quot;&gt;//----------------------颜色相关--------------------------&lt;/span&gt;
+
+&lt;span class=&quot;comment&quot;&gt;//----------------------其他----------------------------&lt;/span&gt;
+&lt;span class=&quot;comment&quot;&gt;//方正黑体简体字体定义&lt;/span&gt;
+&lt;span class=&quot;preprocessor&quot;&gt;#&lt;span class=&quot;keyword&quot;&gt;define&lt;/span&gt; FONT(F) [UIFont fontWithName:@&quot;FZHTJW--GB1-0&quot; size:F]&lt;/span&gt;
+&lt;span class=&quot;comment&quot;&gt;//file&lt;/span&gt;
+&lt;span class=&quot;comment&quot;&gt;//读取文件的文本内容,默认编码为UTF-8&lt;/span&gt;
+&lt;span class=&quot;preprocessor&quot;&gt;#&lt;span class=&quot;keyword&quot;&gt;define&lt;/span&gt; FileString(name,ext)            [[NSString alloc] initWithContentsOfFile:[[NSBundle mainBundle] pathForResource:(name) ofType:(ext)] encoding:NSUTF8StringEncoding &lt;span class=&quot;keyword&quot;&gt;error&lt;/span&gt;:nil]&lt;/span&gt;
+&lt;span class=&quot;preprocessor&quot;&gt;#&lt;span class=&quot;keyword&quot;&gt;define&lt;/span&gt; FileDictionary(name,ext)        [[NSDictionary alloc] initWithContentsOfFile:[[NSBundle mainBundle] pathForResource:(name) ofType:(ext)]]&lt;/span&gt;
+&lt;span class=&quot;preprocessor&quot;&gt;#&lt;span class=&quot;keyword&quot;&gt;define&lt;/span&gt; FileArray(name,ext)             [[NSArray alloc] initWithContentsOfFile:[[NSBundle mainBundle] pathForResource:(name) ofType:(ext)]]&lt;/span&gt;
+&lt;span class=&quot;comment&quot;&gt;//G－C－D&lt;/span&gt;
+&lt;span class=&quot;preprocessor&quot;&gt;#&lt;span class=&quot;keyword&quot;&gt;define&lt;/span&gt; BACK(block) dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), block)&lt;/span&gt;
+&lt;span class=&quot;preprocessor&quot;&gt;#&lt;span class=&quot;keyword&quot;&gt;define&lt;/span&gt; MAIN(block) dispatch_async(dispatch_get_main_queue(),block)&lt;/span&gt;
+&lt;span class=&quot;comment&quot;&gt;//Alert&lt;/span&gt;
+&lt;span class=&quot;preprocessor&quot;&gt;#&lt;span class=&quot;keyword&quot;&gt;define&lt;/span&gt; ALERT(msg) [[[UIAlertView alloc] initWithTitle:nil message:msg delegate:nil cancelButtonTitle:@&quot;ok&quot; otherButtonTitles:nil] show]&lt;/span&gt;
+
+&lt;span class=&quot;comment&quot;&gt;//由角度获取弧度 有弧度获取角度&lt;/span&gt;
+&lt;span class=&quot;preprocessor&quot;&gt;#&lt;span class=&quot;keyword&quot;&gt;define&lt;/span&gt; degreesToRadian(x) (M_PI * (x) / 180.0)&lt;/span&gt;
+&lt;span class=&quot;preprocessor&quot;&gt;#&lt;span class=&quot;keyword&quot;&gt;define&lt;/span&gt; radianToDegrees(radian) (radian*180.0)/(M_PI)&lt;/span&gt;
+&lt;span class=&quot;comment&quot;&gt;//----------------------其他-------------------------------&lt;/span&gt;
+
+&lt;span class=&quot;comment&quot;&gt;//----------------------视图相关----------------------------&lt;/span&gt;
+&lt;span class=&quot;comment&quot;&gt;//设置需要粘贴的文字或图片&lt;/span&gt;
+&lt;span class=&quot;preprocessor&quot;&gt;#&lt;span class=&quot;keyword&quot;&gt;define&lt;/span&gt; PasteString(string)   [[UIPasteboard generalPasteboard] setString:string];&lt;/span&gt;
+&lt;span class=&quot;preprocessor&quot;&gt;#&lt;span class=&quot;keyword&quot;&gt;define&lt;/span&gt; PasteImage(image)     [[UIPasteboard generalPasteboard] setImage:image];&lt;/span&gt;
+
+&lt;span class=&quot;comment&quot;&gt;//得到视图的left top的X,Y坐标点&lt;/span&gt;
+&lt;span class=&quot;preprocessor&quot;&gt;#&lt;span class=&quot;keyword&quot;&gt;define&lt;/span&gt; VIEW_TX(view) (view.frame.origin.x)&lt;/span&gt;
+&lt;span class=&quot;preprocessor&quot;&gt;#&lt;span class=&quot;keyword&quot;&gt;define&lt;/span&gt; VIEW_TY(view) (view.frame.origin.y)&lt;/span&gt;
+
+&lt;span class=&quot;comment&quot;&gt;//得到视图的right bottom的X,Y坐标点&lt;/span&gt;
+&lt;span class=&quot;preprocessor&quot;&gt;#&lt;span class=&quot;keyword&quot;&gt;define&lt;/span&gt; VIEW_BX(view) (view.frame.origin.x + view.frame.size.width)&lt;/span&gt;
+&lt;span class=&quot;preprocessor&quot;&gt;#&lt;span class=&quot;keyword&quot;&gt;define&lt;/span&gt; VIEW_BY(view) (view.frame.origin.y + view.frame.size.height )&lt;/span&gt;
+
+&lt;span class=&quot;comment&quot;&gt;//得到视图的尺寸:宽度、高度&lt;/span&gt;
+&lt;span class=&quot;preprocessor&quot;&gt;#&lt;span class=&quot;keyword&quot;&gt;define&lt;/span&gt; VIEW_W(view)  (view.frame.size.width)&lt;/span&gt;
+&lt;span class=&quot;preprocessor&quot;&gt;#&lt;span class=&quot;keyword&quot;&gt;define&lt;/span&gt; VIEW_H(view)  (view.frame.size.height)&lt;/span&gt;
+&lt;span class=&quot;comment&quot;&gt;//得到frame的X,Y坐标点&lt;/span&gt;
+&lt;span class=&quot;preprocessor&quot;&gt;#&lt;span class=&quot;keyword&quot;&gt;define&lt;/span&gt; FRAME_TX(frame)  (frame.origin.x)&lt;/span&gt;
+&lt;span class=&quot;preprocessor&quot;&gt;#&lt;span class=&quot;keyword&quot;&gt;define&lt;/span&gt; FRAME_TY(frame)  (frame.origin.y)&lt;/span&gt;
+&lt;span class=&quot;comment&quot;&gt;//得到frame的宽度、高度&lt;/span&gt;
+&lt;span class=&quot;preprocessor&quot;&gt;#&lt;span class=&quot;keyword&quot;&gt;define&lt;/span&gt; FRAME_W(frame)  (frame.size.width)&lt;/span&gt;
+&lt;span class=&quot;preprocessor&quot;&gt;#&lt;span class=&quot;keyword&quot;&gt;define&lt;/span&gt; FRAME_H(frame)  (frame.size.height)&lt;/span&gt;
+&lt;span class=&quot;comment&quot;&gt;//----------------------视图相关----------------------------&lt;/span&gt;
+
+&lt;span class=&quot;comment&quot;&gt;//---------------------打印日志--------------------------&lt;/span&gt;
+&lt;span class=&quot;comment&quot;&gt;//Debug模式下打印日志,当前行,函数名&lt;/span&gt;
+&lt;span class=&quot;preprocessor&quot;&gt;#&lt;span class=&quot;keyword&quot;&gt;if&lt;/span&gt; DEBUG&lt;/span&gt;
+&lt;span class=&quot;preprocessor&quot;&gt;#&lt;span class=&quot;keyword&quot;&gt;define&lt;/span&gt; DLog(FORMAT, ...) fprintf(stderr,&quot;\nfunction:%s &lt;span class=&quot;keyword&quot;&gt;line&lt;/span&gt;:%d content:%s\n&quot;, __FUNCTION__, __LINE__, [[NSString stringWithFormat:FORMAT, ##__VA_ARGS__] UTF8String]);&lt;/span&gt;
+&lt;span class=&quot;preprocessor&quot;&gt;#&lt;span class=&quot;keyword&quot;&gt;else&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;preprocessor&quot;&gt;#&lt;span class=&quot;keyword&quot;&gt;define&lt;/span&gt; NSLog(FORMAT, ...) nil&lt;/span&gt;
+&lt;span class=&quot;preprocessor&quot;&gt;#&lt;span class=&quot;keyword&quot;&gt;endif&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;comment&quot;&gt;//Debug模式下打印日志,当前行,函数名 并弹出一个警告&lt;/span&gt;
+&lt;span class=&quot;preprocessor&quot;&gt;#ifdef DEBUG&lt;/span&gt;
+&lt;span class=&quot;preprocessor&quot;&gt;#   &lt;span class=&quot;keyword&quot;&gt;define&lt;/span&gt;  WDLog(fmt, ...)  { UIAlertView *alert = [[UIAlertView alloc] initWithTitle:[NSString stringWithFormat:@&quot;%s\n [Line %d] &quot;, __PRETTY_FUNCTION__, __LINE__] message:[NSString stringWithFormat:fmt, ##__VA_ARGS__]  delegate:nil cancelButtonTitle:@&quot;Ok&quot; otherButtonTitles:nil]; [alert show]; }&lt;/span&gt;
+&lt;span class=&quot;preprocessor&quot;&gt;#&lt;span class=&quot;keyword&quot;&gt;else&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;preprocessor&quot;&gt;#   &lt;span class=&quot;keyword&quot;&gt;define&lt;/span&gt; NSLog(...)&lt;/span&gt;
+&lt;span class=&quot;preprocessor&quot;&gt;#&lt;span class=&quot;keyword&quot;&gt;endif&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;comment&quot;&gt;//打印Frame&lt;/span&gt;
+&lt;span class=&quot;preprocessor&quot;&gt;#&lt;span class=&quot;keyword&quot;&gt;define&lt;/span&gt; LogFrame(frame) NSLog(@&quot;frame[X=%.1f,Y=%.1f,W=%.1f,H=%.1f&quot;,frame.origin.x,frame.origin.y,frame.size.width,frame.size.height)&lt;/span&gt;
+&lt;span class=&quot;comment&quot;&gt;//打印Point&lt;/span&gt;
+&lt;span class=&quot;preprocessor&quot;&gt;#&lt;span class=&quot;keyword&quot;&gt;define&lt;/span&gt; LogPoint(point) NSLog(@&quot;Point[X=%.1f,Y=%.1f]&quot;,point.x,point.y)&lt;/span&gt;
+&lt;span class=&quot;comment&quot;&gt;//---------------------打印日志--------------------------&lt;/span&gt;
+&lt;span class=&quot;preprocessor&quot;&gt;#&lt;span class=&quot;keyword&quot;&gt;endif&lt;/span&gt;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;</content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;想了想还是把OC中经常用到的宏定义语法单独列了一章出来，毕竟对于不同的语言，不同的平台，使用起来还是千差万别的，如果对&lt;code&gt;#define&lt;/code&gt;还不熟悉的朋友可以参看以前写的一篇博客&lt;a href=&quot;http://www.hackmz.com/2015/05/21/define用法总结/&quot;&gt;#define用法总结&lt;/a&gt;。&lt;/p&gt;
+    
+    </summary>
+    
+      <category term="语法基础" scheme="http://hackmz.com/categories/%E8%AF%AD%E6%B3%95%E5%9F%BA%E7%A1%80/"/>
+    
+    
+      <category term="iOS" scheme="http://hackmz.com/tags/iOS/"/>
+    
+      <category term="宏定义" scheme="http://hackmz.com/tags/%E5%AE%8F%E5%AE%9A%E4%B9%89/"/>
+    
+      <category term="开发" scheme="http://hackmz.com/tags/%E5%BC%80%E5%8F%91/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>iPhone图片上传服务器旋转的问题</title>
+    <link href="http://hackmz.com/2016/05/30/iPhone%E5%9B%BE%E7%89%87%E4%B8%8A%E4%BC%A0%E6%9C%8D%E5%8A%A1%E5%99%A8%E6%97%8B%E8%BD%AC%E7%9A%84%E9%97%AE%E9%A2%98/"/>
+    <id>http://hackmz.com/2016/05/30/iPhone图片上传服务器旋转的问题/</id>
+    <published>2016-05-30T02:46:59.000Z</published>
+    <updated>2016-06-28T09:59:33.000Z</updated>
+    
+    <content type="html">&lt;p&gt;开发过程中难免会遇到各种诡异的Bug。不知道大家有没有遇到这样的情况，在做一个社交类应用时，我们时常需要将我们手机上的照片上传到自己或者第三方的服务器上存储起来，当照片数据上传成功之后，我们再根据后台接口从服务器获取我们所上传的照片数据并在UI上显示出来（比如发表朋友圈和修改头像）。在经过这样一系列操作之后，我们神奇的发现，其中有一部分照片的方向变了，它们旋转了90°。&lt;/p&gt;
+&lt;a id=&quot;more&quot;&gt;&lt;/a&gt;
+&lt;p&gt;当然，程序员什么大风大浪没见过，遇到Bug我们并不慌张，于是本着存在即合理的原则，我开始检查出错原因：&lt;/p&gt;
+&lt;p&gt;首先我检查了代码，照片在上传和下载过程中并没有进行过任何压缩或其他处理（那肯定不是我的错，我这样想着）。&lt;/p&gt;
+&lt;p&gt;于是我开始在后台找原因，然后有了新的发现，我上传的照片在后台服务器中已经是旋转的了（难怪我下载的照片是旋转的，肯定是后台对我上传的照片做了处理，我这样想着）。&lt;/p&gt;
+&lt;p&gt;带着这样的疑问我去问后台，后台很无辜，他说天地良心他什么也没干（善良的我相信了）。&lt;/p&gt;
+&lt;p&gt;最后我只能去问安卓，然而他们一切正常，安卓的同事并没有遇到过我这样的Bug。&lt;/p&gt;
+&lt;p&gt;毫无办法的我只能对着照片冥思，改变了方向的照片都是iPhone设备上所拍的照片，网络上下载的和其他地方保存的照片方向并没有改变，问题应该出在照片本身上。&lt;/p&gt;
+&lt;h3 id=&quot;EXIF介绍&quot;&gt;EXIF介绍&lt;/h3&gt;&lt;p&gt;对于图像数据，其实并不是我们理解的那样，图像一般都由两大部分组成，一部分是数据本身，它记录了每个像素的颜色值，另外一部分是文件头，这里面记录着形如图像的宽度，高度等信息。我们所讨论的方向信息便是被存储于文件头中。更为具体一些：EXIF中。&lt;/p&gt;
+&lt;p&gt;可交换图像文件格式常被简称为Exif（Exchangeable image file format），是专门为数码相机的照片设定的，可以记录数码照片的属性信息和拍摄数据，同时Exif可以附加于JPEG、TIFF、RIFF等文件之中。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;注意：&lt;/strong&gt;PNG格式的图像中不包含。&lt;/p&gt;
+&lt;h3 id=&quot;解决方案&quot;&gt;解决方案&lt;/h3&gt;&lt;p&gt;这样对于照片旋转问题就有了一个合理的解释，我们通过iPhone手机拍摄照片时，手机通过方向传感器记录了照片拍摄时的方向。这样我们在iPhone设备上查看照片时，设备会自动的将那些横七竖八的照片为我们进行旋转操作，因此我们在iPhone上看到的照片永远是正的，不管你拍摄的时候用了何等扭曲的姿势。&lt;/p&gt;
+&lt;p&gt;然而并不是所有的设备都能识别这样的信息，当我们将这些数据传到服务器上时，服务器也并不能识别照片的方向信息，它当然也不会依据照片的方向信息为我们进行旋转操作。因此展现在我们眼前的就是那些没有经过任何处理的横七竖八的图像。&lt;/p&gt;
+&lt;p&gt;服务器识别不了，并不代表开发者不能，这样就需要我们在上传照片之前，先将照片进行处理，通过方向信息摆正照片的方向。&lt;/p&gt;
+&lt;p&gt;代码实现如下：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&lt;span class=&quot;comment&quot;&gt;/**
+ *  处理ios开发图片旋转的问题
+ *
+ *  @param image 需要转换的image
+ *
+ *  @return 转换完成的image
+ */&lt;/span&gt;
++ (UIImage &lt;span class=&quot;variable&quot;&gt;*)&lt;/span&gt;normalizedImage:(UIImage &lt;span class=&quot;variable&quot;&gt;*)&lt;/span&gt;&lt;span class=&quot;keyword&quot;&gt;image&lt;/span&gt; {
+    &lt;span class=&quot;keyword&quot;&gt;if&lt;/span&gt; (&lt;span class=&quot;keyword&quot;&gt;image&lt;/span&gt;.imageOrientation == UIImageOrientationUp) &lt;span class=&quot;keyword&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;keyword&quot;&gt;image&lt;/span&gt;;
+    UIGraphicsBeginImageContextWithOptions(&lt;span class=&quot;keyword&quot;&gt;image&lt;/span&gt;.&lt;span class=&quot;keyword&quot;&gt;size&lt;/span&gt;, NO, &lt;span class=&quot;keyword&quot;&gt;image&lt;/span&gt;.&lt;span class=&quot;keyword&quot;&gt;scale&lt;/span&gt;);
+    [&lt;span class=&quot;keyword&quot;&gt;image&lt;/span&gt; drawInRect:(CGRect){&lt;span class=&quot;number&quot;&gt;0&lt;/span&gt;, &lt;span class=&quot;number&quot;&gt;0&lt;/span&gt;, &lt;span class=&quot;keyword&quot;&gt;image&lt;/span&gt;.&lt;span class=&quot;keyword&quot;&gt;size&lt;/span&gt;}];
+    UIImage &lt;span class=&quot;variable&quot;&gt;*normalizedImage&lt;/span&gt; = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    &lt;span class=&quot;keyword&quot;&gt;return&lt;/span&gt; normalizedImage;
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;这里是利用了UIImage中的drawInRect方法，它会将图像绘制到画布上，并且已经考虑好了图像的方向，使用时需要添加&lt;code&gt;&amp;lt;UIKit/UIKit.h&amp;gt;&lt;/code&gt;框架。&lt;/p&gt;
+&lt;p&gt;除了以上方式以外还有其他方式同样可以解决这个问题，只不过稍微有点复杂，网上有一篇很好的文章&lt;a href=&quot;http://www.cocoachina.com/ios/20150605/12021.html&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;如何处理iOS中照片的方向&lt;/a&gt;，这里就不再赘述了。&lt;/p&gt;
+</content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;开发过程中难免会遇到各种诡异的Bug。不知道大家有没有遇到这样的情况，在做一个社交类应用时，我们时常需要将我们手机上的照片上传到自己或者第三方的服务器上存储起来，当照片数据上传成功之后，我们再根据后台接口从服务器获取我们所上传的照片数据并在UI上显示出来（比如发表朋友圈和修改头像）。在经过这样一系列操作之后，我们神奇的发现，其中有一部分照片的方向变了，它们旋转了90°。&lt;/p&gt;
+    
+    </summary>
+    
+      <category term="疑难杂症" scheme="http://hackmz.com/categories/%E7%96%91%E9%9A%BE%E6%9D%82%E7%97%87/"/>
+    
+    
+      <category term="Bug" scheme="http://hackmz.com/tags/Bug/"/>
+    
+      <category term="iOS" scheme="http://hackmz.com/tags/iOS/"/>
+    
+      <category term="图片" scheme="http://hackmz.com/tags/%E5%9B%BE%E7%89%87/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Xcode软件常用配置</title>
+    <link href="http://hackmz.com/2016/05/26/Xcode%E8%BD%AF%E4%BB%B6%E5%B8%B8%E7%94%A8%E9%85%8D%E7%BD%AE/"/>
+    <id>http://hackmz.com/2016/05/26/Xcode软件常用配置/</id>
+    <published>2016-05-26T07:30:11.000Z</published>
+    <updated>2016-05-27T04:14:55.000Z</updated>
+    
+    <content type="html">&lt;p&gt;俗话说，好记性不如烂笔头，特别在项目工期长的时候，写一个项目几个月，有些配置基本上配置一次就行了，长时间不使用，不管用的多熟，还真有忘记的可能。于是就花了一点时间整理一下，持续更新补充。&lt;/p&gt;
+&lt;a id=&quot;more&quot;&gt;&lt;/a&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;头文件搜索路径设置（Header Search Paths）&lt;/p&gt;
+&lt;p&gt;  在&lt;code&gt;Bulid Settings--&amp;gt;Search Paths--&amp;gt;Header Search Paths&lt;/code&gt;中添加搜索路径。&lt;code&gt;$(SRCROOT)&lt;/code&gt;宏和&lt;code&gt;$(PROJECT_DIR)&lt;/code&gt;宏都指&lt;code&gt;xxx.xcodeproj&lt;/code&gt;所在目录。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;配置PCH文件&lt;/p&gt;
+&lt;p&gt;  在&lt;code&gt;Bulid Settings&lt;/code&gt;中搜索Prefix，找到&lt;code&gt;Prefix Header&lt;/code&gt;设置选项，然后将PCH文件路径添加进去。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;关闭ARC自动引用计数&lt;/p&gt;
+&lt;p&gt;  在&lt;code&gt;Bulid Settings&lt;/code&gt;中搜索Automatic，找到&lt;code&gt;Objective-c Automatic Reference Counting&lt;/code&gt;设置选项，然后将其置为NO。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;ARC和MRC混编&lt;/p&gt;
+&lt;p&gt;  在&lt;code&gt;Build Phases--&amp;gt;Compile Sources&lt;/code&gt;中找到你要手动(自动)管理的文件，双击，在方框中输入相应的内容。&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;如果你的工程是开启ARC的，那就需要对某些文件禁用ARC(-fno-objc-arc)&lt;/p&gt;
+&lt;p&gt;如果你的工程是关闭ARC的，那就需要对某些文件开启ARC(-fobjc-arc)&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;设置App名字&lt;/p&gt;
+&lt;p&gt;  在工程的&lt;code&gt;info.plist&lt;/code&gt;文件中添加Key&lt;code&gt;Bundle display name&lt;/code&gt;，类型为String，Value为自定义名字。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;使用地图定位&lt;/p&gt;
+&lt;p&gt;  如果App中需要使用地图定位，则需要在工程的&lt;code&gt;info.plist&lt;/code&gt;文件中添加Key&lt;code&gt;NSLocationAlwaysUsageDescription&lt;/code&gt;，类型为String，Value为你想要提示的内容。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+</content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;俗话说，好记性不如烂笔头，特别在项目工期长的时候，写一个项目几个月，有些配置基本上配置一次就行了，长时间不使用，不管用的多熟，还真有忘记的可能。于是就花了一点时间整理一下，持续更新补充。&lt;/p&gt;
+    
+    </summary>
+    
+      <category term="Xcode配置" scheme="http://hackmz.com/categories/Xcode%E9%85%8D%E7%BD%AE/"/>
+    
+    
+      <category term="Xcode" scheme="http://hackmz.com/tags/Xcode/"/>
+    
+      <category term="编译器" scheme="http://hackmz.com/tags/%E7%BC%96%E8%AF%91%E5%99%A8/"/>
+    
+      <category term="配置" scheme="http://hackmz.com/tags/%E9%85%8D%E7%BD%AE/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Xcode中用Workspace来管理多项目</title>
+    <link href="http://hackmz.com/2016/05/26/Xcode%E4%B8%AD%E7%94%A8Workspace%E6%9D%A5%E7%AE%A1%E7%90%86%E5%A4%9A%E9%A1%B9%E7%9B%AE/"/>
+    <id>http://hackmz.com/2016/05/26/Xcode中用Workspace来管理多项目/</id>
+    <published>2016-05-26T07:25:51.000Z</published>
+    <updated>2016-05-27T04:15:31.000Z</updated>
+    
+    <content type="html">&lt;p&gt;项目开发过程中经常会有某些特定的需求或者常用的功能，需要我们单独去封装一些模块去实现。最简单的方式当然是直接在工程中新建工具类来实现，对于一些小模块小功能，我们可以这么做。但是对于一个相对大一点的功能模块，为了代码的简洁、性能、可读性、复用性和耦合性等等等，推荐把它们放到一个单独的工程里，通过静态库的方式，应用到任何其他需要的项目里，就像是用其他第三方SDK那样。&lt;/p&gt;
+&lt;p&gt;这样做的好处有很多，封装好的代码我们其他项目里照样可以使用，只要把我们封装好的静态库拖进去就可以了。不过问题也是存在的，首先，新建静态库本身就是一件很繁琐的事情，虽然程序员不怕折腾，但有时候这种繁琐并不能一劳永逸，反而成为累赘。当功能需要不断更新时，我们不可能在两个项目里跳来跳去。&lt;/p&gt;
+&lt;p&gt;对于需要不断更新的模块，可以使用Workspace来进行管理。其实本质上，Workspace也是编译静态库然后给主工程使用，但不用先打开工程A，编译出libA.framework，然后把文件拖到工程B，然后再在工程B里面使用。&lt;/p&gt;
+&lt;p&gt;废话说了这么多，下面进入正题。&lt;/p&gt;
+&lt;a id=&quot;more&quot;&gt;&lt;/a&gt;
+&lt;h5 id=&quot;新建项目工程&quot;&gt;新建项目工程&lt;/h5&gt;&lt;p&gt;首先为你的项目新建一个工程，如果有了则不必新建。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://7pumug.com1.z0.glb.clouddn.com/138D9CAC-CC1F-42BC-946D-1FE4388F8AD2.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
+&lt;h5 id=&quot;新建静态库&quot;&gt;新建静态库&lt;/h5&gt;&lt;p&gt;根据需要新建静态库，静态库的创建这里就不赘述，不懂的请移步&lt;a href=&quot;http://www.hackmz.com/2016/05/25/iOS开发-静态库制作-三/&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;framework静态库创建&lt;/a&gt;。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://7pumug.com1.z0.glb.clouddn.com/5713DA18-D3E2-42FB-8BFB-AA453012EBC4.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
+&lt;h5 id=&quot;构建Workspace&quot;&gt;构建Workspace&lt;/h5&gt;&lt;ol&gt;
+&lt;li&gt;&lt;p&gt;打开Xcode，创建一个Workspace。&lt;/p&gt;
+&lt;p&gt; &lt;img src=&quot;http://7pumug.com1.z0.glb.clouddn.com/788D7DEB-AA2C-4115-8885-2E2BF218B43B.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;将Workspace和项目放到一起，这时候目录里应该有下面这三个文件。&lt;/p&gt;
+&lt;p&gt; &lt;img src=&quot;http://7pumug.com1.z0.glb.clouddn.com/25E14EC1-C359-414A-8B5D-227D44EE037D.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;然后打开Workspace，将项目添加进去，就是将项目的.xcodeproj文件添加进去。&lt;/p&gt;
+&lt;p&gt; &lt;img src=&quot;http://7pumug.com1.z0.glb.clouddn.com/4A672F33-A6F2-4B3A-A0A8-C826DBACAFE7.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h5 id=&quot;指定引用库的头文件路径&quot;&gt;指定引用库的头文件路径&lt;/h5&gt;&lt;p&gt;在主项目的&lt;code&gt;Build Settings&lt;/code&gt;里找到&lt;code&gt;Header Search Paths&lt;/code&gt;，添加一项&lt;code&gt;$(SRCROOT)/../MZHelpeCenter&lt;/code&gt;，并且设置为&lt;code&gt;recursive&lt;/code&gt;，否则找不到头文件。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://7pumug.com1.z0.glb.clouddn.com/38A103D3-9BC1-4DC7-90B2-8F653C91C178.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
+&lt;h5 id=&quot;把静态库添加到主工程里&quot;&gt;把静态库添加到主工程里&lt;/h5&gt;&lt;p&gt;到主工程的&lt;code&gt;Build Phases&lt;/code&gt;的&lt;code&gt;Link Binary With Libraries&lt;/code&gt;里添加，点击”+”按钮，会给出整个Workspace可选的静态库，把我们创建的静态库&lt;code&gt;MZHelpeCenter.framework&lt;/code&gt;加入进来。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://7pumug.com1.z0.glb.clouddn.com/593EB492-AA97-48C3-992B-8E9EE8D4D4BB.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
+&lt;h5 id=&quot;使用方法&quot;&gt;使用方法&lt;/h5&gt;&lt;p&gt;使用方式和静态库的使用方式相同，直接包含头文件即可。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://7pumug.com1.z0.glb.clouddn.com/53FE944A-173D-47F7-8DDC-84BCC3D54FE2.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
+</content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;项目开发过程中经常会有某些特定的需求或者常用的功能，需要我们单独去封装一些模块去实现。最简单的方式当然是直接在工程中新建工具类来实现，对于一些小模块小功能，我们可以这么做。但是对于一个相对大一点的功能模块，为了代码的简洁、性能、可读性、复用性和耦合性等等等，推荐把它们放到一个单独的工程里，通过静态库的方式，应用到任何其他需要的项目里，就像是用其他第三方SDK那样。&lt;/p&gt;
+&lt;p&gt;这样做的好处有很多，封装好的代码我们其他项目里照样可以使用，只要把我们封装好的静态库拖进去就可以了。不过问题也是存在的，首先，新建静态库本身就是一件很繁琐的事情，虽然程序员不怕折腾，但有时候这种繁琐并不能一劳永逸，反而成为累赘。当功能需要不断更新时，我们不可能在两个项目里跳来跳去。&lt;/p&gt;
+&lt;p&gt;对于需要不断更新的模块，可以使用Workspace来进行管理。其实本质上，Workspace也是编译静态库然后给主工程使用，但不用先打开工程A，编译出libA.framework，然后把文件拖到工程B，然后再在工程B里面使用。&lt;/p&gt;
+&lt;p&gt;废话说了这么多，下面进入正题。&lt;/p&gt;
+    
+    </summary>
+    
+      <category term="Xcode配置" scheme="http://hackmz.com/categories/Xcode%E9%85%8D%E7%BD%AE/"/>
+    
+    
+      <category term="Xcode" scheme="http://hackmz.com/tags/Xcode/"/>
+    
+      <category term="iOS" scheme="http://hackmz.com/tags/iOS/"/>
+    
+      <category term="开发" scheme="http://hackmz.com/tags/%E5%BC%80%E5%8F%91/"/>
+    
+      <category term="项目" scheme="http://hackmz.com/tags/%E9%A1%B9%E7%9B%AE/"/>
+    
+  </entry>
+  
+</feed>

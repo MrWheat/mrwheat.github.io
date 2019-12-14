@@ -1,0 +1,1162 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="UI控件,iOS,笔记," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="MaiZi's Blog" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.1" />
+
+
+
+
+
+
+<meta name="description" content="集合视图UICollectionView为iOS系统开发中一种常用的数据展示控件。当然对于初学者来说，用的较多的可能是UITableView，虽然UICollectionView和UITableView都是继承自UIScrollView，两者也有很多的共性。但对于相对复杂的展示界面，灵活的使用集合视图展示数据，能给我省去很多麻烦。
+比如下面的界面：">
+<meta property="og:type" content="article">
+<meta property="og:title" content="iOS教程之集合视图UICollectionView">
+<meta property="og:url" content="http://hackmz.com/2014/10/17/iOS教程之UICollectionView集合视图/index.html">
+<meta property="og:site_name" content="MaiZi's Blog">
+<meta property="og:description" content="集合视图UICollectionView为iOS系统开发中一种常用的数据展示控件。当然对于初学者来说，用的较多的可能是UITableView，虽然UICollectionView和UITableView都是继承自UIScrollView，两者也有很多的共性。但对于相对复杂的展示界面，灵活的使用集合视图展示数据，能给我省去很多麻烦。
+比如下面的界面：">
+<meta property="og:image" content="/img/CollectionView/展示列表.png">
+<meta property="og:image" content="/img/CollectionView/展示列表1.jpg">
+<meta property="og:image" content="/img/CollectionView/展示列表2.jpg">
+<meta property="og:image" content="/img/CollectionView/展示列表3.jpg">
+<meta property="og:image" content="/img/CollectionView/布局.png">
+<meta property="og:image" content="/img/CollectionView/设置Cell大小.png">
+<meta property="og:image" content="/img/CollectionView/设置Cell距离.png">
+<meta property="og:image" content="/img/CollectionView/垂直距离.png">
+<meta property="og:image" content="/img/CollectionView/设置组边界.png">
+<meta property="og:image" content="/img/CollectionView/照片墙.png">
+<meta property="og:image" content="/img/CollectionView/照片墙2.png">
+<meta property="og:image" content="/img/CollectionView/Cell圆形效果1.png">
+<meta property="og:image" content="/img/CollectionView/Cell圆形效果2.png">
+<meta property="og:image" content="/img/CollectionView/口袋IT1.png">
+<meta property="og:image" content="/img/CollectionView/口袋IT2.png">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="iOS教程之集合视图UICollectionView">
+<meta name="twitter:description" content="集合视图UICollectionView为iOS系统开发中一种常用的数据展示控件。当然对于初学者来说，用的较多的可能是UITableView，虽然UICollectionView和UITableView都是继承自UIScrollView，两者也有很多的共性。但对于相对复杂的展示界面，灵活的使用集合视图展示数据，能给我省去很多麻烦。
+比如下面的界面：">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"hide"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 0,
+      author: '博主'
+    }
+  };
+</script>
+
+  <title> iOS教程之集合视图UICollectionView | MaiZi's Blog </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?c2586345b27e17779034f84bb3e505d2";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">MaiZi's Blog</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">Nothing is impossible！</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                iOS教程之集合视图UICollectionView
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2014-10-17T19:58:13+08:00" content="Oct 17 2014">
+              Oct 17 2014
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/iOS笔记/" itemprop="url" rel="index">
+                    <span itemprop="name">iOS笔记</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2014/10/17/iOS教程之UICollectionView集合视图/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2014/10/17/iOS教程之UICollectionView集合视图/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>集合视图UICollectionView为iOS系统开发中一种常用的数据展示控件。当然对于初学者来说，用的较多的可能是UITableView，虽然UICollectionView和UITableView都是继承自UIScrollView，两者也有很多的共性。但对于相对复杂的展示界面，灵活的使用集合视图展示数据，能给我省去很多麻烦。</p>
+<p>比如下面的界面：</p>
+<a id="more"></a>
+<p><img src="/img/CollectionView/展示列表.png" alt=""><img src="/img/CollectionView/展示列表1.jpg" alt=""><img src="/img/CollectionView/展示列表2.jpg" alt=""><img src="/img/CollectionView/展示列表3.jpg" alt=""></p>
+<h3 style="background-color:#A3BB50; color:white; padding-top: 2px; padding-left: 5px;
+padding-bottom: 2px;" ;="">目录</h3>
+
+<ol>
+<li>集合视图的基本使用</li>
+<li>集合视图FlowLayout设置</li>
+<li>集合视图Cell的定制</li>
+<li>定制FlowLayout实现圆形效果</li>
+<li>实现瀑布流效果</li>
+</ol>
+<h3 style="background-color:#A3BB50; color:white; padding-top: 2px; padding-left: 5px;
+padding-bottom: 2px;" ;="">集合视图的基本使用</h3>
+
+<p><strong>简述：</strong> 一般使用UICollectionView类来创建集合视图，同时使用UICollectionViewFlowLayout类来管理集合视图的布局。</p>
+<p><strong>代码：</strong></p>
+<ol>
+<li><p>首先创建UICollectionView</p>
+<pre><code>/<span class="regexp">/ 创建集合视图前，先要创建flowlayout（cell/item</span>）布局的对象
+<span class="constant">UICollectionViewFlowLayout</span> *layout = [[<span class="constant">UICollectionViewFlowLayout</span>     alloc] init];
+<span class="regexp">//</span> 使用布局对象，初始化集合视图
+_collectionView = [[<span class="constant">UICollectionView</span> alloc] <span class="symbol">initWithFrame:</span><span class="keyword">self</span>.view.bounds <span class="symbol">collectionViewLayout:</span>layout];
+<span class="regexp">//</span> 设置两个代理
+_collectionView.delegate = <span class="keyword">self</span>;
+_collectionView.dataSource = <span class="keyword">self</span>;
+<span class="regexp">//</span> 将集合视图添加到屏幕上
+[<span class="keyword">self</span>.view <span class="symbol">addSubview:</span>_collectionView];
+<span class="regexp">//</span> 和tableView不同，_collectionView的cell，必须先注册，才能使用
+[_collectionView <span class="symbol">registerClass:</span>[<span class="constant">UICollectionViewCell</span> <span class="class"><span class="keyword">class</span>] <span class="title">forCellWithReuseIdentifier</span>:@"<span class="title">cell</span>"];</span>
+</code></pre></li>
+<li><p>简单实现协议方法</p>
+<pre><code><span class="comment">// 返回有多少个cell (item)</span>
+- (NSInteger)<span class="string">collectionView:</span>(UICollectionView *)collectionView     <span class="string">numberOfItemsInSection:</span>(NSInteger)section {
+    <span class="keyword">return</span> <span class="number">20</span>;
+}
+<span class="comment">// 返回集合视图显示的cell</span>
+- (UICollectionViewCell *)<span class="string">collectionView:</span>(UICollectionView     *)collectionView <span class="string">cellForItemAtIndexPath:</span>(NSIndexPath *)indexPath {
+    UICollectionViewCell *cell = [collectionView <span class="string">dequeueReusableCellWithReuseIdentifier:</span>@<span class="string">"cell"</span> <span class="string">forIndexPath:</span>indexPath];
+cell.backgroundColor = [UIColor redColor];
+    <span class="keyword">return</span> cell;
+}
+</code></pre><p> <strong>代码说明：</strong></p>
+<blockquote>
+<ul>
+<li>首先通过UICollectionView定义一个_collectionView的全局变量，这样方便我们在其他地方使用它。</li>
+<li>使用类UICollectionView创建一个集合视图，并使用流式布局初始化集合视图。</li>
+<li>设置代理集合视图的两个代理方法，同时UICollectionView需要遵守三个协议，分别是UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout。</li>
+<li>简单的实现代理方法，通过实现<br><code>- (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath;</code><br>代理方法，返回我们需要显示的Cell，当然对于集合视图的Cell，大部分情况下，都是需要用户自己去定义的，后面我们会说到。</li>
+<li>创建好集合视图后，最后别忘了使用<code>[self.view addSubview:_collectionView];</code>将集合视图添加到屏幕上。</li>
+</ul>
+</blockquote>
+<p> <strong>效果图:</strong></p>
+<p> <img src="/img/CollectionView/布局.png" alt=""></p>
+</li>
+</ol>
+<h3 style="background-color:#A3BB50; color:white; padding-top: 2px; padding-left: 5px;
+padding-bottom: 2px;" ;="">集合视图FlowLayout设置</h3>
+
+<ul>
+<li><p><strong>itemSize属性</strong></p>
+<p>  <strong>代码：</strong></p>
+<pre><code><span class="comment">// 设置item的大小，默认是50*50</span>
+layout.itemSize = CGSizeMake<span class="comment">(100, 150)</span>;
+</code></pre><p>  <strong>代码说明：</strong></p>
+<blockquote>
+<p>使用UICollectionViewFlowLayout的itemSize可以设置cell的大小，除了这种方法以外，我们也可以通过<code>- (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath;</code>代理方法，设置Cell的大小。</p>
+</blockquote>
+<p>  <strong>效果图：</strong></p>
+<p>  <img src="/img/CollectionView/设置Cell大小.png" alt=""></p>
+</li>
+<li><p><strong>minimumLineSpacing属性</strong></p>
+<p>  <strong>代码：</strong></p>
+<pre><code><span class="comment">// 设置水平的最小间隔，默认是10</span>
+ <span class="keyword">layout</span>.minimumInteritemSpacing = <span class="number">20</span>; 
+</code></pre><p>  <strong>代码说明：</strong></p>
+<blockquote>
+<p>minimumLineSpacing属性可以用来设置集合视图Cell之间的水平间隔，当然水平是相对于滑动方向来说的，如果集合视图的滑动方向是水平，那么该属性便是设置垂直的最小间隔。同时注意这里设置的是最小间隔，系统会自动设置Cell之间的间隔，但是间隔总会大于或等于minimumLineSpacing设置的间隔。</p>
+</blockquote>
+<p>  <strong>效果图：</strong></p>
+<p>  <img src="/img/CollectionView/设置Cell距离.png" alt=""></p>
+</li>
+<li><p><strong>minimumInteritemSpacing属性</strong></p>
+<p>  <strong>代码：</strong></p>
+<pre><code><span class="comment">// 设置垂直的最小间隔，默认是10</span>
+ <span class="keyword">layout</span>.minimumInteritemSpacing = <span class="number">100</span>;
+</code></pre><p>  <strong>代码说明：</strong></p>
+<blockquote>
+<p>minimumInteritemSpacing属性可以用来设置集合视图Cell之间的垂直间隔，属性和minimumLineSpacing相反。</p>
+</blockquote>
+<p>  <strong>效果图：</strong></p>
+<p>  <img src="/img/CollectionView/垂直距离.png" alt=""></p>
+</li>
+<li><p><strong>sectionInset属性</strong></p>
+<p>  <strong>代码：</strong></p>
+<pre><code>// 设置组的边界，默认是0<span class="keyword">*</span>0<span class="keyword">*</span>0<span class="keyword">*</span>0
+layout.sectionInset = UIEdgeInsetsMake(20, 10, 0, 0);
+</code></pre><p>  <strong>代码说明：</strong></p>
+<blockquote>
+<p>一般使用sectionInset设置组的边界。括号里的数值分别对应上、左、下、右四个边界的距离。</p>
+</blockquote>
+<p>  <strong>效果图：</strong></p>
+<p>  <img src="/img/CollectionView/设置组边界.png" alt=""></p>
+</li>
+<li><p><strong>scrollDirection属性</strong></p>
+<p>  <strong>代码：</strong></p>
+<pre><code><span class="comment">// 设置集合视图的滑动方向</span>
+<span class="keyword">layout</span>.scrollDirection = UICollectionViewScrollDirectionVertical;
+</code></pre><p>  <strong>代码说明：</strong></p>
+<blockquote>
+<p>通过scrollDirection属性设置集合视图的滑动方向，它的值是一个枚举值，默认是垂直滑动。</p>
+<ul>
+<li>UICollectionViewScrollDirectionVertical代表垂直方向的滑动。</li>
+<li>UICollectionViewScrollDirectionHorizontal代表水平方向的滑动。</li>
+</ul>
+</blockquote>
+</li>
+</ul>
+<h3 style="background-color:#A3BB50; color:white; padding-top: 2px; padding-left: 5px;
+padding-bottom: 2px;" ;="">集合视图Cell的定制</h3>
+
+<p><strong>简述：</strong>和UITableView不同的是，集合视图的UICollectionViewCell并没有像UITableViewCell那样的imageView、detailTextLabel和textLabel属性，因此通常情况下都需要用户根据数据显示的格式自己定义集合视图的Cell，对于如何实现Cell的定制，下面我们以照片墙为例进行说明。</p>
+<p><strong>代码：</strong></p>
+<pre><code><span class="comment">// image.h文件</span>
+<span class="preprocessor">#import <span class="title">&lt;UIKit/UIKit.h&gt;</span></span>
+
+<span class="class"><span class="keyword">@interface</span> <span class="title">imageCell</span> : <span class="title">UICollectionViewCell</span></span>
+
+<span class="keyword">@property</span> (<span class="keyword">nonatomic</span>, <span class="keyword">strong</span>) <span class="built_in">UIImageView</span> *image;
+
+<span class="keyword">@end</span>
+
+<span class="comment">// image.m文件</span>
+<span class="preprocessor">#import <span class="title">"imageCell.h"</span></span>
+
+<span class="class"><span class="keyword">@implementation</span> <span class="title">imageCell</span></span>
+
+-(<span class="keyword">id</span>)initWithFrame:(<span class="built_in">CGRect</span>)frame
+{
+    <span class="keyword">if</span>(<span class="keyword">self</span> = [<span class="keyword">super</span> initWithFrame:frame])
+    {
+        <span class="keyword">self</span><span class="variable">.image</span> = [[<span class="built_in">UIImageView</span> alloc] initWithFrame:<span class="keyword">self</span><span class="variable">.bounds</span>];
+        [<span class="keyword">self</span><span class="variable">.contentView</span> addSubview:<span class="keyword">self</span><span class="variable">.image</span>];
+    }
+    <span class="keyword">return</span> <span class="keyword">self</span>;
+}
+
+<span class="keyword">@end</span>
+
+<span class="comment">// 主控制器中实现集合视图的协议方法</span>
+
+[_collectionView registerClass:[imageCell class] forCellWithReuseIdentifier:<span class="string">@"cell"</span>];
+
+- (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(<span class="built_in">NSIndexPath</span> *)indexPath {
+    imageCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:<span class="string">@"cell"</span> forIndexPath:indexPath];
+    <span class="built_in">NSString</span> *category = @[<span class="string">@"2"</span>,<span class="string">@"10"</span>,<span class="string">@"11"</span>][indexPath<span class="variable">.section</span>];
+    <span class="built_in">NSString</span> *filename = [<span class="built_in">NSString</span> stringWithFormat:<span class="string">@"%@_%d.jpg"</span>,category,indexPath<span class="variable">.item</span>+<span class="number">1</span>];
+
+    cell<span class="variable">.image</span><span class="variable">.image</span> = [<span class="built_in">UIImage</span> imageNamed:filename];
+    <span class="keyword">return</span> cell;
+}
+</code></pre><p><strong>代码说明：</strong></p>
+<blockquote>
+<p>我们通过继承UICollectionViewCell来定制我们自己的Cell，首先在.h文件中创建我们想要的控件，比如代码中的image，这样做的目的也是为了方便我们在其他文件中直接使用他们，然后在.m文件中重写cell的初始化方法，并将image控件添加到cell的contentView视图上。最后在主控制器中注册我们的cell，并在cell的协议方法中，通过我们定制的cell的类来创建我们的cell。</p>
+</blockquote>
+<p><strong>效果图：</strong></p>
+<p><img src="/img/CollectionView/照片墙.png" alt="">  <img src="/img/CollectionView/照片墙2.png" alt=""></p>
+<h3 style="background-color:#A3BB50; color:white; padding-top: 2px; padding-left: 5px;
+padding-bottom: 2px;" ;="">定制FlowLayout实现圆形效果</h3>
+
+<p><strong>简述：</strong><br>UICollectionViewLayout可以说是UICollectionView的大脑和中枢，它是UICollectionView的精髓，同时也是UICollectionView和UITableView最大的不同。layout是灵活的，它决定了集合视图如何展示在界面之上，因此，我们可以通过定制UICollectionViewLayout来实现各种各样丰富的界面效果，例如圆型效果。</p>
+<p><strong>代码：</strong></p>
+<pre><code><span class="comment">// Cell.m文件，定制cell</span>
+- (<span class="keyword">id</span>)initWithFrame:(<span class="built_in">CGRect</span>)frame
+{
+    <span class="keyword">self</span> = [<span class="keyword">super</span> initWithFrame:frame];
+    <span class="keyword">if</span> (<span class="keyword">self</span>) {
+        <span class="keyword">self</span><span class="variable">.contentView</span><span class="variable">.layer</span><span class="variable">.cornerRadius</span> = <span class="number">35.0</span>;
+        <span class="keyword">self</span><span class="variable">.contentView</span><span class="variable">.layer</span><span class="variable">.borderWidth</span> = <span class="number">1.0</span>f;
+        <span class="keyword">self</span><span class="variable">.contentView</span><span class="variable">.layer</span><span class="variable">.borderColor</span> = [<span class="built_in">UIColor</span> whiteColor]<span class="variable">.CGColor</span>;
+        <span class="keyword">self</span><span class="variable">.contentView</span><span class="variable">.backgroundColor</span> = [<span class="built_in">UIColor</span> underPageBackgroundColor];
+    }
+    <span class="keyword">return</span> <span class="keyword">self</span>;
+}
+
+<span class="comment">// Line.m定制FlowLayout布局</span>
+<span class="preprocessor">#import <span class="title">"LineLayout.h"</span></span>
+
+<span class="preprocessor">#define ITEM_SIZE 200.0</span>
+
+<span class="class"><span class="keyword">@implementation</span> <span class="title">LineLayout</span></span>
+
+<span class="preprocessor">#define ACTIVE_DISTANCE 200</span>
+<span class="preprocessor">#define ZOOM_FACTOR 0.3</span>
+
+-(<span class="keyword">id</span>)init
+{
+    <span class="keyword">self</span> = [<span class="keyword">super</span> init];
+    <span class="keyword">if</span> (<span class="keyword">self</span>) {
+        <span class="keyword">self</span><span class="variable">.itemSize</span> = CGSizeMake(ITEM_SIZE, ITEM_SIZE);
+        <span class="keyword">self</span><span class="variable">.scrollDirection</span> = UICollectionViewScrollDirectionHorizontal;
+        <span class="keyword">self</span><span class="variable">.sectionInset</span> = UIEdgeInsetsMake(<span class="number">200</span>, <span class="number">0.0</span>, <span class="number">200</span>, <span class="number">0.0</span>);
+        <span class="keyword">self</span><span class="variable">.minimumLineSpacing</span> = <span class="number">50.0</span>;
+    }
+    <span class="keyword">return</span> <span class="keyword">self</span>;
+}
+
+- (<span class="built_in">BOOL</span>)shouldInvalidateLayoutForBoundsChange:(<span class="built_in">CGRect</span>)oldBounds
+{
+    <span class="keyword">return</span> <span class="literal">YES</span>;
+}
+
+-(<span class="built_in">NSArray</span>*)layoutAttributesForElementsInRect:(<span class="built_in">CGRect</span>)rect
+{
+    <span class="built_in">NSArray</span>* array = [<span class="keyword">super</span> layoutAttributesForElementsInRect:rect];
+    <span class="built_in">CGRect</span> visibleRect;
+    visibleRect<span class="variable">.origin</span> = <span class="keyword">self</span><span class="variable">.collectionView</span><span class="variable">.contentOffset</span>;
+    visibleRect<span class="variable">.size</span> = <span class="keyword">self</span><span class="variable">.collectionView</span><span class="variable">.bounds</span><span class="variable">.size</span>;
+
+    <span class="keyword">for</span> (UICollectionViewLayoutAttributes* attributes <span class="keyword">in</span> array) {
+        <span class="keyword">if</span> (CGRectIntersectsRect(attributes<span class="variable">.frame</span>, rect)) {
+            <span class="built_in">CGFloat</span> distance = CGRectGetMidX(visibleRect) - attributes<span class="variable">.center</span><span class="variable">.x</span>;
+            <span class="built_in">CGFloat</span> normalizedDistance = distance / ACTIVE_DISTANCE;
+            <span class="keyword">if</span> (ABS(distance) &lt; ACTIVE_DISTANCE) {
+                <span class="built_in">CGFloat</span> zoom = <span class="number">1</span> + ZOOM_FACTOR*(<span class="number">1</span> - ABS(normalizedDistance));
+                attributes<span class="variable">.transform3D</span> = CATransform3DMakeScale(zoom, zoom, <span class="number">1.0</span>);
+                attributes<span class="variable">.zIndex</span> = <span class="number">1</span>;
+            }
+        }
+    }
+    <span class="keyword">return</span> array;
+}
+
+- (<span class="built_in">CGPoint</span>)targetContentOffsetForProposedContentOffset:(<span class="built_in">CGPoint</span>)proposedContentOffset withScrollingVelocity:(<span class="built_in">CGPoint</span>)velocity
+{
+    <span class="built_in">CGFloat</span> offsetAdjustment = MAXFLOAT;
+    <span class="built_in">CGFloat</span> horizontalCenter = proposedContentOffset<span class="variable">.x</span> + (CGRectGetWidth(<span class="keyword">self</span><span class="variable">.collectionView</span><span class="variable">.bounds</span>) / <span class="number">2.0</span>);
+
+    <span class="built_in">CGRect</span> targetRect = CGRectMake(proposedContentOffset<span class="variable">.x</span>, <span class="number">0.0</span>, <span class="keyword">self</span><span class="variable">.collectionView</span><span class="variable">.bounds</span><span class="variable">.size</span><span class="variable">.width</span>, <span class="keyword">self</span><span class="variable">.collectionView</span><span class="variable">.bounds</span><span class="variable">.size</span><span class="variable">.height</span>);
+    <span class="built_in">NSArray</span>* array = [<span class="keyword">super</span> layoutAttributesForElementsInRect:targetRect];
+
+    <span class="keyword">for</span> (UICollectionViewLayoutAttributes* layoutAttributes <span class="keyword">in</span> array) {
+        <span class="built_in">CGFloat</span> itemHorizontalCenter = layoutAttributes<span class="variable">.center</span><span class="variable">.x</span>;
+        <span class="keyword">if</span> (ABS(itemHorizontalCenter - horizontalCenter) &lt; ABS(offsetAdjustment)) {
+            offsetAdjustment = itemHorizontalCenter - horizontalCenter;
+        }
+    }    
+    <span class="keyword">return</span> CGPointMake(proposedContentOffset<span class="variable">.x</span> + offsetAdjustment, proposedContentOffset<span class="variable">.y</span>);
+}
+
+<span class="keyword">@end</span>
+</code></pre><p><strong>代码说明：</strong></p>
+<blockquote>
+<ol>
+<li>实现圆形布局的第一步，当然还是需要定制cell，集合视图的cell默认为矩形的，为了达到圆形的效果，我们可以在cell的初始化方法中对cell进行相应的处理，主要是通过cell的layer层的cornerRadius属性调节cell的边角弧度来实现。</li>
+<li>定制cell之后，我们还需要定制我们的layout，在layout中根据圆形的cell数量，动态的计算设置cell在集合视图的位置。具体实现如以上代码。</li>
+</ol>
+</blockquote>
+<p><strong>效果图：</strong></p>
+<p><img src="/img/CollectionView/Cell圆形效果1.png" alt=""> <img src="/img/CollectionView/Cell圆形效果2.png" alt=""></p>
+<h3 style="background-color:#A3BB50; color:white; padding-top: 2px; padding-left: 5px;
+padding-bottom: 2px;" ;="">实现瀑布流效果</h3>
+
+<p><strong>简述：</strong><br>实现瀑布流的方式多种多样，我们可以利用UITableView实现，也可以通过UIScrollView实现，但是更多的，还是选择UIScrollView来实现瀑布流的效果。当然通过集合视图来实现瀑布流，每个人也有不同的方式。最常用的两种方法有：</p>
+<ol>
+<li>通过定制FlowLayout来实现瀑布流。</li>
+<li>通过创建多个CollectionView来实现瀑布流。</li>
+</ol>
+<p>在这里我们使用第二种方式，我们以两列瀑布流举例说明。</p>
+<p><strong>代码：</strong></p>
+<pre><code><span class="comment">//</span>
+<span class="comment">//  AmusingViewController.m</span>
+<span class="comment">//  Pocket IT</span>
+<span class="comment">//</span>
+<span class="comment">//  Created by 麦子 on 15/10/20.</span>
+<span class="comment">//  Copyright (c) 2015年 麦子. All rights reserved.</span>
+<span class="comment">//</span>
+
+<span class="preprocessor">#import <span class="title">"AmusingViewController.h"</span></span>
+<span class="preprocessor">#import <span class="title">"AmusingDetailController.h"</span></span>
+<span class="preprocessor">#import <span class="title">"AmusingPageCell.h"</span></span>
+<span class="preprocessor">#import <span class="title">"AmusingDataModel.h"</span></span>
+
+<span class="preprocessor">#define UP_URL @<span class="title">"http://apis.guokr.com/handpick/article.json?limit=20&amp;ad=1&amp;category=all&amp;retrieve_type=by_since"</span></span>
+<span class="preprocessor">#define DOWN_URL @<span class="title">"http://apis.guokr.com/handpick/article.json?limit=20&amp;ad=1&amp;orientation=before&amp;category=all&amp;since=%@&amp;retrieve_type=by_since"</span></span>
+
+<span class="class"><span class="keyword">@interface</span> <span class="title">AmusingViewController</span> () &lt;<span class="title">UICollectionViewDelegate</span>, <span class="title">UICollectionViewDataSource</span>, <span class="title">UICollectionViewDelegateFlowLayout</span>&gt; </span>{
+    UICollectionView *_leftCollectionView;
+    UICollectionView *_rightCollectionView;
+    <span class="built_in">NSMutableArray</span> *_dataArray;
+    <span class="built_in">NSString</span> *_url;
+    <span class="built_in">BOOL</span> _isRefresh;
+    <span class="built_in">BOOL</span> _isLoadMore;
+}
+
+<span class="keyword">@end</span>
+
+<span class="class"><span class="keyword">@implementation</span> <span class="title">AmusingViewController</span></span>
+
+- (<span class="keyword">void</span>)viewDidLoad {
+    [<span class="keyword">super</span> viewDidLoad];
+    _dataArray = [[<span class="built_in">NSMutableArray</span> alloc] init];
+    _leftCollectionView = [<span class="keyword">self</span> createCollectionView:<span class="string">@"amusingPageCell"</span> frame:CGRectMake(<span class="number">0</span>, <span class="number">64</span>, SCREEN_WIDTH/<span class="number">2</span>, SCREEN_HEIGHT-<span class="number">64</span>-<span class="number">49</span>)];
+    _rightCollectionView = [<span class="keyword">self</span> createCollectionView:<span class="string">@"amusingPageCell"</span> frame:CGRectMake(SCREEN_WIDTH/<span class="number">2</span>, <span class="number">64</span>, SCREEN_WIDTH/<span class="number">2</span>, SCREEN_HEIGHT-<span class="number">64</span>-<span class="number">49</span>)];
+    [<span class="keyword">self</span> loadNewData];
+}
+
+- (<span class="keyword">void</span>)loadNewData {
+    _url = UP_URL;
+    [<span class="keyword">self</span> loadData];
+}
+
+- (<span class="keyword">void</span>)loadMoreData {
+    _url = [<span class="built_in">NSString</span> stringWithFormat:DOWN_URL, [[_dataArray lastObject] date_picked]];
+    [<span class="keyword">self</span> loadData];
+}
+
+- (<span class="keyword">void</span>)loadData {
+    [[MZRequestData sharedRequestData] MZCancelAllRequests];
+    [[MZRequestData sharedRequestData] MZRequestWithUrl:_url success:^(<span class="built_in">NSData</span> *requestData) {
+        <span class="built_in">NSDictionary</span> *dict = [NSJSONSerialization JSONObjectWithData:requestData options:NSJSONReadingMutableContainers error:<span class="literal">nil</span>];
+        <span class="built_in">NSArray</span> *dataArray = dict[<span class="string">@"result"</span>];
+        <span class="keyword">if</span> (_isRefresh) {
+            _isRefresh = <span class="literal">NO</span>;
+            [_dataArray removeAllObjects];
+        }
+        <span class="keyword">for</span> (<span class="built_in">NSDictionary</span> *subDict <span class="keyword">in</span> dataArray) {
+            AmusingDataModel *model = [[AmusingDataModel alloc] initWithDictionary:subDict error:<span class="literal">nil</span>];
+            [_dataArray addObject:model];
+        }
+        _isLoadMore = <span class="literal">NO</span>;
+        [_leftCollectionView reloadData];
+        [_rightCollectionView reloadData];
+        _rightCollectionView<span class="variable">.contentSize</span> = _leftCollectionView<span class="variable">.contentSize</span>;
+    } failed:^(<span class="built_in">NSError</span> *error) {
+        _isLoadMore = <span class="literal">NO</span>;
+    }];
+}
+
+
+- (UICollectionView *)createCollectionView:(<span class="built_in">NSString</span> *)identifier frame:(<span class="built_in">CGRect</span>)frame{
+    UICollectionViewFlowLayout *layout = [[UICollectionViewFlowLayout alloc] init];
+    layout<span class="variable">.minimumLineSpacing</span> = <span class="number">10</span>;
+    UICollectionView *collectionView = [[UICollectionView alloc] initWithFrame:frame collectionViewLayout:layout];
+    collectionView<span class="variable">.delegate</span> = <span class="keyword">self</span>;
+    collectionView<span class="variable">.dataSource</span> = <span class="keyword">self</span>;
+    collectionView<span class="variable">.showsHorizontalScrollIndicator</span> = <span class="literal">NO</span>;
+    collectionView<span class="variable">.showsVerticalScrollIndicator</span> = <span class="literal">NO</span>;
+    collectionView<span class="variable">.backgroundColor</span> = [<span class="built_in">UIColor</span> whiteColor];
+    [<span class="keyword">self</span><span class="variable">.view</span> addSubview:collectionView];
+    [collectionView registerNib:[UINib nibWithNibName:<span class="string">@"AmusingPageCell"</span> bundle:<span class="literal">nil</span>]forCellWithReuseIdentifier:identifier];
+    <span class="keyword">return</span> collectionView;
+}
+
+- (<span class="built_in">NSInteger</span>)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(<span class="built_in">NSInteger</span>)section {
+    <span class="keyword">if</span> (collectionView == _leftCollectionView) {
+        <span class="keyword">return</span> _dataArray<span class="variable">.count</span>/<span class="number">2</span> + _dataArray<span class="variable">.count</span>%<span class="number">2</span>;
+    } <span class="keyword">else</span> {
+        <span class="keyword">return</span> _dataArray<span class="variable">.count</span>/<span class="number">2</span>;
+    }
+}
+
+- (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(<span class="built_in">NSIndexPath</span> *)indexPath {
+    AmusingPageCell *cell = <span class="literal">nil</span>;
+    <span class="keyword">if</span> (collectionView == _leftCollectionView) {
+        cell = [collectionView dequeueReusableCellWithReuseIdentifier:<span class="string">@"amusingPageCell"</span> forIndexPath:indexPath];
+        [cell updateCellWithModel:_dataArray[indexPath<span class="variable">.row</span>*<span class="number">2</span>] row:indexPath<span class="variable">.row</span>*<span class="number">2</span>];
+    } <span class="keyword">else</span> {
+        cell = [collectionView dequeueReusableCellWithReuseIdentifier:<span class="string">@"amusingPageCell"</span> forIndexPath:indexPath];
+        [cell updateCellWithModel:_dataArray[indexPath<span class="variable">.row</span>*<span class="number">2</span>+<span class="number">1</span>] row:indexPath<span class="variable">.row</span>*<span class="number">2</span>+<span class="number">1</span>];
+    }
+    <span class="keyword">return</span> cell;
+}
+
+- (<span class="built_in">CGSize</span>)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout sizeForItemAtIndexPath:(<span class="built_in">NSIndexPath</span> *)indexPath {
+    <span class="keyword">if</span> (collectionView == _leftCollectionView) {
+        <span class="built_in">CGFloat</span> height = [MZHelpCenter textHeightWithText:[_dataArray[indexPath<span class="variable">.row</span>*<span class="number">2</span>] title] font:[<span class="built_in">UIFont</span> systemFontOfSize:<span class="number">15</span>] width:SCREEN_WIDTH/<span class="number">2</span>-<span class="number">29</span>];
+        <span class="keyword">return</span> CGSizeMake(SCREEN_WIDTH/<span class="number">2</span>, <span class="number">258</span>-<span class="number">20</span>+height);
+    } <span class="keyword">else</span> {
+        <span class="built_in">CGFloat</span> height = [MZHelpCenter textHeightWithText:[_dataArray[indexPath<span class="variable">.row</span>*<span class="number">2</span>+<span class="number">1</span>] title] font:[<span class="built_in">UIFont</span> systemFontOfSize:<span class="number">15</span>] width:SCREEN_WIDTH/<span class="number">2</span>-<span class="number">29</span>];
+        <span class="keyword">return</span> CGSizeMake(SCREEN_WIDTH/<span class="number">2</span>, <span class="number">258</span>-<span class="number">18</span>+height);
+    }
+}
+
+- (<span class="keyword">void</span>)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(<span class="built_in">NSIndexPath</span> *)indexPath {
+    AmusingDetailController *avc = [[AmusingDetailController alloc] init];
+    <span class="keyword">if</span> (collectionView == _leftCollectionView) {
+        avc<span class="variable">.id</span> = [_dataArray[indexPath<span class="variable">.row</span>*<span class="number">2</span>] <span class="keyword">id</span>];
+    } <span class="keyword">else</span> {
+        avc<span class="variable">.id</span> = [_dataArray[indexPath<span class="variable">.row</span>*<span class="number">2</span>+<span class="number">1</span>] <span class="keyword">id</span>];
+    }
+    [<span class="keyword">self</span><span class="variable">.navigationController</span> pushViewController:avc animated:<span class="literal">YES</span>];
+}
+
+- (<span class="keyword">void</span>)scrollViewDidScroll:(<span class="built_in">UIScrollView</span> *)scrollView {
+    <span class="keyword">if</span> (scrollView == _leftCollectionView) {
+        _rightCollectionView<span class="variable">.contentOffset</span> = _leftCollectionView<span class="variable">.contentOffset</span>;
+    } <span class="keyword">else</span> {
+        _leftCollectionView<span class="variable">.contentOffset</span> = _rightCollectionView<span class="variable">.contentOffset</span>;
+    }
+    <span class="keyword">if</span> (scrollView<span class="variable">.contentOffset</span><span class="variable">.y</span> &lt;= -<span class="number">90</span>) {
+        _isRefresh = <span class="literal">YES</span>;
+    } <span class="keyword">else</span> <span class="keyword">if</span> (scrollView<span class="variable">.contentOffset</span><span class="variable">.y</span> &lt;= -<span class="number">45</span>) {
+        _isRefresh = <span class="literal">NO</span>;
+    }
+    <span class="comment">// 下拉加载更多 (当用户拉到)</span>
+    <span class="keyword">if</span> (scrollView<span class="variable">.contentSize</span><span class="variable">.height</span>-scrollView<span class="variable">.frame</span><span class="variable">.size</span><span class="variable">.height</span>-scrollView<span class="variable">.contentOffset</span><span class="variable">.y</span> &lt;= -<span class="number">90</span>) {
+        <span class="keyword">if</span> (_isLoadMore==<span class="literal">NO</span>) {
+            [<span class="keyword">self</span> loadMoreData];
+            _isLoadMore = <span class="literal">YES</span>;
+        }
+    }
+}
+
+- (<span class="keyword">void</span>)scrollViewDidEndDragging:(<span class="built_in">UIScrollView</span> *)scrollView willDecelerate:(<span class="built_in">BOOL</span>)decelerate {
+    <span class="keyword">if</span> (_isRefresh) {
+        [<span class="keyword">self</span> loadNewData];
+    }
+}
+
+- (<span class="keyword">void</span>)didReceiveMemoryWarning {
+    [<span class="keyword">super</span> didReceiveMemoryWarning];
+    <span class="comment">// Dispose of any resources that can be recreated.</span>
+}
+
+<span class="comment">/*
+#pragma mark - Navigation
+
+// In a storyboard-based application, you will often want to do a little preparation before navigation
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+    // Get the new view controller using [segue destinationViewController].
+    // Pass the selected object to the new view controller.
+}
+*/</span>
+
+<span class="keyword">@end</span>
+</code></pre><p><strong>代码说明：</strong></p>
+<blockquote>
+<ol>
+<li>第一步先创建左右两个集合视图，每个集合视图所占的宽度为屏幕的一半，并将两个视图贴在屏幕的左右两边。</li>
+<li>第二步定制cell，cell的定制跟据我们数据显示格式来制作，关于cell的定制上文已经详述，这里就不再赘述，不懂的请翻看上文。</li>
+<li>第三步实现集合视图的协议方法，分组返回一组，cell的个数我们可以根据自己的需要自行设置。</li>
+<li>第四步也是最重要的一步，我们需要根据我们显示的图片大小，label文字的多少，动态的更改我们cell的大小。</li>
+<li>以上步骤完成之后，瀑布流的效果基本可以显示出来了，但是我们发现左右两个视图控制器并不能一起移动。因此，我们还需要实现最后一步。实现UIScrollView的协议方法<code>- (void)scrollViewDidScroll:(UIScrollView *)scrollView;</code>当任意一个视图开始移动的时候，将两个视图的偏移量设置为相同。</li>
+</ol>
+</blockquote>
+<p><strong>效果图：</strong></p>
+<p><img src="/img/CollectionView/口袋IT1.png" alt=""> <img src="/img/CollectionView/口袋IT2.png" alt=""></p>
+
+      
+    </div>
+
+    <div>
+      
+        
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/UI控件/" rel="tag">#UI控件</a>
+          
+            <a href="/tags/iOS/" rel="tag">#iOS</a>
+          
+            <a href="/tags/笔记/" rel="tag">#笔记</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2014/08/20/《硅谷》关于创业与投资的思考/" rel="next" title="《硅谷》关于创业与投资的思考">
+                <i class="fa fa-chevron-left"></i> 《硅谷》关于创业与投资的思考
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2014/11/16/iOS教程之UITableView的使用/" rel="prev" title="iOS教程之UITableView的使用">
+                iOS教程之UITableView的使用 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <div class="ds-share flat" data-thread-key="2014/10/17/iOS教程之UICollectionView集合视图/"
+     data-title="iOS教程之集合视图UICollectionView"
+     data-content=""
+     data-url="http://hackmz.com/2014/10/17/iOS教程之UICollectionView集合视图/">
+  <div class="ds-share-inline">
+    <ul  class="ds-share-icons-16">
+
+      <li data-toggle="ds-share-icons-more"><a class="ds-more" href="javascript:void(0);">分享到：</a></li>
+      <li><a class="ds-weibo" href="javascript:void(0);" data-service="weibo">微博</a></li>
+      <li><a class="ds-qzone" href="javascript:void(0);" data-service="qzone">QQ空间</a></li>
+      <li><a class="ds-qqt" href="javascript:void(0);" data-service="qqt">腾讯微博</a></li>
+      <li><a class="ds-wechat" href="javascript:void(0);" data-service="wechat">微信</a></li>
+
+    </ul>
+    <div class="ds-share-icons-more">
+    </div>
+  </div>
+</div>
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2014/10/17/iOS教程之UICollectionView集合视图/"
+           data-title="iOS教程之集合视图UICollectionView" data-url="http://hackmz.com/2014/10/17/iOS教程之UICollectionView集合视图/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="http://7pumug.com1.z0.glb.clouddn.com/author.jpg"
+               alt="麦子" />
+          <p class="site-author-name" itemprop="name">麦子</p>
+          <p class="site-description motion-element" itemprop="description">当你的才华撑不起你的野心的时候，你就应该静下心来学习！</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">41</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">7</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">43</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/MrWheat" target="_blank" title="Github">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  Github
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/3202240184" target="_blank" title="微博">
+                  
+                    <i class="fa fa-fw fa-weibo"></i>
+                  
+                  微博
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#undefined"><span class="nav-number">1.</span> <span class="nav-text">目录</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#undefined"><span class="nav-number">2.</span> <span class="nav-text">集合视图的基本使用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#undefined"><span class="nav-number">3.</span> <span class="nav-text">集合视图FlowLayout设置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#undefined"><span class="nav-number">4.</span> <span class="nav-text">集合视图Cell的定制</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#undefined"><span class="nav-number">5.</span> <span class="nav-text">定制FlowLayout实现圆形效果</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#undefined"><span class="nav-number">6.</span> <span class="nav-text">实现瀑布流效果</span></a></li></ol></div>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2014 - 
+  <span itemprop="copyrightYear">2016</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">麦子</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+        
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.1"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.0.1"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.1"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"mrwheat"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+  
+
+
+
+
+
+  
+  
+  
+
+  
+
+  
+
+</body>
+</html>
