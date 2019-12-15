@@ -1,0 +1,62 @@
+# Header
+menu:
+  主页: /
+  关于: /about
+  随笔: /tags/随笔
+  所有文章: /archives
+
+# SubNav
+subnav:
+  github: "https://github.com/MrWheat"
+  weibo: "http://weibo.com/3202240184"
+  #rss: "#"
+  #zhihu: "#"
+  #douban: "#"
+  mail: "dyq@hackmz.com"
+  #facebook: "#"
+  #google: "#"
+  #twitter: "#"
+  #linkedin: "#"
+
+rss: /atom.xml
+
+# Content
+excerpt_link: more
+fancybox: true
+mathjax: true
+
+# 是否开启动画效果
+animate: true
+
+# 是否在新窗口打开链接
+open_in_new: false
+
+# Miscellaneous
+google_analytics: ''
+favicon: /favicon.png
+
+#你的头像url
+avatar: http://7pumug.com1.z0.glb.clouddn.com/author.jpg
+
+#是否开启分享
+share_jia: true
+share_addthis: false
+#是否开启多说评论，填写你在多说申请的项目名称 duoshuo: duoshuo-key
+#若使用disqus，请在博客config文件中填写disqus_shortname，并关闭多说评论
+duoshuo: true
+#是否开启云标签
+tagcloud: true
+
+#是否开启友情链接
+#不开启——
+friends: true
+#开启——
+friends:
+  Takwolf's Blog: http://blog.takwolf.com/
+
+#是否开启“关于我”。
+#不开启——
+aboutme: true
+#开启——
+aboutme: 辽宁工程技术大学毕业生，帝都iOS程序员一枚，熟悉C和OC，了解HTML，爱动漫爱编程，完美主义者，代码癖严重。
+
