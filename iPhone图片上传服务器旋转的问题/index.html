@@ -1,0 +1,716 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css">
+
+
+  <meta name="keywords" content="iOS,图片,Bug,">
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.1">
+
+
+
+
+
+
+<meta name="description" content="开发过程中难免会遇到各种诡异的Bug。不知道大家有没有遇到这样的情况，在做一个社交类应用时，我们时常需要将我们手机上的照片上传到自己或者第三方的服务器上存储起来，当照片数据上传成功之后，我们再根据后台接口从服务器获取我们所上传的照片数据并在UI上显示出来（比如发表朋友圈和修改头像）。在经过这样一系列操作之后，我们神奇的发现，其中有一部分照片的方向变了，它们旋转了90°。">
+<meta name="keywords" content="iOS,图片,Bug">
+<meta property="og:type" content="article">
+<meta property="og:title" content="iPhone图片上传服务器旋转的问题">
+<meta property="og:url" content="http://hackmz.com/iPhone图片上传服务器旋转的问题/index.html">
+<meta property="og:site_name" content="MaiZi&#39;s Blog">
+<meta property="og:description" content="开发过程中难免会遇到各种诡异的Bug。不知道大家有没有遇到这样的情况，在做一个社交类应用时，我们时常需要将我们手机上的照片上传到自己或者第三方的服务器上存储起来，当照片数据上传成功之后，我们再根据后台接口从服务器获取我们所上传的照片数据并在UI上显示出来（比如发表朋友圈和修改头像）。在经过这样一系列操作之后，我们神奇的发现，其中有一部分照片的方向变了，它们旋转了90°。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2016-06-28T09:59:32.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="iPhone图片上传服务器旋转的问题">
+<meta name="twitter:description" content="开发过程中难免会遇到各种诡异的Bug。不知道大家有没有遇到这样的情况，在做一个社交类应用时，我们时常需要将我们手机上的照片上传到自己或者第三方的服务器上存储起来，当照片数据上传成功之后，我们再根据后台接口从服务器获取我们所上传的照片数据并在UI上显示出来（比如发表朋友圈和修改头像）。在经过这样一系列操作之后，我们神奇的发现，其中有一部分照片的方向变了，它们旋转了90°。">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"hide"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 0,
+      author: '博主'
+    }
+  };
+</script>
+
+  <title> iPhone图片上传服务器旋转的问题 | MaiZi's Blog </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?c2586345b27e17779034f84bb3e505d2";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">MaiZi's Blog</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">Nothing is impossible！</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                iPhone图片上传服务器旋转的问题
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-05-30T10:46:59+08:00" content="2016-05-30">
+              2016-05-30
+            </time>
+          </span>
+
+          
+            <span class="post-category">
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/疑难杂症/" itemprop="url" rel="index">
+                    <span itemprop="name">疑难杂症</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/iPhone图片上传服务器旋转的问题/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="iPhone图片上传服务器旋转的问题/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>开发过程中难免会遇到各种诡异的Bug。不知道大家有没有遇到这样的情况，在做一个社交类应用时，我们时常需要将我们手机上的照片上传到自己或者第三方的服务器上存储起来，当照片数据上传成功之后，我们再根据后台接口从服务器获取我们所上传的照片数据并在UI上显示出来（比如发表朋友圈和修改头像）。在经过这样一系列操作之后，我们神奇的发现，其中有一部分照片的方向变了，它们旋转了90°。</p>
+<a id="more"></a>
+<p>当然，程序员什么大风大浪没见过，遇到Bug我们并不慌张，于是本着存在即合理的原则，我开始检查出错原因：</p>
+<p>首先我检查了代码，照片在上传和下载过程中并没有进行过任何压缩或其他处理（那肯定不是我的错，我这样想着）。</p>
+<p>于是我开始在后台找原因，然后有了新的发现，我上传的照片在后台服务器中已经是旋转的了（难怪我下载的照片是旋转的，肯定是后台对我上传的照片做了处理，我这样想着）。</p>
+<p>带着这样的疑问我去问后台，后台很无辜，他说天地良心他什么也没干（善良的我相信了）。</p>
+<p>最后我只能去问安卓，然而他们一切正常，安卓的同事并没有遇到过我这样的Bug。</p>
+<p>毫无办法的我只能对着照片冥思，改变了方向的照片都是iPhone设备上所拍的照片，网络上下载的和其他地方保存的照片方向并没有改变，问题应该出在照片本身上。</p>
+<p>###EXIF介绍</p>
+<p>对于图像数据，其实并不是我们理解的那样，图像一般都由两大部分组成，一部分是数据本身，它记录了每个像素的颜色值，另外一部分是文件头，这里面记录着形如图像的宽度，高度等信息。我们所讨论的方向信息便是被存储于文件头中。更为具体一些：EXIF中。</p>
+<p>可交换图像文件格式常被简称为Exif（Exchangeable image file format），是专门为数码相机的照片设定的，可以记录数码照片的属性信息和拍摄数据，同时Exif可以附加于JPEG、TIFF、RIFF等文件之中。</p>
+<p><strong>注意：</strong>PNG格式的图像中不包含。</p>
+<p>###解决方案</p>
+<p>这样对于照片旋转问题就有了一个合理的解释，我们通过iPhone手机拍摄照片时，手机通过方向传感器记录了照片拍摄时的方向。这样我们在iPhone设备上查看照片时，设备会自动的将那些横七竖八的照片为我们进行旋转操作，因此我们在iPhone上看到的照片永远是正的，不管你拍摄的时候用了何等扭曲的姿势。</p>
+<p>然而并不是所有的设备都能识别这样的信息，当我们将这些数据传到服务器上时，服务器也并不能识别照片的方向信息，它当然也不会依据照片的方向信息为我们进行旋转操作。因此展现在我们眼前的就是那些没有经过任何处理的横七竖八的图像。</p>
+<p>服务器识别不了，并不代表开发者不能，这样就需要我们在上传照片之前，先将照片进行处理，通过方向信息摆正照片的方向。</p>
+<p>代码实现如下：</p>
+<pre><code>/**
+ *  处理ios开发图片旋转的问题
+ *
+ *  @param image 需要转换的image
+ *
+ *  @return 转换完成的image
+ */
++ (UIImage *)normalizedImage:(UIImage *)image {
+    if (image.imageOrientation == UIImageOrientationUp) return image;
+    UIGraphicsBeginImageContextWithOptions(image.size, NO, image.scale);
+    [image drawInRect:(CGRect){0, 0, image.size}];
+    UIImage *normalizedImage = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    return normalizedImage;
+}
+</code></pre><p>这里是利用了UIImage中的drawInRect方法，它会将图像绘制到画布上，并且已经考虑好了图像的方向，使用时需要添加<code>&lt;UIKit/UIKit.h&gt;</code>框架。</p>
+<p>除了以上方式以外还有其他方式同样可以解决这个问题，只不过稍微有点复杂，网上有一篇很好的文章<a href="http://www.cocoachina.com/ios/20150605/12021.html" target="_blank" rel="noopener">如何处理iOS中照片的方向</a>，这里就不再赘述了。</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/iOS/" rel="tag">#iOS</a>
+          
+            <a href="/tags/图片/" rel="tag">#图片</a>
+          
+            <a href="/tags/Bug/" rel="tag">#Bug</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/Xcode软件常用配置/" rel="next" title="Xcode软件常用配置">
+                <i class="fa fa-chevron-left"></i> Xcode软件常用配置
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/OC中使用宏定义进行调试/" rel="prev" title="OC中使用宏定义进行调试">
+                OC中使用宏定义进行调试 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <div class="ds-share flat" data-thread-key="iPhone图片上传服务器旋转的问题/" data-title="iPhone图片上传服务器旋转的问题" data-content data-url="http://hackmz.com/iPhone图片上传服务器旋转的问题/">
+  <div class="ds-share-inline">
+    <ul class="ds-share-icons-16">
+
+      <li data-toggle="ds-share-icons-more"><a class="ds-more" href="javascript:void(0);">分享到：</a></li>
+      <li><a class="ds-weibo" href="javascript:void(0);" data-service="weibo">微博</a></li>
+      <li><a class="ds-qzone" href="javascript:void(0);" data-service="qzone">QQ空间</a></li>
+      <li><a class="ds-qqt" href="javascript:void(0);" data-service="qqt">腾讯微博</a></li>
+      <li><a class="ds-wechat" href="javascript:void(0);" data-service="wechat">微信</a></li>
+
+    </ul>
+    <div class="ds-share-icons-more">
+    </div>
+  </div>
+</div>
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="iPhone图片上传服务器旋转的问题/" data-title="iPhone图片上传服务器旋转的问题" data-url="http://hackmz.com/iPhone图片上传服务器旋转的问题/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image" src="http://7pumug.com1.z0.glb.clouddn.com/author.jpg" alt="麦子">
+          <p class="site-author-name" itemprop="name">麦子</p>
+          <p class="site-description motion-element" itemprop="description">当你的才华撑不起你的野心的时候，你就应该静下心来学习！</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">41</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">7</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">43</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/MrWheat" target="_blank" title="Github">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  Github
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/3202240184" target="_blank" title="微博">
+                  
+                    <i class="fa fa-fw fa-weibo"></i>
+                  
+                  微博
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <p class="post-toc-empty">此文章未包含目录</p>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">
+  
+  &copy;  2014 - 
+  <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">麦子</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+        
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.1"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.0.1"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.1"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"mrwheat"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+  
+
+
+
+
+
+  
+  
+  
+
+  
+
+  
+
+</body>
+</html>

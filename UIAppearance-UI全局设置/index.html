@@ -1,0 +1,754 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css">
+
+
+  <meta name="keywords" content="笔记,iOS,系统类,">
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.1">
+
+
+
+
+
+
+<meta name="description" content="在开发中，如果想要对一些控件类，比如UIImageView、UILabel、UINavigationBar等，做一些全局的改变，通常的做法都是通过继承的方式重写该类，这样新建一个一个文件，做的多了，会感觉很麻烦。在iOS5以后，苹果提供了更简单的方式，通过UIAppearance，你可以很轻松的管理你的界面。UIAppearance提供了两个方法：  + (id)appearance + (id)">
+<meta name="keywords" content="笔记,iOS,系统类">
+<meta property="og:type" content="article">
+<meta property="og:title" content="UIAppearance UI全局设置">
+<meta property="og:url" content="http://hackmz.com/UIAppearance-UI全局设置/index.html">
+<meta property="og:site_name" content="MaiZi&#39;s Blog">
+<meta property="og:description" content="在开发中，如果想要对一些控件类，比如UIImageView、UILabel、UINavigationBar等，做一些全局的改变，通常的做法都是通过继承的方式重写该类，这样新建一个一个文件，做的多了，会感觉很麻烦。在iOS5以后，苹果提供了更简单的方式，通过UIAppearance，你可以很轻松的管理你的界面。UIAppearance提供了两个方法：  + (id)appearance + (id)">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2016-07-05T01:26:14.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="UIAppearance UI全局设置">
+<meta name="twitter:description" content="在开发中，如果想要对一些控件类，比如UIImageView、UILabel、UINavigationBar等，做一些全局的改变，通常的做法都是通过继承的方式重写该类，这样新建一个一个文件，做的多了，会感觉很麻烦。在iOS5以后，苹果提供了更简单的方式，通过UIAppearance，你可以很轻松的管理你的界面。UIAppearance提供了两个方法：  + (id)appearance + (id)">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"hide"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 0,
+      author: '博主'
+    }
+  };
+</script>
+
+  <title> UIAppearance UI全局设置 | MaiZi's Blog </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?c2586345b27e17779034f84bb3e505d2";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">MaiZi's Blog</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">Nothing is impossible！</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                UIAppearance UI全局设置
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-07-04T10:57:19+08:00" content="2016-07-04">
+              2016-07-04
+            </time>
+          </span>
+
+          
+            <span class="post-category">
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/iOS笔记/" itemprop="url" rel="index">
+                    <span itemprop="name">iOS笔记</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/UIAppearance-UI全局设置/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="UIAppearance-UI全局设置/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>在开发中，如果想要对一些控件类，比如UIImageView、UILabel、UINavigationBar等，做一些全局的改变，通常的做法都是通过继承的方式重写该类，这样新建一个一个文件，做的多了，会感觉很麻烦。在iOS5以后，苹果提供了更简单的方式，通过UIAppearance，你可以很轻松的管理你的界面。UIAppearance提供了两个方法：</p>
+<ul>
+<li>+ (id)appearance</li>
+<li>+ (id)appearanceWhenContainedIn:(Class &lt;&gt;)ContainerClass,…</li>
+</ul>
+<a id="more"></a>
+<p>###appearance使用</p>
+<p>appearance方法使用简单，比如要定制应用中所有UIBarButtonItem的颜色，可以在UIBarButtonItem的外观代理中设置tintColor。</p>
+<pre><code>[[UINavigationBar appearance] setBarTintColor:[UIColor grayColor]];
+</code></pre><p>或者你也可以这样写：</p>
+<pre><code>UINavigationBar *appearance = [UINavigationBar appearance];
+[appearance setBarTintColor:[UIColor grayColor]];
+</code></pre><p>###appearanceWhenContainedIn使用</p>
+<p>这个方法可以用来设置某个类在其他类里的改变。</p>
+<p>比如我想设置UIBarButtonItem在UINavigationBar、UIPopoverController、UITabbar中的TintColor，而在其他地方则保持不变。</p>
+<pre><code>[[UIBarButtonItem appearanceWhenContainedIn:[UINavigationBar class], [UIPopoverController class],[UITabBar class], nil] setTintColor:[UIColor clearColor]];
+</code></pre><p>###自定义类实现UIAppearance</p>
+<p>如果想要在我们自定义的类中实现UIAppearance，需要在的类中实现UIAppearanceContainer协议，同时，在Objective-C中，还需要将相关的方法用UI_APPEARANCE_SELECTOR来标记，在Swift中，则需要在对应的属性或方法前面加上dynamic。</p>
+<p>但实际上，UIView已经实现了UIAppearance和UIAppearanceContainer协议。因此，我们在其子类中不再需要显式地去声明实现这两个接口。</p>
+<p>比如自定义Cell时，通过UIAppearance设置图片的圆角。</p>
+<pre><code>// DateCell.h
+#import &lt;UIKit/UIKit.h&gt;
+@interface DateCell : UITableViewCell
+@property (nonatomic, strong) UIImageView *imageV;
+@property (nonatomic, assign) CGFloat radios UI_APPEARANCE_SELECTOR;
+@end
+
+// DateCell.m
+- (void)setRadios:(CGFloat)radios {
+    _radios = radios;
+    self.imageV.layer.cornerRadius = radios;
+    self.imageV.layer.masksToBounds = YES;
+}
+
+// 在控制器的viewDidLoad方法里
+[DateCell appearance].radios = 20;
+</code></pre><p>###注意事项</p>
+<ul>
+<li><p>使用UIAppearance设置UI效果最好采用全局的设置，在所有界面初始化前开始设置。对于在使用UIAppearance之前已经添加到界面上的控件，则没有效果。</p>
+</li>
+<li><p>对于自定义的UI控件，使用UIAppearance无法直接改变UI控件的子控件。</p>
+<pre><code>// 自定义了一个Cell，在Cell中有一个UIImageView。
+#import &lt;UIKit/UIKit.h&gt;
+@interface DateCell : UITableViewCell
+@property (nonatomic, strong) UIImageView *imageV;
+@end
+
+// 在控制器的viewDidLoad方法里，直接设置imageV的圆角。
+[DateCell appearance].imageV.layer.cornerRadius = 20;
+[DateCell appearance].imageV.layer.masksToBounds = YES;
+</code></pre><p>  这种方法并不能达到预期的效果，因此我们需要给cell添加一个额外的属性，重写该属性的set方法，间接更改imageV的圆角。</p>
+<pre><code>// DateCell.h
+#import &lt;UIKit/UIKit.h&gt;
+@interface DateCell : UITableViewCell
+@property (nonatomic, strong) UIImageView *imageV;
+@property (nonatomic, assign) CGFloat radios UI_APPEARANCE_SELECTOR;
+@end
+
+// DateCell.m
+- (void)setRadios:(CGFloat)radios {
+    _radios = radios;
+    self.imageV.layer.cornerRadius = radios;
+    self.imageV.layer.masksToBounds = YES;
+}
+
+// 在控制器的viewDidLoad方法里
+[DateCell appearance].radios = 20;
+</code></pre></li>
+</ul>
+<p>###参考</p>
+<p><a href="https://developer.apple.com/library/ios/documentation/UIKit/Reference/UIAppearance_Protocol/index.html#//apple_ref/occ/intfcm/UIAppearance/appearanceForTraitCollection:" target="_blank" rel="noopener">UIAppearance</a></p>
+<p><a href="http://www.cocoachina.com/ios/20150723/12671.html" target="_blank" rel="noopener">自定义系统控件的外观：UIApearance</a></p>
+
+      
+    </div>
+
+    <div>
+      
+        
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/笔记/" rel="tag">#笔记</a>
+          
+            <a href="/tags/iOS/" rel="tag">#iOS</a>
+          
+            <a href="/tags/系统类/" rel="tag">#系统类</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/如何新建一个Github开源项目/" rel="next" title="如何新建一个Github开源项目">
+                <i class="fa fa-chevron-left"></i> 如何新建一个Github开源项目
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/UITableView上取消UITextField第一响应者的问题/" rel="prev" title="UITableView上取消UITextField第一响应者的问题">
+                UITableView上取消UITextField第一响应者的问题 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <div class="ds-share flat" data-thread-key="UIAppearance-UI全局设置/" data-title="UIAppearance UI全局设置" data-content data-url="http://hackmz.com/UIAppearance-UI全局设置/">
+  <div class="ds-share-inline">
+    <ul class="ds-share-icons-16">
+
+      <li data-toggle="ds-share-icons-more"><a class="ds-more" href="javascript:void(0);">分享到：</a></li>
+      <li><a class="ds-weibo" href="javascript:void(0);" data-service="weibo">微博</a></li>
+      <li><a class="ds-qzone" href="javascript:void(0);" data-service="qzone">QQ空间</a></li>
+      <li><a class="ds-qqt" href="javascript:void(0);" data-service="qqt">腾讯微博</a></li>
+      <li><a class="ds-wechat" href="javascript:void(0);" data-service="wechat">微信</a></li>
+
+    </ul>
+    <div class="ds-share-icons-more">
+    </div>
+  </div>
+</div>
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="UIAppearance-UI全局设置/" data-title="UIAppearance UI全局设置" data-url="http://hackmz.com/UIAppearance-UI全局设置/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image" src="http://7pumug.com1.z0.glb.clouddn.com/author.jpg" alt="麦子">
+          <p class="site-author-name" itemprop="name">麦子</p>
+          <p class="site-description motion-element" itemprop="description">当你的才华撑不起你的野心的时候，你就应该静下心来学习！</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">41</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">7</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">43</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/MrWheat" target="_blank" title="Github">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  Github
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/3202240184" target="_blank" title="微博">
+                  
+                    <i class="fa fa-fw fa-weibo"></i>
+                  
+                  微博
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <p class="post-toc-empty">此文章未包含目录</p>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">
+  
+  &copy;  2014 - 
+  <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">麦子</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+        
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.1"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.0.1"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.1"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"mrwheat"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+  
+
+
+
+
+
+  
+  
+  
+
+  
+
+  
+
+</body>
+</html>

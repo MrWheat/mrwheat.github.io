@@ -1,0 +1,749 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css">
+
+
+  <meta name="keywords" content="教程,hexo,">
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.1">
+
+
+
+
+
+
+<meta name="description" content="如果还对你的博客不满意，就接着往下面看吧。">
+<meta name="keywords" content="教程,hexo">
+<meta property="og:type" content="article">
+<meta property="og:title" content="hexo博客搭建教程：(六)hexo博客主题的优化 (下)">
+<meta property="og:url" content="http://hackmz.com/hexo博客搭建教程：-六-hexo博客主题优化-下/index.html">
+<meta property="og:site_name" content="MaiZi&#39;s Blog">
+<meta property="og:description" content="如果还对你的博客不满意，就接着往下面看吧。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://hackmz.com/img/IP地址.png">
+<meta property="og:updated_time" content="2016-05-27T05:06:20.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="hexo博客搭建教程：(六)hexo博客主题的优化 (下)">
+<meta name="twitter:description" content="如果还对你的博客不满意，就接着往下面看吧。">
+<meta name="twitter:image" content="http://hackmz.com/img/IP地址.png">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"hide"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 0,
+      author: '博主'
+    }
+  };
+</script>
+
+  <title> hexo博客搭建教程：(六)hexo博客主题的优化 (下) | MaiZi's Blog </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?c2586345b27e17779034f84bb3e505d2";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">MaiZi's Blog</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">Nothing is impossible！</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                hexo博客搭建教程：(六)hexo博客主题的优化 (下)
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2014-06-20T17:02:40+08:00" content="2014-06-20">
+              2014-06-20
+            </time>
+          </span>
+
+          
+            <span class="post-category">
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/hexo教程/" itemprop="url" rel="index">
+                    <span itemprop="name">hexo教程</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/hexo博客搭建教程：-六-hexo博客主题优化-下/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="hexo博客搭建教程：-六-hexo博客主题优化-下/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>如果还对你的博客不满意，就接着往下面看吧。</p>
+<a id="more"></a>
+<p>###添加自定义页面</p>
+<p>这里以添加<code>关于</code>界面为例，添加其他页面方法相同。</p>
+<p>执行new page命令：</p>
+<blockquote>
+<p>hexo new page “about”</p>
+</blockquote>
+<p>在<code>\hexo\source\</code>下会生成about目录，里面会有个<code>index.md</code>文件，直接使用<code>Sublime Text2</code>编辑就可以了，支持<code>markdown</code>语法。然后在<code>\hexo\themes\jacman\_config.yml</code>中<code>menu</code>下进行配置。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">menu:</span><br><span class="line">  首页: /</span><br><span class="line">  归档: /archives</span><br><span class="line">  关于: /about</span><br></pre></td></tr></table></figure>
+<p>###设置百度统计</p>
+<p>因Google Analytics偶尔被墙，故用百度统计。</p>
+<p>首先去百度统计注册账号，填写相关信息，获得百度统计代码。</p>
+<p>然后在<code>\hexo\themes\jacman\layout\_partial</code>中新建文件<code>baidu_tongji.ejs</code>。如果有了就不用新建勒，然后添加如下代码：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&lt;% <span class="keyword">if</span> (theme.baidu_tongji)&#123; %&gt;</span><br><span class="line">&lt;script type=<span class="string">"text/javascript"</span>&gt;</span><br><span class="line">你的百度统计代码</span><br><span class="line">&lt;/script&gt;</span><br><span class="line">&lt;% &#125; %&gt;</span><br></pre></td></tr></table></figure>
+<p>最后编辑<code>\hexo\themes\jacman\_config.yml</code>文件，将百度统计打开：</p>
+<blockquote>
+<p>baidu_tongji: true</p>
+</blockquote>
+<p>如果没有，增加该配置选项就行。</p>
+<p>配置完成后，不出意外的话，在你的站点的每个页面的左上角都会看到一个百度LOGO。如果看着难受，可以在『百度统计首页-&gt;网站列表-&gt;获取代码-&gt;系统管理设置-&gt;统计图标设置-&gt;显示图标』，把那个勾去掉，没办法，广告无处不在。</p>
+<p>###导航栏添加RSS</p>
+<ul>
+<li><p>安装RSS插件到本地：<code>npm install hexo-generator-feed</code></p>
+</li>
+<li><p>开启RSS功能：编辑<code>hexo/_config.yml</code>，添加如下代码：</p>
+  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">plugins:</span><br><span class="line">- hexo-generator-feed</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>在站点添加链接：</p>
+<p>  在<code>hexo\themes\jacman\_config.yml</code>中，编辑 <code>rss: /atom.xml</code></p>
+<p>  在<code>hexo\themes\jacman\layout\_partial\header.ejs</code>中，<code>&lt;ul&gt;&lt;/ul&gt;</code>之间，添加一样代码<code>&lt;li&gt; &lt;a href=&quot;/atom.xml&quot;&gt;RSS&lt;/a&gt; &lt;/li&gt;</code></p>
+</li>
+</ul>
+<p>###添加sitemap</p>
+<p>sitemap的初衷是给搜索引擎看的，为了提高搜索引擎对自己站点的收录效果，我们最好手动到google和百度等搜索引擎提交sitemap.xml。</p>
+<ul>
+<li><p>安装sitemap到本地：npm install hexo-generator-sitemap</p>
+</li>
+<li><p>开启sitemap功能：编辑hexo/_config.yml，添加如下代码：</p>
+  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">plugins:</span><br><span class="line">- hexo-generator-sitemap</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>你可以到<a href="http://www.sousuoyinqingtijiao.com/" target="_blank" rel="noopener">屈站长</a>提交你的站点给搜索引擎。</p>
+</li>
+</ul>
+<p>###在文章中插入图片</p>
+<p>使用markdown写文章，插入图片的格式为<code>![图片名称](链接地址)</code>,对于图片的链接地址该怎么写呢？</p>
+<ul>
+<li><p>可以复制网上的图片网址添加进来。</p>
+</li>
+<li><p>使用本地路径：在<code>hexo\source</code>目录下新建一个<code>img</code>文件夹，将图片放入该文件夹下，插入图片时链接即为<code>/img/图片名称</code>。</p>
+</li>
+<li><p>或者使用图床，推荐用七牛，首先注册七牛账号，然后将图片上传到七牛的空间，最后将图片在七牛的外链地址复制下来即可。</p>
+</li>
+</ul>
+<p>七牛除了作为图床，也可以作为其他静态文件的存储空间，比如博主的博客的背景音乐便是放在了七牛的空间，相对于其他外链地址，访问速度还是快很多的。</p>
+<p>###404页面</p>
+<p>404页面也是可以做很多事情的，如果想创建自己的404页面，直接在根目录下创建自己的404.html就可以，但是自定义404页面仅对绑定顶级域名的项目才起作用。对gitcafe的二级域名是不起作用的。使用hexo s本地调试也不起作用。这里就不介绍了。有兴趣的百度找找吧。</p>
+<p>###最后就是购买域名###</p>
+<p>买域名推荐去GoDaddy吧，在国外，不受国内各种干扰，同时支持支付宝付款，信誉、口碑都很好，网上优惠码一类的东西也挺多的。如果没有特别的要求，不愿折腾直接上国内买也行，看个人，博主是在GoDaddy买的，追求完美嘛。想买的去<a href="https://www.godaddy.com/about/godaddy-chinese.aspx?isc=bsfndom4&amp;cvosrc=ppc.baidu" target="_blank" rel="noopener">godaddy域名购买</a>有32%的优惠（这不是打广告= =!）。</p>
+<p>###设置DNS</p>
+<p>在Godaddy网站购买完域名后，Goddady会默认提供一个国外的dns服务商，访问速度来说还不错，没有特别多要求的话默认就好。</p>
+<p>Godaddy的DNS解析设置参照：<a href="http://www.51php.com/domain/13235.html" target="_blank" rel="noopener">Godaddy域名解析教程</a>，这里就不过多介绍了。记录值或者IP地址填写gitcafe提供的IP地址。</p>
+<p><img src="\img\IP地址.png" alt></p>
+<p>然后将你的域名添加到项目的自定义域名里就可以了。一个IP地址可以指向多个域名，而一个域名只能指向一个地址。</p>
+<p>Godaddy域名DNS解析设置完成之后，一般过十分钟左右就能生效，网站就能正常登陆勒。</p>
+<p>博主这里使用的是<a href="https://www.dnspod.cn/" target="_blank" rel="noopener">dnspod</a>提供的域名解析服务，使用dnspod的解析一个新的域名可能会遇到有电信或联通的网可以访问，其他的网不能访问的情况，这是因为运营商不同的缘故，由于各地的DNS刷新时间不同，没有刷新的DNS服务器会继续向旧的DNS服务器发送请求，从而造成错误的解析结果，出现这样的情况，一般等待24到72小时后，解析会恢复正常，至于为什么Godaddy那么快。因为你注册的时候本身就是用他们的DNS，不需要重新修改，各地也没缓存。所以不能正常登陆网页的博主们也不用太过担心。</p>
+<p>关于hexo博客的搭建教程就写到这勒，优化永无止境的，暂时想到的就这么多，如有不当或者疑问的地方，可以指出，有时间会将DNSPOD域名解析教程以及添加背景音乐的教程写上，突然觉得肚子有点饿了。。。</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/教程/" rel="tag">#教程</a>
+          
+            <a href="/tags/hexo/" rel="tag">#hexo</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/hexo博客搭建教程：-五-jacman主题的优化/" rel="next" title="hexo博客搭建教程：(五)hexo博客主题的优化 (上)">
+                <i class="fa fa-chevron-left"></i> hexo博客搭建教程：(五)hexo博客主题的优化 (上)
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/hexo博客搭建教程：-七-添加分享界面/" rel="prev" title="hexo博客搭建教程：(七)添加分享界面">
+                hexo博客搭建教程：(七)添加分享界面 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <div class="ds-share flat" data-thread-key="hexo博客搭建教程：-六-hexo博客主题优化-下/" data-title="hexo博客搭建教程：(六)hexo博客主题的优化 (下)" data-content data-url="http://hackmz.com/hexo博客搭建教程：-六-hexo博客主题优化-下/">
+  <div class="ds-share-inline">
+    <ul class="ds-share-icons-16">
+
+      <li data-toggle="ds-share-icons-more"><a class="ds-more" href="javascript:void(0);">分享到：</a></li>
+      <li><a class="ds-weibo" href="javascript:void(0);" data-service="weibo">微博</a></li>
+      <li><a class="ds-qzone" href="javascript:void(0);" data-service="qzone">QQ空间</a></li>
+      <li><a class="ds-qqt" href="javascript:void(0);" data-service="qqt">腾讯微博</a></li>
+      <li><a class="ds-wechat" href="javascript:void(0);" data-service="wechat">微信</a></li>
+
+    </ul>
+    <div class="ds-share-icons-more">
+    </div>
+  </div>
+</div>
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="hexo博客搭建教程：-六-hexo博客主题优化-下/" data-title="hexo博客搭建教程：(六)hexo博客主题的优化 (下)" data-url="http://hackmz.com/hexo博客搭建教程：-六-hexo博客主题优化-下/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image" src="http://7pumug.com1.z0.glb.clouddn.com/author.jpg" alt="麦子">
+          <p class="site-author-name" itemprop="name">麦子</p>
+          <p class="site-description motion-element" itemprop="description">当你的才华撑不起你的野心的时候，你就应该静下心来学习！</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">41</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">7</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">43</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/MrWheat" target="_blank" title="Github">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  Github
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/3202240184" target="_blank" title="微博">
+                  
+                    <i class="fa fa-fw fa-weibo"></i>
+                  
+                  微博
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <p class="post-toc-empty">此文章未包含目录</p>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">
+  
+  &copy;  2014 - 
+  <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">麦子</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+        
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.1"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.0.1"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.1"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"mrwheat"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+  
+
+
+
+
+
+  
+  
+  
+
+  
+
+  
+
+</body>
+</html>
