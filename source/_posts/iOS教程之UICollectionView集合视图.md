@@ -13,8 +13,7 @@ tags: [笔记,UI控件,iOS]
 	
 ![](/img/CollectionView/展示列表.png)![](/img/CollectionView/展示列表1.jpg)![](/img/CollectionView/展示列表2.jpg)![](/img/CollectionView/展示列表3.jpg)
 
-<h3 style="background-color:#A3BB50; color:white; padding-top: 2px; padding-left: 5px;
-padding-bottom: 2px;"; >目录</h3>
+###  目录
 
 1. 集合视图的基本使用
 2. 集合视图FlowLayout设置
@@ -22,8 +21,7 @@ padding-bottom: 2px;"; >目录</h3>
 4. 定制FlowLayout实现圆形效果
 5. 实现瀑布流效果
 
-<h3 style="background-color:#A3BB50; color:white; padding-top: 2px; padding-left: 5px;
-padding-bottom: 2px;"; >集合视图的基本使用</h3>
+### 集合视图的基本使用
 
 **简述：** 一般使用UICollectionView类来创建集合视图，同时使用UICollectionViewFlowLayout类来管理集合视图的布局。
 	
@@ -70,8 +68,7 @@ padding-bottom: 2px;"; >集合视图的基本使用</h3>
 	
 	![](/img/CollectionView/布局.png)
 
-<h3 style="background-color:#A3BB50; color:white; padding-top: 2px; padding-left: 5px;
-padding-bottom: 2px;"; >集合视图FlowLayout设置</h3>
+### 集合视图FlowLayout设置
 
 * **itemSize属性**
 
@@ -147,8 +144,7 @@ padding-bottom: 2px;"; >集合视图FlowLayout设置</h3>
 	> * UICollectionViewScrollDirectionVertical代表垂直方向的滑动。
 	> * UICollectionViewScrollDirectionHorizontal代表水平方向的滑动。
 
-<h3 style="background-color:#A3BB50; color:white; padding-top: 2px; padding-left: 5px;
-padding-bottom: 2px;"; >集合视图Cell的定制</h3>
+### 集合视图Cell的定制
 
 **简述：**和UITableView不同的是，集合视图的UICollectionViewCell并没有像UITableViewCell那样的imageView、detailTextLabel和textLabel属性，因此通常情况下都需要用户根据数据显示的格式自己定义集合视图的Cell，对于如何实现Cell的定制，下面我们以照片墙为例进行说明。
 
@@ -201,8 +197,7 @@ padding-bottom: 2px;"; >集合视图Cell的定制</h3>
 
 ![](/img/CollectionView/照片墙.png)  ![](/img/CollectionView/照片墙2.png)
 
-<h3 style="background-color:#A3BB50; color:white; padding-top: 2px; padding-left: 5px;
-padding-bottom: 2px;"; >定制FlowLayout实现圆形效果</h3>
+### 定制FlowLayout实现圆形效果
 
 **简述：**
 UICollectionViewLayout可以说是UICollectionView的大脑和中枢，它是UICollectionView的精髓，同时也是UICollectionView和UITableView最大的不同。layout是灵活的，它决定了集合视图如何展示在界面之上，因此，我们可以通过定制UICollectionViewLayout来实现各种各样丰富的界面效果，例如圆型效果。
@@ -298,8 +293,7 @@ UICollectionViewLayout可以说是UICollectionView的大脑和中枢，它是UIC
 
 ![](/img/CollectionView/Cell圆形效果1.png) ![](/img/CollectionView/Cell圆形效果2.png)
 
-<h3 style="background-color:#A3BB50; color:white; padding-top: 2px; padding-left: 5px;
-padding-bottom: 2px;"; >实现瀑布流效果</h3>
+### 实现瀑布流效果
 
 **简述：**
 实现瀑布流的方式多种多样，我们可以利用UITableView实现，也可以通过UIScrollView实现，但是更多的，还是选择UIScrollView来实现瀑布流的效果。当然通过集合视图来实现瀑布流，每个人也有不同的方式。最常用的两种方法有：

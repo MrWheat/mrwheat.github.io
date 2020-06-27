@@ -20,7 +20,7 @@ tags: [图片,UIImage,iOS]
 
 <!--more-->
 
-###照片
+### 照片
 
 使用照片应用，一般用来取照片或者保存照片，以下介绍这两种方法的实现。
 
@@ -68,7 +68,7 @@ tags: [图片,UIImage,iOS]
 			    }
 			}
 	
-###相机
+### 相机
 
 有些App经常需要应用相机拍照的功能，该功能的使用和照片类似。
 
@@ -98,7 +98,7 @@ tags: [图片,UIImage,iOS]
 		    UIImage *image = info[UIImagePickerControllerOriginalImage];
 		}
 
-###打电话
+### 打电话
 
 打电话有3种方式，推荐第三种方式。
 
@@ -118,7 +118,7 @@ tags: [图片,UIImage,iOS]
 		NSURL *url = [NSURL URLWithString:@"tel://10086"];
 		[webView loadRequest:[NSURLRequest requestWithURL:url ]];
 
-###发送短信
+### 发送短信
 
 发送短信有两种方式。
 
@@ -158,7 +158,7 @@ tags: [图片,UIImage,iOS]
 
 	
 		
-###发送邮件
+### 发送邮件
 
 发送邮件的方式和短信差不多，同样也有两种。
 
@@ -202,13 +202,13 @@ tags: [图片,UIImage,iOS]
 				}
 			}
 
-###Safari打开网址
+### Safari打开网址
 
 通过Safari打开网址只需要调用openURL:方法即可。
 
 	[[UIApplication sharedApplication] openURL:[NSURL URLWithString:url]];
 
-###打开App Store
+### 打开App Store
 
 1. 跳转AppStore首页
 

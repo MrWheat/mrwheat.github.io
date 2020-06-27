@@ -16,15 +16,15 @@ tags: [iOS,runtime]
 
 <!--more-->
 
-###什么是runtime
+### 什么是runtime
 
 概念这东西，都是老生常谈，引用网上的话：Objective-C的Runtime是一个运行时库（Runtime Library），主要使用 C 和汇编编写，为C添加了面相对象的能力并创造了 Objective-C。
 
-###runtime的作用
+### runtime的作用
 
 通过runtime，你可以动态的产生、修改和删除一个类，或者一个方法和成员变量。
 
-###runtime的使用
+### runtime的使用
 
 使用之前，首先包含头文件。
 
@@ -44,7 +44,7 @@ tags: [iOS,runtime]
 	---------------------------------------------------
 	method_exchangeImplementations(Method m1, Method m2)	// 交换两个方法的实现
 	
-####获取类成员变量
+#### 获取类成员变量
 
 通过runtime可以获取某个类的所有成员变量，代码如下，使用时需要添加头文件`#import <objc/runtime.h>`
 
@@ -85,7 +85,7 @@ tags: [iOS,runtime]
 	
 ![](/img/Runtime开发使用实例01.png)
 
-####获取类属性
+#### 获取类属性
 
 获取类属性的方式跟获取类成员变量的方式类似，代码如下。
 
@@ -116,11 +116,11 @@ tags: [iOS,runtime]
 	
 ![](/img/Runtime开发使用实例02.png)
 	
-###应用实例
+### 应用实例
 
 我们可以通过runtime来获得某个类的所有属性和所有成员变量，便可以通过这种方式实现对任意类的快速归档和解档，同样的，还能实现字典转模型的操作。
 
-####归档解档
+#### 归档解档
 
 关于自定义类的归档需要遵守<NSCoding>协议，使用runtime同时也别忘记包含头文件。
 
@@ -161,7 +161,7 @@ tags: [iOS,runtime]
 	    return self;
 	}
 
-####交换方法
+#### 交换方法
 
 交换方法是通过`method_exchangeImplementations(Method m1, Method m2)`实现的。对于苹果系统提供的方法，我们看不到其内部实现，当然也无法去修改里面的代码。但是却可以使用runtime去替换它，这样就能处理某些使用系统方法而导致程序崩溃的问题(当然使用继承也是可以解决这个问题的)。
 
@@ -202,7 +202,7 @@ tags: [iOS,runtime]
 
 ![](/img/Runtime开发使用实例05.png)
 
-###参考
+### 参考
 
 [理解 Objective-C Runtime](http://www.cocoachina.com/ios/20141008/9844.html)
 
