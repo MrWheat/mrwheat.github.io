@@ -92,7 +92,7 @@
 <meta property="og:site_name" content="MaiZi&#39;s Blog">
 <meta property="og:description" content="前面讲沙盒目录的时候说过，iOS应用都是被一个小箱子锁起来的独立个体，里面的数据出不来，外面的数据进不去，除了某些特殊的情况。博客传送门 我们在开发App的时候可以预留一些Api用来与其他应用进行交互，而对于系统应用来说，比如地图，相册，照相机这些预装应用，苹果也为我们提供了一些工具来访问它们。 那怎么做呢？ PS:以下代码大部分均需在真机上调试才有效果。">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-12-15T04:41:37.302Z">
+<meta property="og:updated_time" content="2020-06-27T12:33:37.374Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="常用iOS系统应用API">
 <meta name="twitter:description" content="前面讲沙盒目录的时候说过，iOS应用都是被一个小箱子锁起来的独立个体，里面的数据出不来，外面的数据进不去，除了某些特殊的情况。博客传送门 我们在开发App的时候可以预留一些Api用来与其他应用进行交互，而对于系统应用来说，比如地图，相册，照相机这些预装应用，苹果也为我们提供了一些工具来访问它们。 那怎么做呢？ PS:以下代码大部分均需在真机上调试才有效果。">
@@ -334,8 +334,7 @@
 <p>那怎么做呢？</p>
 <p><strong>PS:</strong>以下代码大部分均需在真机上调试才有效果。</p>
 <a id="more"></a>
-<p>###照片</p>
-<p>使用照片应用，一般用来取照片或者保存照片，以下介绍这两种方法的实现。</p>
+<h3 id="照片"><a href="#照片" class="headerlink" title="照片"></a>照片</h3><p>使用照片应用，一般用来取照片或者保存照片，以下介绍这两种方法的实现。</p>
 <ul>
 <li><p>取出照片</p>
 <ol>
@@ -381,8 +380,7 @@ UIImageWriteToSavedPhotosAlbum(image, self, @selector(image:didFinishSavingWithE
 </ol>
 </li>
 </ul>
-<p>###相机</p>
-<p>有些App经常需要应用相机拍照的功能，该功能的使用和照片类似。</p>
+<h3 id="相机"><a href="#相机" class="headerlink" title="相机"></a>相机</h3><p>有些App经常需要应用相机拍照的功能，该功能的使用和照片类似。</p>
 <ol>
 <li><p>首先遵守协议</p>
 <pre><code>#import &quot;ViewController.h&quot;
@@ -408,8 +406,7 @@ ipc.delegate = self;
 }
 </code></pre></li>
 </ol>
-<p>###打电话</p>
-<p>打电话有3种方式，推荐第三种方式。</p>
+<h3 id="打电话"><a href="#打电话" class="headerlink" title="打电话"></a>打电话</h3><p>打电话有3种方式，推荐第三种方式。</p>
 <ol>
 <li><p>直接跳转拨号界面拨打电话</p>
 <pre><code>NSString *num = [[NSString alloc] initWithFormat:@&quot;tel://%@&quot;, @&quot;10086&quot;];
@@ -424,8 +421,7 @@ NSURL *url = [NSURL URLWithString:@&quot;tel://10086&quot;];
 [webView loadRequest:[NSURLRequest requestWithURL:url ]];
 </code></pre></li>
 </ol>
-<p>###发送短信</p>
-<p>发送短信有两种方式。</p>
+<h3 id="发送短信"><a href="#发送短信" class="headerlink" title="发送短信"></a>发送短信</h3><p>发送短信有两种方式。</p>
 <ul>
 <li><p>直接跳转发短信界面发送短信</p>
 <pre><code>NSURL *url = [NSURL URLWithString:@&quot;sms://10086&quot;];
@@ -460,8 +456,7 @@ if ([MFMessageComposeViewController canSendText]) {
 </ol>
 </li>
 </ul>
-<p>###发送邮件</p>
-<p>发送邮件的方式和短信差不多，同样也有两种。</p>
+<h3 id="发送邮件"><a href="#发送邮件" class="headerlink" title="发送邮件"></a>发送邮件</h3><p>发送邮件的方式和短信差不多，同样也有两种。</p>
 <ul>
 <li><p>跳转邮件客户端</p>
 <pre><code>NSURL *url = [NSURL URLWithString:@&quot;mailto://maizi@qq.com&quot;];
@@ -502,11 +497,9 @@ if ([MFMailComposeViewController canSendMail]) {
 </ol>
 </li>
 </ul>
-<p>###Safari打开网址</p>
-<p>通过Safari打开网址只需要调用openURL:方法即可。</p>
+<h3 id="Safari打开网址"><a href="#Safari打开网址" class="headerlink" title="Safari打开网址"></a>Safari打开网址</h3><p>通过Safari打开网址只需要调用openURL:方法即可。</p>
 <pre><code>[[UIApplication sharedApplication] openURL:[NSURL URLWithString:url]];
-</code></pre><p>###打开App Store</p>
-<ol>
+</code></pre><h3 id="打开App-Store"><a href="#打开App-Store" class="headerlink" title="打开App Store"></a>打开App Store</h3><ol>
 <li><p>跳转AppStore首页</p>
 <pre><code>NSString *str = [NSString stringWithFormat:
                      @&quot;itms-apps://itunes.apple.com&quot;];
@@ -639,14 +632,14 @@ if ([MFMailComposeViewController canSendMail]) {
 
       <section class="site-overview sidebar-panel ">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
-          <img class="site-author-image" itemprop="image" src="http://7pumug.com1.z0.glb.clouddn.com/author.jpg" alt="麦子">
+          <img class="site-author-image" itemprop="image" src="/avatar/avatar.jpg" alt="麦子">
           <p class="site-author-name" itemprop="name">麦子</p>
           <p class="site-description motion-element" itemprop="description">当你的才华撑不起你的野心的时候，你就应该静下心来学习！</p>
         </div>
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">41</span>
+              <span class="site-state-item-count">42</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
@@ -663,7 +656,7 @@ if ([MFMailComposeViewController canSendMail]) {
           
             <div class="site-state-item site-state-tags">
               <a href="/tags">
-                <span class="site-state-item-count">43</span>
+                <span class="site-state-item-count">45</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
@@ -712,7 +705,7 @@ if ([MFMailComposeViewController canSendMail]) {
               
             
             
-              <p class="post-toc-empty">此文章未包含目录</p>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#照片"><span class="nav-number">1.</span> <span class="nav-text">照片</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#相机"><span class="nav-number">2.</span> <span class="nav-text">相机</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#打电话"><span class="nav-number">3.</span> <span class="nav-text">打电话</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#发送短信"><span class="nav-number">4.</span> <span class="nav-text">发送短信</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#发送邮件"><span class="nav-number">5.</span> <span class="nav-text">发送邮件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Safari打开网址"><span class="nav-number">6.</span> <span class="nav-text">Safari打开网址</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#打开App-Store"><span class="nav-number">7.</span> <span class="nav-text">打开App Store</span></a></li></ol></div>
             
           </div>
         </section>
@@ -731,7 +724,7 @@ if ([MFMailComposeViewController canSendMail]) {
         <div class="copyright">
   
   &copy;  2014 - 
-  <span itemprop="copyrightYear">2019</span>
+  <span itemprop="copyrightYear">2020</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>

@@ -97,7 +97,7 @@
 <meta property="og:image" content="http://hackmz.com/img/Runtime开发使用实例03.png">
 <meta property="og:image" content="http://hackmz.com/img/Runtime开发使用实例04.png">
 <meta property="og:image" content="http://hackmz.com/img/Runtime开发使用实例05.png">
-<meta property="og:updated_time" content="2019-12-15T04:41:37.289Z">
+<meta property="og:updated_time" content="2020-06-27T12:33:08.138Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Runtime开发使用实例">
 <meta name="twitter:description" content="当我们学习和使用Objective-C时，Objective-C Runtime往往被我们自动忽略了。因为就算不知道它的存在，似乎对我们平时写代码并没有多大的影响。既然没影响，那我们还学它干嘛，就像不会造车但我会开车不就可以了？ 但是当你在这行逐步深入进去，你至少应该知道一些Runtime的工作细节，知道Objective-C正在做的事情，能够帮助你更深层次的理解Objective-C和你的App">
@@ -338,12 +338,9 @@
         <p>当我们学习和使用Objective-C时，Objective-C Runtime往往被我们自动忽略了。因为就算不知道它的存在，似乎对我们平时写代码并没有多大的影响。既然没影响，那我们还学它干嘛，就像不会造车但我会开车不就可以了？</p>
 <p>但是当你在这行逐步深入进去，你至少应该知道一些Runtime的工作细节，知道Objective-C正在做的事情，能够帮助你更深层次的理解Objective-C和你的App，不管你有没有好奇心，对你个人来说也是一种收获和提升。了解车的性能和构造又何尝不是为了能更好的驾驭这辆车，成为一名资深的赛车手。</p>
 <a id="more"></a>
-<p>###什么是runtime</p>
-<p>概念这东西，都是老生常谈，引用网上的话：Objective-C的Runtime是一个运行时库（Runtime Library），主要使用 C 和汇编编写，为C添加了面相对象的能力并创造了 Objective-C。</p>
-<p>###runtime的作用</p>
-<p>通过runtime，你可以动态的产生、修改和删除一个类，或者一个方法和成员变量。</p>
-<p>###runtime的使用</p>
-<p>使用之前，首先包含头文件。</p>
+<h3 id="什么是runtime"><a href="#什么是runtime" class="headerlink" title="什么是runtime"></a>什么是runtime</h3><p>概念这东西，都是老生常谈，引用网上的话：Objective-C的Runtime是一个运行时库（Runtime Library），主要使用 C 和汇编编写，为C添加了面相对象的能力并创造了 Objective-C。</p>
+<h3 id="runtime的作用"><a href="#runtime的作用" class="headerlink" title="runtime的作用"></a>runtime的作用</h3><p>通过runtime，你可以动态的产生、修改和删除一个类，或者一个方法和成员变量。</p>
+<h3 id="runtime的使用"><a href="#runtime的使用" class="headerlink" title="runtime的使用"></a>runtime的使用</h3><p>使用之前，首先包含头文件。</p>
 <pre><code>#import &lt;objc/runtime.h&gt;    // 包含对类、成员变量、属性、方法的操作
 #import &lt;objc/message.h&gt;    // 包含消息机制
 </code></pre><p>以下是runtime经常用到的方法。</p>
@@ -357,8 +354,7 @@ class_getInstanceMethod()
 class_getClassMethod()    // 以上两个函数传入返回Method类型
 ---------------------------------------------------
 method_exchangeImplementations(Method m1, Method m2)    // 交换两个方法的实现
-</code></pre><p>####获取类成员变量</p>
-<p>通过runtime可以获取某个类的所有成员变量，代码如下，使用时需要添加头文件<code>#import &lt;objc/runtime.h&gt;</code></p>
+</code></pre><h4 id="获取类成员变量"><a href="#获取类成员变量" class="headerlink" title="获取类成员变量"></a>获取类成员变量</h4><p>通过runtime可以获取某个类的所有成员变量，代码如下，使用时需要添加头文件<code>#import &lt;objc/runtime.h&gt;</code></p>
 <pre><code>/**
  *  获取某个类的所有成员变量
  *
@@ -393,8 +389,7 @@ method_exchangeImplementations(Method m1, Method m2)    // 交换两个方法的
 }
 </code></pre><p>我们以UILabel为例：</p>
 <p><img src="/img/Runtime开发使用实例01.png" alt></p>
-<p>####获取类属性</p>
-<p>获取类属性的方式跟获取类成员变量的方式类似，代码如下。</p>
+<h4 id="获取类属性"><a href="#获取类属性" class="headerlink" title="获取类属性"></a>获取类属性</h4><p>获取类属性的方式跟获取类成员变量的方式类似，代码如下。</p>
 <pre><code>/**
  *  获取某个类的所有属性
  *
@@ -419,10 +414,8 @@ method_exchangeImplementations(Method m1, Method m2)    // 交换两个方法的
 }
 </code></pre><p>同样以UILabel为例：</p>
 <p><img src="/img/Runtime开发使用实例02.png" alt></p>
-<p>###应用实例</p>
-<p>我们可以通过runtime来获得某个类的所有属性和所有成员变量，便可以通过这种方式实现对任意类的快速归档和解档，同样的，还能实现字典转模型的操作。</p>
-<p>####归档解档</p>
-<p>关于自定义类的归档需要遵守<nscoding>协议，使用runtime同时也别忘记包含头文件。</nscoding></p>
+<h3 id="应用实例"><a href="#应用实例" class="headerlink" title="应用实例"></a>应用实例</h3><p>我们可以通过runtime来获得某个类的所有属性和所有成员变量，便可以通过这种方式实现对任意类的快速归档和解档，同样的，还能实现字典转模型的操作。</p>
+<h4 id="归档解档"><a href="#归档解档" class="headerlink" title="归档解档"></a>归档解档</h4><p>关于自定义类的归档需要遵守<nscoding>协议，使用runtime同时也别忘记包含头文件。</nscoding></p>
 <pre><code>#import &quot;MZTestModel.h&quot;
 #import &lt;objc/runtime.h&gt;
 @interface MZTestModel () &lt;NSCoding&gt;
@@ -457,8 +450,7 @@ method_exchangeImplementations(Method m1, Method m2)    // 交换两个方法的
     }
     return self;
 }
-</code></pre><p>####交换方法</p>
-<p>交换方法是通过<code>method_exchangeImplementations(Method m1, Method m2)</code>实现的。对于苹果系统提供的方法，我们看不到其内部实现，当然也无法去修改里面的代码。但是却可以使用runtime去替换它，这样就能处理某些使用系统方法而导致程序崩溃的问题(当然使用继承也是可以解决这个问题的)。</p>
+</code></pre><h4 id="交换方法"><a href="#交换方法" class="headerlink" title="交换方法"></a>交换方法</h4><p>交换方法是通过<code>method_exchangeImplementations(Method m1, Method m2)</code>实现的。对于苹果系统提供的方法，我们看不到其内部实现，当然也无法去修改里面的代码。但是却可以使用runtime去替换它，这样就能处理某些使用系统方法而导致程序崩溃的问题(当然使用继承也是可以解决这个问题的)。</p>
 <p>举个例子，我们在使用字典和数组的时候，是不能向里面写入nil的。这样会导致程序崩溃。</p>
 <p>在进行后台接口调试的时候，经常会遇到这个问题。比如登陆注册，我们需要将用户的账号和密码以字典的形式传给后台进行比对，如果账号密码为空，前端不进行判断，直接将该值写入字典，那么程序就直接崩溃了。</p>
 <p>有些接口的参数比较多，同时部分字段又不是必传字段。我们需要每次对传入的数据进行判断是否为空，然后才写入字典，很麻烦，因为你不判断程序就直接崩溃了，而一堆if语句看起来又是那么的恶心。。。。</p>
@@ -485,8 +477,7 @@ method_exchangeImplementations(Method m1, Method m2)    // 交换两个方法的
 </code></pre><p><img src="/img/Runtime开发使用实例04.png" alt></p>
 <p>再一次运行程序，一切正常，没有崩溃。</p>
 <p><img src="/img/Runtime开发使用实例05.png" alt></p>
-<p>###参考</p>
-<p><a href="http://www.cocoachina.com/ios/20141008/9844.html" target="_blank" rel="noopener">理解 Objective-C Runtime</a></p>
+<h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><p><a href="http://www.cocoachina.com/ios/20141008/9844.html" target="_blank" rel="noopener">理解 Objective-C Runtime</a></p>
 
       
     </div>
@@ -526,6 +517,10 @@ method_exchangeImplementations(Method m1, Method m2)    // 交换两个方法的
           </div>
 
           <div class="post-nav-prev post-nav-item">
+            
+              <a href="/Cocoapods创建私有库问题汇总/" rel="prev" title="Cocoapods创建私有库问题汇总">
+                Cocoapods创建私有库问题汇总 <i class="fa fa-chevron-right"></i>
+              </a>
             
           </div>
         </div>
@@ -603,14 +598,14 @@ method_exchangeImplementations(Method m1, Method m2)    // 交换两个方法的
 
       <section class="site-overview sidebar-panel ">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
-          <img class="site-author-image" itemprop="image" src="http://7pumug.com1.z0.glb.clouddn.com/author.jpg" alt="麦子">
+          <img class="site-author-image" itemprop="image" src="/avatar/avatar.jpg" alt="麦子">
           <p class="site-author-name" itemprop="name">麦子</p>
           <p class="site-description motion-element" itemprop="description">当你的才华撑不起你的野心的时候，你就应该静下心来学习！</p>
         </div>
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">41</span>
+              <span class="site-state-item-count">42</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
@@ -627,7 +622,7 @@ method_exchangeImplementations(Method m1, Method m2)    // 交换两个方法的
           
             <div class="site-state-item site-state-tags">
               <a href="/tags">
-                <span class="site-state-item-count">43</span>
+                <span class="site-state-item-count">45</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
@@ -676,7 +671,7 @@ method_exchangeImplementations(Method m1, Method m2)    // 交换两个方法的
               
             
             
-              <p class="post-toc-empty">此文章未包含目录</p>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#什么是runtime"><span class="nav-number">1.</span> <span class="nav-text">什么是runtime</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#runtime的作用"><span class="nav-number">2.</span> <span class="nav-text">runtime的作用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#runtime的使用"><span class="nav-number">3.</span> <span class="nav-text">runtime的使用</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#获取类成员变量"><span class="nav-number">3.1.</span> <span class="nav-text">获取类成员变量</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#获取类属性"><span class="nav-number">3.2.</span> <span class="nav-text">获取类属性</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#应用实例"><span class="nav-number">4.</span> <span class="nav-text">应用实例</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#归档解档"><span class="nav-number">4.1.</span> <span class="nav-text">归档解档</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#交换方法"><span class="nav-number">4.2.</span> <span class="nav-text">交换方法</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#参考"><span class="nav-number">5.</span> <span class="nav-text">参考</span></a></li></ol></div>
             
           </div>
         </section>
@@ -695,7 +690,7 @@ method_exchangeImplementations(Method m1, Method m2)    // 交换两个方法的
         <div class="copyright">
   
   &copy;  2014 - 
-  <span itemprop="copyrightYear">2019</span>
+  <span itemprop="copyrightYear">2020</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>

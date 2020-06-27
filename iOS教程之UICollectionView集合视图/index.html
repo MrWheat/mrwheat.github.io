@@ -107,7 +107,7 @@
 <meta property="og:image" content="http://hackmz.com/img/CollectionView/Cell圆形效果2.png">
 <meta property="og:image" content="http://hackmz.com/img/CollectionView/口袋IT1.png">
 <meta property="og:image" content="http://hackmz.com/img/CollectionView/口袋IT2.png">
-<meta property="og:updated_time" content="2019-12-15T04:41:37.298Z">
+<meta property="og:updated_time" content="2020-06-27T12:31:44.585Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="iOS教程之集合视图UICollectionView">
 <meta name="twitter:description" content="集合视图UICollectionView为iOS系统开发中一种常用的数据展示控件。当然对于初学者来说，用的较多的可能是UITableView，虽然UICollectionView和UITableView都是继承自UIScrollView，两者也有很多的共性。但对于相对复杂的展示界面，灵活的使用集合视图展示数据，能给我省去很多麻烦。 比如下面的界面：">
@@ -349,18 +349,14 @@
 <p>比如下面的界面：</p>
 <a id="more"></a>
 <p><img src="/img/CollectionView/展示列表.png" alt><img src="/img/CollectionView/展示列表1.jpg" alt><img src="/img/CollectionView/展示列表2.jpg" alt><img src="/img/CollectionView/展示列表3.jpg" alt></p>
-&lt;h3 style=”background-color:#A3BB50; color:white; padding-top: 2px; padding-left: 5px;<br>padding-bottom: 2px;”; &gt;目录
-
-<ol>
+<h3 id="目录"><a href="#目录" class="headerlink" title="目录"></a>目录</h3><ol>
 <li>集合视图的基本使用</li>
 <li>集合视图FlowLayout设置</li>
 <li>集合视图Cell的定制</li>
 <li>定制FlowLayout实现圆形效果</li>
 <li>实现瀑布流效果</li>
 </ol>
-&lt;h3 style=”background-color:#A3BB50; color:white; padding-top: 2px; padding-left: 5px;<br>padding-bottom: 2px;”; &gt;集合视图的基本使用
-
-<p><strong>简述：</strong> 一般使用UICollectionView类来创建集合视图，同时使用UICollectionViewFlowLayout类来管理集合视图的布局。</p>
+<h3 id="集合视图的基本使用"><a href="#集合视图的基本使用" class="headerlink" title="集合视图的基本使用"></a>集合视图的基本使用</h3><p><strong>简述：</strong> 一般使用UICollectionView类来创建集合视图，同时使用UICollectionViewFlowLayout类来管理集合视图的布局。</p>
 <p><strong>代码：</strong></p>
 <ol>
 <li><p>首先创建UICollectionView</p>
@@ -401,9 +397,7 @@ cell.backgroundColor = [UIColor redColor];
 <p> <img src="/img/CollectionView/布局.png" alt></p>
 </li>
 </ol>
-&lt;h3 style=”background-color:#A3BB50; color:white; padding-top: 2px; padding-left: 5px;<br>padding-bottom: 2px;”; &gt;集合视图FlowLayout设置
-
-<ul>
+<h3 id="集合视图FlowLayout设置"><a href="#集合视图FlowLayout设置" class="headerlink" title="集合视图FlowLayout设置"></a>集合视图FlowLayout设置</h3><ul>
 <li><p><strong>itemSize属性</strong></p>
 <p>  <strong>代码：</strong></p>
 <pre><code>// 设置item的大小，默认是50*50
@@ -464,9 +458,7 @@ layout.scrollDirection = UICollectionViewScrollDirectionVertical;
 </blockquote>
 </li>
 </ul>
-&lt;h3 style=”background-color:#A3BB50; color:white; padding-top: 2px; padding-left: 5px;<br>padding-bottom: 2px;”; &gt;集合视图Cell的定制
-
-<p><strong>简述：</strong>和UITableView不同的是，集合视图的UICollectionViewCell并没有像UITableViewCell那样的imageView、detailTextLabel和textLabel属性，因此通常情况下都需要用户根据数据显示的格式自己定义集合视图的Cell，对于如何实现Cell的定制，下面我们以照片墙为例进行说明。</p>
+<h3 id="集合视图Cell的定制"><a href="#集合视图Cell的定制" class="headerlink" title="集合视图Cell的定制"></a>集合视图Cell的定制</h3><p><strong>简述：</strong>和UITableView不同的是，集合视图的UICollectionViewCell并没有像UITableViewCell那样的imageView、detailTextLabel和textLabel属性，因此通常情况下都需要用户根据数据显示的格式自己定义集合视图的Cell，对于如何实现Cell的定制，下面我们以照片墙为例进行说明。</p>
 <p><strong>代码：</strong></p>
 <pre><code>// image.h文件
 #import &lt;UIKit/UIKit.h&gt;
@@ -512,9 +504,7 @@ layout.scrollDirection = UICollectionViewScrollDirectionVertical;
 </blockquote>
 <p><strong>效果图：</strong></p>
 <p><img src="/img/CollectionView/照片墙.png" alt>  <img src="/img/CollectionView/照片墙2.png" alt></p>
-&lt;h3 style=”background-color:#A3BB50; color:white; padding-top: 2px; padding-left: 5px;<br>padding-bottom: 2px;”; &gt;定制FlowLayout实现圆形效果
-
-<p><strong>简述：</strong><br>UICollectionViewLayout可以说是UICollectionView的大脑和中枢，它是UICollectionView的精髓，同时也是UICollectionView和UITableView最大的不同。layout是灵活的，它决定了集合视图如何展示在界面之上，因此，我们可以通过定制UICollectionViewLayout来实现各种各样丰富的界面效果，例如圆型效果。</p>
+<h3 id="定制FlowLayout实现圆形效果"><a href="#定制FlowLayout实现圆形效果" class="headerlink" title="定制FlowLayout实现圆形效果"></a>定制FlowLayout实现圆形效果</h3><p><strong>简述：</strong><br>UICollectionViewLayout可以说是UICollectionView的大脑和中枢，它是UICollectionView的精髓，同时也是UICollectionView和UITableView最大的不同。layout是灵活的，它决定了集合视图如何展示在界面之上，因此，我们可以通过定制UICollectionViewLayout来实现各种各样丰富的界面效果，例如圆型效果。</p>
 <p><strong>代码：</strong></p>
 <pre><code>// Cell.m文件，定制cell
 - (id)initWithFrame:(CGRect)frame
@@ -604,9 +594,7 @@ layout.scrollDirection = UICollectionViewScrollDirectionVertical;
 </blockquote>
 <p><strong>效果图：</strong></p>
 <p><img src="/img/CollectionView/Cell圆形效果1.png" alt> <img src="/img/CollectionView/Cell圆形效果2.png" alt></p>
-&lt;h3 style=”background-color:#A3BB50; color:white; padding-top: 2px; padding-left: 5px;<br>padding-bottom: 2px;”; &gt;实现瀑布流效果
-
-<p><strong>简述：</strong><br>实现瀑布流的方式多种多样，我们可以利用UITableView实现，也可以通过UIScrollView实现，但是更多的，还是选择UIScrollView来实现瀑布流的效果。当然通过集合视图来实现瀑布流，每个人也有不同的方式。最常用的两种方法有：</p>
+<h3 id="实现瀑布流效果"><a href="#实现瀑布流效果" class="headerlink" title="实现瀑布流效果"></a>实现瀑布流效果</h3><p><strong>简述：</strong><br>实现瀑布流的方式多种多样，我们可以利用UITableView实现，也可以通过UIScrollView实现，但是更多的，还是选择UIScrollView来实现瀑布流的效果。当然通过集合视图来实现瀑布流，每个人也有不同的方式。最常用的两种方法有：</p>
 <ol>
 <li>通过定制FlowLayout来实现瀑布流。</li>
 <li>通过创建多个CollectionView来实现瀑布流。</li>
@@ -913,14 +901,14 @@ layout.scrollDirection = UICollectionViewScrollDirectionVertical;
 
       <section class="site-overview sidebar-panel ">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
-          <img class="site-author-image" itemprop="image" src="http://7pumug.com1.z0.glb.clouddn.com/author.jpg" alt="麦子">
+          <img class="site-author-image" itemprop="image" src="/avatar/avatar.jpg" alt="麦子">
           <p class="site-author-name" itemprop="name">麦子</p>
           <p class="site-description motion-element" itemprop="description">当你的才华撑不起你的野心的时候，你就应该静下心来学习！</p>
         </div>
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">41</span>
+              <span class="site-state-item-count">42</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
@@ -937,7 +925,7 @@ layout.scrollDirection = UICollectionViewScrollDirectionVertical;
           
             <div class="site-state-item site-state-tags">
               <a href="/tags">
-                <span class="site-state-item-count">43</span>
+                <span class="site-state-item-count">45</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
@@ -986,7 +974,7 @@ layout.scrollDirection = UICollectionViewScrollDirectionVertical;
               
             
             
-              <p class="post-toc-empty">此文章未包含目录</p>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#目录"><span class="nav-number">1.</span> <span class="nav-text">目录</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#集合视图的基本使用"><span class="nav-number">2.</span> <span class="nav-text">集合视图的基本使用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#集合视图FlowLayout设置"><span class="nav-number">3.</span> <span class="nav-text">集合视图FlowLayout设置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#集合视图Cell的定制"><span class="nav-number">4.</span> <span class="nav-text">集合视图Cell的定制</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#定制FlowLayout实现圆形效果"><span class="nav-number">5.</span> <span class="nav-text">定制FlowLayout实现圆形效果</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#实现瀑布流效果"><span class="nav-number">6.</span> <span class="nav-text">实现瀑布流效果</span></a></li></ol></div>
             
           </div>
         </section>
@@ -1005,7 +993,7 @@ layout.scrollDirection = UICollectionViewScrollDirectionVertical;
         <div class="copyright">
   
   &copy;  2014 - 
-  <span itemprop="copyrightYear">2019</span>
+  <span itemprop="copyrightYear">2020</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>
