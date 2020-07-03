@@ -92,7 +92,7 @@
 <meta property="og:site_name" content="MaiZi&#39;s Blog">
 <meta property="og:description" content="在开发一个iOS应用时，不可避免的会使用很多的第三方库，而一个一个的手动下载和添加是很麻烦的，通过CocoaPods则可以让我们很方便的下载和管理这些第三方依赖库。好吧，又一个懒人科技。">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2020-06-27T13:09:58.647Z">
+<meta property="og:updated_time" content="2020-07-03T08:14:48.604Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="用CocoaPods管理你的第三方库">
 <meta name="twitter:description" content="在开发一个iOS应用时，不可避免的会使用很多的第三方库，而一个一个的手动下载和添加是很麻烦的，通过CocoaPods则可以让我们很方便的下载和管理这些第三方依赖库。好吧，又一个懒人科技。">
@@ -331,8 +331,7 @@
       
         <p>在开发一个iOS应用时，不可避免的会使用很多的第三方库，而一个一个的手动下载和添加是很麻烦的，通过CocoaPods则可以让我们很方便的下载和管理这些第三方依赖库。好吧，又一个懒人科技。</p>
 <a id="more"></a>
-<p>###CocoaPods安装</p>
-<p>CocoaPods是依赖于Ruby实现的，因此在使用CocoaPods时，我们还需要事先搭建好Ruby环境，Mac OS本身自带Ruby，为了确保Ruby是最新的，还是更新一下比较好。</p>
+<h3 id="CocoaPods安装"><a href="#CocoaPods安装" class="headerlink" title="CocoaPods安装"></a>CocoaPods安装</h3><p>CocoaPods是依赖于Ruby实现的，因此在使用CocoaPods时，我们还需要事先搭建好Ruby环境，Mac OS本身自带Ruby，为了确保Ruby是最新的，还是更新一下比较好。</p>
 <pre><code>$ruby -v    // 查看ruby版本的命令 
 $sudo gem update —system    // 更新ruby，需要管理员权限
 </code></pre><p>安装CocoaPods需要访问cocoapods.org，因为墙的存在，可能导致速度很慢，因此在安装之前先更换下载源。</p>
@@ -345,8 +344,7 @@ http://ruby.taobao.org/
 </code></pre><p>安装CocoaPods，耐心等待。</p>
 <pre><code>$sudo gem install cocoapods
 $pod setup
-</code></pre><p>###CocoaPods使用方法</p>
-<p>搜索需要的类库，使用如下命令，将会输出搜索到的所有类库版本和信息。</p>
+</code></pre><h3 id="CocoaPods使用方法"><a href="#CocoaPods使用方法" class="headerlink" title="CocoaPods使用方法"></a>CocoaPods使用方法</h3><p>搜索需要的类库，使用如下命令，将会输出搜索到的所有类库版本和信息。</p>
 <pre><code>$pod search 类库名
 </code></pre><p>使用cd命令到工程目录下，并创建Podfile文件</p>
 <pre><code>$touch Podfile
@@ -386,8 +384,7 @@ end
 <p>将第三方库导入工程</p>
 <pre><code>$pod install    // 每次更改Podfile文件都需要重新执行
 </code></pre><p>最后通过workspace文件打开工程。</p>
-<p>###CocoaPods常用命令</p>
-<ul>
+<h3 id="CocoaPods常用命令"><a href="#CocoaPods常用命令" class="headerlink" title="CocoaPods常用命令"></a>CocoaPods常用命令</h3><ul>
 <li><p>pod install</p>
 <p>  根据Podfile文件指定的内容，安装依赖库，如果有Podfile.lock文件而且对应的Podfile文件未被修改，则会根据Podfile.lock文件指定的版本安装。</p>
 <p>  每次更新了Podfile文件时，都需要重新执行该命令，以便重新安装Pods依赖库。</p>
@@ -411,8 +408,7 @@ pod ‘AFNetworking’, ‘~&gt;0’         //高于0的版本，写这个限�
 <p>  用于跟新本地电脑上的保存的Pods依赖库tree。由于每天有很多人会创建或者更新Pods依赖库，这条命令执行的时候会相当慢，还请耐心等待。我们需要经常执行这条命令，否则有新的Pods依赖库的时候，执行pod search命令是搜不出来的。</p>
 </li>
 </ul>
-<p>###错误汇总</p>
-<ul>
+<h3 id="错误汇总"><a href="#错误汇总" class="headerlink" title="错误汇总"></a>错误汇总</h3><ul>
 <li><p>https协议</p>
 <p>  <strong>错误描述：</strong>Error fetching <a href="http://ruby.taobao.org/:bad" target="_blank" rel="noopener">http://ruby.taobao.org/:bad</a> response Not Found 404 (<a href="http://ruby.taobao.org/specs.4.8.gz" target="_blank" rel="noopener">http://ruby.taobao.org/specs.4.8.gz</a>)</p>
 <p>  <strong>解决方案：</strong>把安装流程中<code>gem sources -a http://ruby.taobao.org/</code>改为：<code>gem sources -a https://ruby.taobao.org/</code></p>
@@ -449,8 +445,7 @@ target &apos;MyApp&apos; do
 end
 </code></pre></li>
 </ul>
-<p>###参考</p>
-<p><a href="https://ruby.taobao.org" target="_blank" rel="noopener">RubyGems 镜像</a></p>
+<h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><p><a href="https://ruby.taobao.org" target="_blank" rel="noopener">RubyGems 镜像</a></p>
 <p><a href="http://www.jianshu.com/p/7884ec8da77e" target="_blank" rel="noopener">cocoapods使用指南</a></p>
 <p><a href="http://www.exiatian.com/cocoapods安装使用及配置私有库/" target="_blank" rel="noopener">CocoaPods安装使用及配置私有库</a></p>
 
@@ -650,7 +645,7 @@ end
               
             
             
-              <p class="post-toc-empty">此文章未包含目录</p>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#CocoaPods安装"><span class="nav-number">1.</span> <span class="nav-text">CocoaPods安装</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#CocoaPods使用方法"><span class="nav-number">2.</span> <span class="nav-text">CocoaPods使用方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#CocoaPods常用命令"><span class="nav-number">3.</span> <span class="nav-text">CocoaPods常用命令</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#错误汇总"><span class="nav-number">4.</span> <span class="nav-text">错误汇总</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#参考"><span class="nav-number">5.</span> <span class="nav-text">参考</span></a></li></ol></div>
             
           </div>
         </section>

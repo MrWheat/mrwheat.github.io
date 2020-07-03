@@ -68,7 +68,7 @@
 <link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css">
 
 
-  <meta name="keywords" content="iOS,开发,笔记,">
+  <meta name="keywords" content="笔记,iOS,开发,">
 
 
 
@@ -85,14 +85,14 @@
 
 
 <meta name="description" content="正则表达式从本质上来讲是一种描述字符串匹配模式的方式。它可以用来检查一个字符串是否包含某个子串，将检查的子串做替换，或者从某个串中取出符合某个条件的子串等。">
-<meta name="keywords" content="iOS,开发,笔记">
+<meta name="keywords" content="笔记,iOS,开发">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Objective-C笔记之正则表达式">
 <meta property="og:url" content="http://hackmz.com/Objective-C笔记之正则表达式/index.html">
 <meta property="og:site_name" content="MaiZi&#39;s Blog">
 <meta property="og:description" content="正则表达式从本质上来讲是一种描述字符串匹配模式的方式。它可以用来检查一个字符串是否包含某个子串，将检查的子串做替换，或者从某个串中取出符合某个条件的子串等。">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2020-06-27T13:09:58.636Z">
+<meta property="og:updated_time" content="2020-07-03T08:17:29.995Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Objective-C笔记之正则表达式">
 <meta name="twitter:description" content="正则表达式从本质上来讲是一种描述字符串匹配模式的方式。它可以用来检查一个字符串是否包含某个子串，将检查的子串做替换，或者从某个串中取出符合某个条件的子串等。">
@@ -331,9 +331,7 @@
       
         <p>正则表达式从本质上来讲是一种描述字符串匹配模式的方式。它可以用来检查一个字符串是否包含某个子串，将检查的子串做替换，或者从某个串中取出符合某个条件的子串等。</p>
 <a id="more"></a>
-&lt;h3 style=”background-color:#A3BB50; color:white; padding-top: 2px; padding-left: 5px;<br>padding-bottom: 2px;”; &gt;正则表达式介绍
-
-<p>正则表达式是由普通字符（例如字符 a 到 z）以及特殊字符（称为”元字符”）组成的文字模式。其中普通字符包括大小写的字母和数字，而元字符则具有特殊的含义。常用的元字符有：</p>
+<h3 id="正则表达式介绍"><a href="#正则表达式介绍" class="headerlink" title="正则表达式介绍"></a>正则表达式介绍</h3><p>正则表达式是由普通字符（例如字符 a 到 z）以及特殊字符（称为”元字符”）组成的文字模式。其中普通字符包括大小写的字母和数字，而元字符则具有特殊的含义。常用的元字符有：</p>
 <table>
 <thead>
 <tr>
@@ -376,9 +374,7 @@
 </tr>
 </tbody>
 </table>
-&lt;h3 style=”background-color:#A3BB50; color:white; padding-top: 2px; padding-left: 5px;<br>padding-bottom: 2px;”; &gt;一些常用的正则表达式
-
-<p><strong>关于字符串匹配</strong></p>
+<h3 id="一些常用的正则表达式"><a href="#一些常用的正则表达式" class="headerlink" title="一些常用的正则表达式"></a>一些常用的正则表达式</h3><p><strong>关于字符串匹配</strong></p>
 <p>判断<code>首字符是否为字母</code>：[A-Za-z]+</p>
 <p>匹配<code>首尾空白字符</code>的正则表达式：^\s<em>|\s</em>$</p>
 <p>匹配由<code>数字、字母或下划线</code>组成的字符串：^\w+$　　</p>
@@ -393,9 +389,7 @@
 <p>邮箱地址：[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,4} </p>
 <p>身份证：\d{15}|\d{18}</p>
 <p>用户帐号(字母开头，允许5-16字节，允许字母数字下划线)：^[a-zA-Z][a-zA-Z0-9_]{4,15}$</p>
-&lt;h3 style=”background-color:#A3BB50; color:white; padding-top: 2px; padding-left: 5px;<br>padding-bottom: 2px;”; &gt;OC中正则表达式的使用
-
-<p><strong>判断手机号是否合法</strong></p>
+<h3 id="OC中正则表达式的使用"><a href="#OC中正则表达式的使用" class="headerlink" title="OC中正则表达式的使用"></a>OC中正则表达式的使用</h3><p><strong>判断手机号是否合法</strong></p>
 <pre><code>#pragma mark -- 判断手机是否合法
 - (BOOL)validateMobile:(NSString *)mobile
 {
@@ -419,9 +413,7 @@
     NSPredicate *pred = [NSPredicate predicateWithFormat:@&quot;SELF CONTAINS %@&quot;,string];
     return [array filteredArrayUsingPredicate:pred];
 }
-</code></pre>&lt;h3 style=”background-color:#A3BB50; color:white; padding-top: 2px; padding-left: 5px;<br>padding-bottom: 2px;”; &gt;NSPredicate对象
-
-<p><strong>相关介绍</strong></p>
+</code></pre><h3 id="NSPredicate对象"><a href="#NSPredicate对象" class="headerlink" title="NSPredicate对象"></a>NSPredicate对象</h3><p><strong>相关介绍</strong></p>
 <p>NSPredicate对象主要用于查询和过滤，它可以指定查询和过滤条件，然后从集合中分拣出符合条件的对象，原理有点类似于SQL中的where。当然也可以用于字符串的正则匹配。使用步骤主要有：</p>
 <pre><code>// 创建NSPredicate（相当于创建一个过滤条件）  
 NSPredicate *predicate = [NSPredicate predicateWithFormat:@&quot;过滤条件&quot;];
@@ -442,9 +434,7 @@ NSArray *users = [array filteredArrayUsingPredicate:predicate];
 <li>指代对象本身：SELF</li>
 <li>正则表达式：MATCHES</li>
 </ul>
-&lt;h3 style=”background-color:#A3BB50; color:white; padding-top: 2px; padding-left: 5px;<br>padding-bottom: 2px;”; &gt;NSRegularExpression对象介绍
-
-<p>这是苹果推出的官方正则表达式，很方便功能也很强大。<a href="https://developer.apple.com/library/mac/documentation/Foundation/Reference/NSRegularExpression_Class/index.html#//apple_ref/occ/instm/NSRegularExpression/enumerateMatchesInString:options:range:usingBlock:" target="_blank" rel="noopener">官方文档传送门</a></p>
+<h3 id="NSRegularExpression对象介绍"><a href="#NSRegularExpression对象介绍" class="headerlink" title="NSRegularExpression对象介绍"></a>NSRegularExpression对象介绍</h3><p>这是苹果推出的官方正则表达式，很方便功能也很强大。<a href="https://developer.apple.com/library/mac/documentation/Foundation/Reference/NSRegularExpression_Class/index.html#//apple_ref/occ/instm/NSRegularExpression/enumerateMatchesInString:options:range:usingBlock:" target="_blank" rel="noopener">官方文档传送门</a></p>
 <p><strong>常用方法</strong></p>
 <ul>
 <li><p>返回所有匹配结果的集合</p>
@@ -469,9 +459,7 @@ NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@
 NSUInteger number = [regex numberOfMatchesInString:urlString
                                            options:0
                                              range:NSMakeRange(0, [urlString length])]; 
-</code></pre>&lt;h3 style=”background-color:#A3BB50; color:white; padding-top: 2px; padding-left: 5px;<br>padding-bottom: 2px;”; &gt;参考
-
-<p><a href="http://www.runoob.com/regexp/regexp-syntax.html" target="_blank" rel="noopener">正则表达式 - 语法</a></p>
+</code></pre><h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><p><a href="http://www.runoob.com/regexp/regexp-syntax.html" target="_blank" rel="noopener">正则表达式 - 语法</a></p>
 <p><a href="http://blog.csdn.net/lianbaixue/article/details/10579117" target="_blank" rel="noopener">OC中正则表达式的使用</a></p>
 <p><a href="http://blog.csdn.net/daiyelang/article/details/18546405" target="_blank" rel="noopener">NSPredicate对象基本用法</a></p>
 <p><a href="http://www.tuicool.com/articles/RBnqqeQ" target="_blank" rel="noopener">NSRegularExpression对象使用</a></p>
@@ -496,11 +484,11 @@ NSUInteger number = [regex numberOfMatchesInString:urlString
       
         <div class="post-tags">
           
+            <a href="/tags/笔记/" rel="tag">#笔记</a>
+          
             <a href="/tags/iOS/" rel="tag">#iOS</a>
           
             <a href="/tags/开发/" rel="tag">#开发</a>
-          
-            <a href="/tags/笔记/" rel="tag">#笔记</a>
           
         </div>
       
@@ -670,7 +658,7 @@ NSUInteger number = [regex numberOfMatchesInString:urlString
               
             
             
-              <p class="post-toc-empty">此文章未包含目录</p>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#正则表达式介绍"><span class="nav-number">1.</span> <span class="nav-text">正则表达式介绍</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#一些常用的正则表达式"><span class="nav-number">2.</span> <span class="nav-text">一些常用的正则表达式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#OC中正则表达式的使用"><span class="nav-number">3.</span> <span class="nav-text">OC中正则表达式的使用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#NSPredicate对象"><span class="nav-number">4.</span> <span class="nav-text">NSPredicate对象</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#NSRegularExpression对象介绍"><span class="nav-number">5.</span> <span class="nav-text">NSRegularExpression对象介绍</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#参考"><span class="nav-number">6.</span> <span class="nav-text">参考</span></a></li></ol></div>
             
           </div>
         </section>

@@ -100,7 +100,7 @@
 <meta property="og:image" content="http://7pumug.com1.z0.glb.clouddn.com/38A103D3-9BC1-4DC7-90B2-8F653C91C178.png">
 <meta property="og:image" content="http://7pumug.com1.z0.glb.clouddn.com/593EB492-AA97-48C3-992B-8E9EE8D4D4BB.png">
 <meta property="og:image" content="http://7pumug.com1.z0.glb.clouddn.com/53FE944A-173D-47F7-8DDC-84BCC3D54FE2.png">
-<meta property="og:updated_time" content="2020-06-27T13:09:58.638Z">
+<meta property="og:updated_time" content="2020-07-03T08:05:20.535Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Xcode中用Workspace来管理多项目">
 <meta name="twitter:description" content="项目开发过程中经常会有某些特定的需求或者常用的功能，需要我们单独去封装一些模块去实现。最简单的方式当然是直接在工程中新建工具类来实现，对于一些小模块小功能，我们可以这么做。但是对于一个相对大一点的功能模块，为了代码的简洁、性能、可读性、复用性和耦合性等等等，推荐把它们放到一个单独的工程里，通过静态库的方式，应用到任何其他需要的项目里，就像是用其他第三方SDK那样。 这样做的好处有很多，封装好的代码">
@@ -343,14 +343,11 @@
 <p>对于需要不断更新的模块，可以使用Workspace来进行管理。其实本质上，Workspace也是编译静态库然后给主工程使用，但不用先打开工程A，编译出libA.framework，然后把文件拖到工程B，然后再在工程B里面使用。</p>
 <p>废话说了这么多，下面进入正题。</p>
 <a id="more"></a>
-<p>#####新建项目工程</p>
-<p>首先为你的项目新建一个工程，如果有了则不必新建。</p>
+<h5 id="新建项目工程"><a href="#新建项目工程" class="headerlink" title="新建项目工程"></a>新建项目工程</h5><p>首先为你的项目新建一个工程，如果有了则不必新建。</p>
 <p><img src="http://7pumug.com1.z0.glb.clouddn.com/138D9CAC-CC1F-42BC-946D-1FE4388F8AD2.png" alt></p>
-<p>#####新建静态库</p>
-<p>根据需要新建静态库，静态库的创建这里就不赘述，不懂的请移步<a href="http://www.hackmz.com/2016/05/25/iOS开发-静态库制作-三/" target="_blank" rel="noopener">framework静态库创建</a>。</p>
+<h5 id="新建静态库"><a href="#新建静态库" class="headerlink" title="新建静态库"></a>新建静态库</h5><p>根据需要新建静态库，静态库的创建这里就不赘述，不懂的请移步<a href="http://www.hackmz.com/2016/05/25/iOS开发-静态库制作-三/" target="_blank" rel="noopener">framework静态库创建</a>。</p>
 <p><img src="http://7pumug.com1.z0.glb.clouddn.com/5713DA18-D3E2-42FB-8BFB-AA453012EBC4.png" alt></p>
-<p>#####构建Workspace</p>
-<ol>
+<h5 id="构建Workspace"><a href="#构建Workspace" class="headerlink" title="构建Workspace"></a>构建Workspace</h5><ol>
 <li><p>打开Xcode，创建一个Workspace。</p>
 <p> <img src="http://7pumug.com1.z0.glb.clouddn.com/788D7DEB-AA2C-4115-8885-2E2BF218B43B.png" alt></p>
 </li>
@@ -361,14 +358,11 @@
 <p> <img src="http://7pumug.com1.z0.glb.clouddn.com/4A672F33-A6F2-4B3A-A0A8-C826DBACAFE7.png" alt></p>
 </li>
 </ol>
-<p>#####指定引用库的头文件路径</p>
-<p>在主项目的<code>Build Settings</code>里找到<code>Header Search Paths</code>，添加一项<code>$(SRCROOT)/../MZHelpeCenter</code>，并且设置为<code>recursive</code>，否则找不到头文件。</p>
+<h5 id="指定引用库的头文件路径"><a href="#指定引用库的头文件路径" class="headerlink" title="指定引用库的头文件路径"></a>指定引用库的头文件路径</h5><p>在主项目的<code>Build Settings</code>里找到<code>Header Search Paths</code>，添加一项<code>$(SRCROOT)/../MZHelpeCenter</code>，并且设置为<code>recursive</code>，否则找不到头文件。</p>
 <p><img src="http://7pumug.com1.z0.glb.clouddn.com/38A103D3-9BC1-4DC7-90B2-8F653C91C178.png" alt></p>
-<p>#####把静态库添加到主工程里</p>
-<p>到主工程的<code>Build Phases</code>的<code>Link Binary With Libraries</code>里添加，点击”+”按钮，会给出整个Workspace可选的静态库，把我们创建的静态库<code>MZHelpeCenter.framework</code>加入进来。</p>
+<h5 id="把静态库添加到主工程里"><a href="#把静态库添加到主工程里" class="headerlink" title="把静态库添加到主工程里"></a>把静态库添加到主工程里</h5><p>到主工程的<code>Build Phases</code>的<code>Link Binary With Libraries</code>里添加，点击”+”按钮，会给出整个Workspace可选的静态库，把我们创建的静态库<code>MZHelpeCenter.framework</code>加入进来。</p>
 <p><img src="http://7pumug.com1.z0.glb.clouddn.com/593EB492-AA97-48C3-992B-8E9EE8D4D4BB.png" alt></p>
-<p>#####使用方法</p>
-<p>使用方式和静态库的使用方式相同，直接包含头文件即可。</p>
+<h5 id="使用方法"><a href="#使用方法" class="headerlink" title="使用方法"></a>使用方法</h5><p>使用方式和静态库的使用方式相同，直接包含头文件即可。</p>
 <p><img src="http://7pumug.com1.z0.glb.clouddn.com/53FE944A-173D-47F7-8DDC-84BCC3D54FE2.png" alt></p>
 
       
@@ -567,7 +561,7 @@
               
             
             
-              <p class="post-toc-empty">此文章未包含目录</p>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-5"><a class="nav-link" href="#新建项目工程"><span class="nav-number">1.</span> <span class="nav-text">新建项目工程</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#新建静态库"><span class="nav-number">2.</span> <span class="nav-text">新建静态库</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#构建Workspace"><span class="nav-number">3.</span> <span class="nav-text">构建Workspace</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#指定引用库的头文件路径"><span class="nav-number">4.</span> <span class="nav-text">指定引用库的头文件路径</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#把静态库添加到主工程里"><span class="nav-number">5.</span> <span class="nav-text">把静态库添加到主工程里</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#使用方法"><span class="nav-number">6.</span> <span class="nav-text">使用方法</span></a></li></ol></div>
             
           </div>
         </section>

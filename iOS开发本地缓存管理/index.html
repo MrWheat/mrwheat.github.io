@@ -68,7 +68,7 @@
 <link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css">
 
 
-  <meta name="keywords" content="iOS,笔记,缓存,">
+  <meta name="keywords" content="笔记,iOS,缓存,">
 
 
 
@@ -85,14 +85,14 @@
 
 
 <meta name="description" content="移动应用在请求网络数据时，为了提高应用性能，节省流量，一般都会做数据缓存处理。最常见的就是图片和视频缓存，目前很流行的图片处理框架SDWebImage便自带图片缓存。 对于阅读、资讯类App来说，数据缓存和清理缓存几乎是必不可少的两种功能。 关于缓存，系统提供了NSFileManager API来方便我们管理，这里介绍这两种功能的简单实现（以普通文件格式存储在沙盒目录）。">
-<meta name="keywords" content="iOS,笔记,缓存">
+<meta name="keywords" content="笔记,iOS,缓存">
 <meta property="og:type" content="article">
 <meta property="og:title" content="iOS开发本地缓存管理">
 <meta property="og:url" content="http://hackmz.com/iOS开发本地缓存管理/index.html">
 <meta property="og:site_name" content="MaiZi&#39;s Blog">
 <meta property="og:description" content="移动应用在请求网络数据时，为了提高应用性能，节省流量，一般都会做数据缓存处理。最常见的就是图片和视频缓存，目前很流行的图片处理框架SDWebImage便自带图片缓存。 对于阅读、资讯类App来说，数据缓存和清理缓存几乎是必不可少的两种功能。 关于缓存，系统提供了NSFileManager API来方便我们管理，这里介绍这两种功能的简单实现（以普通文件格式存储在沙盒目录）。">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2020-06-27T13:09:58.642Z">
+<meta property="og:updated_time" content="2020-07-03T08:11:20.657Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="iOS开发本地缓存管理">
 <meta name="twitter:description" content="移动应用在请求网络数据时，为了提高应用性能，节省流量，一般都会做数据缓存处理。最常见的就是图片和视频缓存，目前很流行的图片处理框架SDWebImage便自带图片缓存。 对于阅读、资讯类App来说，数据缓存和清理缓存几乎是必不可少的两种功能。 关于缓存，系统提供了NSFileManager API来方便我们管理，这里介绍这两种功能的简单实现（以普通文件格式存储在沙盒目录）。">
@@ -333,8 +333,7 @@
 <p>对于阅读、资讯类App来说，数据缓存和清理缓存几乎是必不可少的两种功能。</p>
 <p>关于缓存，系统提供了NSFileManager API来方便我们管理，这里介绍这两种功能的简单实现（以普通文件格式存储在沙盒目录）。</p>
 <a id="more"></a>
-<p>###创建缓存目录</p>
-<p>第一步当然是创建缓存文件夹，用来集中管理应用的缓存文件。</p>
+<h3 id="创建缓存目录"><a href="#创建缓存目录" class="headerlink" title="创建缓存目录"></a>创建缓存目录</h3><p>第一步当然是创建缓存文件夹，用来集中管理应用的缓存文件。</p>
 <pre><code>#pragma mark -- 创建缓存文件夹
 - (void)createCacheDirectory {
     NSString *cachePath = [NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) lastObject];
@@ -349,8 +348,7 @@
         [fm createDirectoryAtPath:self.cacheDirectoryPath withIntermediateDirectories:YES attributes:nil error:nil];
     }
 }
-</code></pre><p>###缓存文件</p>
-<p>创建好缓存文件夹后，首先下载数据。</p>
+</code></pre><h3 id="缓存文件"><a href="#缓存文件" class="headerlink" title="缓存文件"></a>缓存文件</h3><p>创建好缓存文件夹后，首先下载数据。</p>
 <p>然后判断数据缓存是否存在或过期。</p>
 <pre><code>#pragma mark -- 判断文件是否存在和过期
 // urlString：缓存文件名  time：超时时间
@@ -376,8 +374,7 @@
     NSString *pathName = [self.cacheDirectoryPath stringByAppendingPathComponent: urlString];
     [data writeToFile:pathName atomically:YES];
 }
-</code></pre><p>###计算缓存大小</p>
-<p>计算缓存大小有两种方式，计算单个文件大小，计算所有文件大小。</p>
+</code></pre><h3 id="计算缓存大小"><a href="#计算缓存大小" class="headerlink" title="计算缓存大小"></a>计算缓存大小</h3><p>计算缓存大小有两种方式，计算单个文件大小，计算所有文件大小。</p>
 <p>计算单个文件大小。</p>
 <pre><code>#pragma mark -- 计算单个文件大小
 - (float)fileSizeAtPath:(NSString *)path {
@@ -405,8 +402,7 @@
 }
 </code></pre><p>如果使用了SDWebImage框架，还要计算SDWebImage缓存大小。</p>
 <pre><code>folderSize += [[SDImageCache sharedImageCache] getSize]/1024.0/1024.0;
-</code></pre><p>###清空缓存</p>
-<p>同样的，清空缓存也有两种方式。</p>
+</code></pre><h3 id="清空缓存"><a href="#清空缓存" class="headerlink" title="清空缓存"></a>清空缓存</h3><p>同样的，清空缓存也有两种方式。</p>
 <p>清空单个文件。</p>
 <pre><code>#pragma mark -- 清空url接口对应的数据
 - (void)clearDataWithUrl:(NSString *)urlString {
@@ -446,9 +442,9 @@
       
         <div class="post-tags">
           
-            <a href="/tags/iOS/" rel="tag">#iOS</a>
-          
             <a href="/tags/笔记/" rel="tag">#笔记</a>
+          
+            <a href="/tags/iOS/" rel="tag">#iOS</a>
           
             <a href="/tags/缓存/" rel="tag">#缓存</a>
           
@@ -620,7 +616,7 @@
               
             
             
-              <p class="post-toc-empty">此文章未包含目录</p>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#创建缓存目录"><span class="nav-number">1.</span> <span class="nav-text">创建缓存目录</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#缓存文件"><span class="nav-number">2.</span> <span class="nav-text">缓存文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#计算缓存大小"><span class="nav-number">3.</span> <span class="nav-text">计算缓存大小</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#清空缓存"><span class="nav-number">4.</span> <span class="nav-text">清空缓存</span></a></li></ol></div>
             
           </div>
         </section>

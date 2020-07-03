@@ -93,7 +93,7 @@
 <meta property="og:description" content="如果还对你的博客不满意，就接着往下面看吧。">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="http://hackmz.com/img/IP地址.png">
-<meta property="og:updated_time" content="2020-06-27T13:09:58.641Z">
+<meta property="og:updated_time" content="2020-07-03T08:13:47.813Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="hexo博客搭建教程：(六)hexo博客主题的优化 (下)">
 <meta name="twitter:description" content="如果还对你的博客不满意，就接着往下面看吧。">
@@ -333,16 +333,14 @@
       
         <p>如果还对你的博客不满意，就接着往下面看吧。</p>
 <a id="more"></a>
-<p>###添加自定义页面</p>
-<p>这里以添加<code>关于</code>界面为例，添加其他页面方法相同。</p>
+<h3 id="添加自定义页面"><a href="#添加自定义页面" class="headerlink" title="添加自定义页面"></a>添加自定义页面</h3><p>这里以添加<code>关于</code>界面为例，添加其他页面方法相同。</p>
 <p>执行new page命令：</p>
 <blockquote>
 <p>hexo new page “about”</p>
 </blockquote>
 <p>在<code>\hexo\source\</code>下会生成about目录，里面会有个<code>index.md</code>文件，直接使用<code>Sublime Text2</code>编辑就可以了，支持<code>markdown</code>语法。然后在<code>\hexo\themes\jacman\_config.yml</code>中<code>menu</code>下进行配置。</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">menu:</span><br><span class="line">  首页: /</span><br><span class="line">  归档: /archives</span><br><span class="line">  关于: /about</span><br></pre></td></tr></table></figure>
-<p>###设置百度统计</p>
-<p>因Google Analytics偶尔被墙，故用百度统计。</p>
+<h3 id="设置百度统计"><a href="#设置百度统计" class="headerlink" title="设置百度统计"></a>设置百度统计</h3><p>因Google Analytics偶尔被墙，故用百度统计。</p>
 <p>首先去百度统计注册账号，填写相关信息，获得百度统计代码。</p>
 <p>然后在<code>\hexo\themes\jacman\layout\_partial</code>中新建文件<code>baidu_tongji.ejs</code>。如果有了就不用新建勒，然后添加如下代码：</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&lt;% <span class="keyword">if</span> (theme.baidu_tongji)&#123; %&gt;</span><br><span class="line">&lt;script type=<span class="string">"text/javascript"</span>&gt;</span><br><span class="line">你的百度统计代码</span><br><span class="line">&lt;/script&gt;</span><br><span class="line">&lt;% &#125; %&gt;</span><br></pre></td></tr></table></figure>
@@ -352,8 +350,7 @@
 </blockquote>
 <p>如果没有，增加该配置选项就行。</p>
 <p>配置完成后，不出意外的话，在你的站点的每个页面的左上角都会看到一个百度LOGO。如果看着难受，可以在『百度统计首页-&gt;网站列表-&gt;获取代码-&gt;系统管理设置-&gt;统计图标设置-&gt;显示图标』，把那个勾去掉，没办法，广告无处不在。</p>
-<p>###导航栏添加RSS</p>
-<ul>
+<h3 id="导航栏添加RSS"><a href="#导航栏添加RSS" class="headerlink" title="导航栏添加RSS"></a>导航栏添加RSS</h3><ul>
 <li><p>安装RSS插件到本地：<code>npm install hexo-generator-feed</code></p>
 </li>
 <li><p>开启RSS功能：编辑<code>hexo/_config.yml</code>，添加如下代码：</p>
@@ -364,8 +361,7 @@
 <p>  在<code>hexo\themes\jacman\layout\_partial\header.ejs</code>中，<code>&lt;ul&gt;&lt;/ul&gt;</code>之间，添加一样代码<code>&lt;li&gt; &lt;a href=&quot;/atom.xml&quot;&gt;RSS&lt;/a&gt; &lt;/li&gt;</code></p>
 </li>
 </ul>
-<p>###添加sitemap</p>
-<p>sitemap的初衷是给搜索引擎看的，为了提高搜索引擎对自己站点的收录效果，我们最好手动到google和百度等搜索引擎提交sitemap.xml。</p>
+<h3 id="添加sitemap"><a href="#添加sitemap" class="headerlink" title="添加sitemap"></a>添加sitemap</h3><p>sitemap的初衷是给搜索引擎看的，为了提高搜索引擎对自己站点的收录效果，我们最好手动到google和百度等搜索引擎提交sitemap.xml。</p>
 <ul>
 <li><p>安装sitemap到本地：npm install hexo-generator-sitemap</p>
 </li>
@@ -375,8 +371,7 @@
 <li><p>你可以到<a href="http://www.sousuoyinqingtijiao.com/" target="_blank" rel="noopener">屈站长</a>提交你的站点给搜索引擎。</p>
 </li>
 </ul>
-<p>###在文章中插入图片</p>
-<p>使用markdown写文章，插入图片的格式为<code>![图片名称](链接地址)</code>,对于图片的链接地址该怎么写呢？</p>
+<h3 id="在文章中插入图片"><a href="#在文章中插入图片" class="headerlink" title="在文章中插入图片"></a>在文章中插入图片</h3><p>使用markdown写文章，插入图片的格式为<code>![图片名称](链接地址)</code>,对于图片的链接地址该怎么写呢？</p>
 <ul>
 <li><p>可以复制网上的图片网址添加进来。</p>
 </li>
@@ -386,12 +381,9 @@
 </li>
 </ul>
 <p>七牛除了作为图床，也可以作为其他静态文件的存储空间，比如博主的博客的背景音乐便是放在了七牛的空间，相对于其他外链地址，访问速度还是快很多的。</p>
-<p>###404页面</p>
-<p>404页面也是可以做很多事情的，如果想创建自己的404页面，直接在根目录下创建自己的404.html就可以，但是自定义404页面仅对绑定顶级域名的项目才起作用。对gitcafe的二级域名是不起作用的。使用hexo s本地调试也不起作用。这里就不介绍了。有兴趣的百度找找吧。</p>
-<p>###最后就是购买域名###</p>
-<p>买域名推荐去GoDaddy吧，在国外，不受国内各种干扰，同时支持支付宝付款，信誉、口碑都很好，网上优惠码一类的东西也挺多的。如果没有特别的要求，不愿折腾直接上国内买也行，看个人，博主是在GoDaddy买的，追求完美嘛。想买的去<a href="https://www.godaddy.com/about/godaddy-chinese.aspx?isc=bsfndom4&amp;cvosrc=ppc.baidu" target="_blank" rel="noopener">godaddy域名购买</a>有32%的优惠（这不是打广告= =!）。</p>
-<p>###设置DNS</p>
-<p>在Godaddy网站购买完域名后，Goddady会默认提供一个国外的dns服务商，访问速度来说还不错，没有特别多要求的话默认就好。</p>
+<h3 id="404页面"><a href="#404页面" class="headerlink" title="404页面"></a>404页面</h3><p>404页面也是可以做很多事情的，如果想创建自己的404页面，直接在根目录下创建自己的404.html就可以，但是自定义404页面仅对绑定顶级域名的项目才起作用。对gitcafe的二级域名是不起作用的。使用hexo s本地调试也不起作用。这里就不介绍了。有兴趣的百度找找吧。</p>
+<h3 id="最后就是购买域名"><a href="#最后就是购买域名" class="headerlink" title="最后就是购买域名"></a>最后就是购买域名</h3><p>买域名推荐去GoDaddy吧，在国外，不受国内各种干扰，同时支持支付宝付款，信誉、口碑都很好，网上优惠码一类的东西也挺多的。如果没有特别的要求，不愿折腾直接上国内买也行，看个人，博主是在GoDaddy买的，追求完美嘛。想买的去<a href="https://www.godaddy.com/about/godaddy-chinese.aspx?isc=bsfndom4&amp;cvosrc=ppc.baidu" target="_blank" rel="noopener">godaddy域名购买</a>有32%的优惠（这不是打广告= =!）。</p>
+<h3 id="设置DNS"><a href="#设置DNS" class="headerlink" title="设置DNS"></a>设置DNS</h3><p>在Godaddy网站购买完域名后，Goddady会默认提供一个国外的dns服务商，访问速度来说还不错，没有特别多要求的话默认就好。</p>
 <p>Godaddy的DNS解析设置参照：<a href="http://www.51php.com/domain/13235.html" target="_blank" rel="noopener">Godaddy域名解析教程</a>，这里就不过多介绍了。记录值或者IP地址填写gitcafe提供的IP地址。</p>
 <p><img src="\img\IP地址.png" alt></p>
 <p>然后将你的域名添加到项目的自定义域名里就可以了。一个IP地址可以指向多个域名，而一个域名只能指向一个地址。</p>
@@ -591,7 +583,7 @@
               
             
             
-              <p class="post-toc-empty">此文章未包含目录</p>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#添加自定义页面"><span class="nav-number">1.</span> <span class="nav-text">添加自定义页面</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#设置百度统计"><span class="nav-number">2.</span> <span class="nav-text">设置百度统计</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#导航栏添加RSS"><span class="nav-number">3.</span> <span class="nav-text">导航栏添加RSS</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#添加sitemap"><span class="nav-number">4.</span> <span class="nav-text">添加sitemap</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#在文章中插入图片"><span class="nav-number">5.</span> <span class="nav-text">在文章中插入图片</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#404页面"><span class="nav-number">6.</span> <span class="nav-text">404页面</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#最后就是购买域名"><span class="nav-number">7.</span> <span class="nav-text">最后就是购买域名</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#设置DNS"><span class="nav-number">8.</span> <span class="nav-text">设置DNS</span></a></li></ol></div>
             
           </div>
         </section>

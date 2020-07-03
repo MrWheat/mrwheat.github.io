@@ -92,7 +92,7 @@
 <meta property="og:site_name" content="MaiZi&#39;s Blog">
 <meta property="og:description" content="学好C和OC，漂亮的宏定义很重要，使用好宏定义，不仅能减少代码出错机率，提高可读性，同时方便移植，代码看起来也简洁美观，何乐而不为呢。">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2020-06-27T13:09:58.639Z">
+<meta property="og:updated_time" content="2020-07-03T08:04:35.316Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="#define用法总结">
 <meta name="twitter:description" content="学好C和OC，漂亮的宏定义很重要，使用好宏定义，不仅能减少代码出错机率，提高可读性，同时方便移植，代码看起来也简洁美观，何乐而不为呢。">
@@ -336,25 +336,19 @@
 <p><code>#define uint16 unsigned int</code></p>
 <p><code>typedef    unsigned long int  uint32;</code></p>
 <p>常用的宏定义有两种：<code>带参数的宏定义</code>和<code>不带参数的宏定义</code>。</p>
-&lt;h3 style=”background-color:#A3BB50; color:white; padding-top: 2px; padding-left: 5px;<br>padding-bottom: 2px;”; &gt;不带参数的宏定义
-
-<ul>
+<h3 id="不带参数的宏定义"><a href="#不带参数的宏定义" class="headerlink" title="不带参数的宏定义"></a>不带参数的宏定义</h3><ul>
 <li>使用格式：#define    宏名    字符串</li>
 <li>作用：将程序中所有出现宏名的地方都用字符串进行替换</li>
 <li>例子：#define    SIZE    100</li>
 </ul>
-&lt;h3 style=”background-color:#A3BB50; color:white; padding-top: 2px; padding-left: 5px;<br>padding-bottom: 2px;”; &gt;带参数的宏定义
-
-<ul>
+<h3 id="带参数的宏定义"><a href="#带参数的宏定义" class="headerlink" title="带参数的宏定义"></a>带参数的宏定义</h3><ul>
 <li>使用格式：#define    宏名(行参列表)    字符串</li>
 <li>作用：用实参替换行参，其他字符串原样保留</li>
 <li>例子：#define S(a, b)    ((a)*(b))</li>
 <li>注意：字符串中参数最好加上括号，防止出现由优先级导致的bug。</li>
 <li>例子：S(3+2, 5+7);    —&gt;    3+2*5+7    —&gt;    20</li>
 </ul>
-&lt;h3 style=”background-color:#A3BB50; color:white; padding-top: 2px; padding-left: 5px;<br>padding-bottom: 2px;”; &gt;宏定义#和##用法
-
-<ul>
+<h3 id="宏定义-和-用法"><a href="#宏定义-和-用法" class="headerlink" title="宏定义#和##用法"></a>宏定义#和##用法</h3><ul>
 <li><p>“#”是”字符串化”的意思。出现在宏定义中的”#”是把跟在后面的参数转换成一个字符串。</p>
   <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">#define STRCPY(dst, src)   strcpy(dst, #src)</span><br><span class="line">STRCPY(buff, abc) 相当于 strcpy(buff, &quot;abc&quot;)</span><br></pre></td></tr></table></figure>
 </li>
@@ -364,13 +358,9 @@
   <figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#define STRCPY(a, b)	strcpy(a##_p, #b)</span></span><br><span class="line"><span class="keyword">int</span> main()</span><br><span class="line">&#123;</span><br><span class="line">	STRCPY(STRCPY(var1,var2),var2);</span><br><span class="line">	<span class="comment">// 这里是否会展开为： strcpy(strcpy(var1_p,"var2")_p,"var2“）？</span></span><br><span class="line">	<span class="comment">// 答案是否定的：</span></span><br><span class="line">	<span class="comment">// 展开结果将是：  strcpy(STRCPY(var1,var2)_p,"var2")</span></span><br><span class="line">	<span class="comment">// ## 阻止了参数的宏展开!</span></span><br><span class="line">	<span class="comment">// 如果宏定义里没有用到 # 和 ##, 宏将会完全展开</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 </li>
 </ul>
-&lt;h3 style=”background-color:#A3BB50; color:white; padding-top: 2px; padding-left: 5px;<br>padding-bottom: 2px;”; &gt;多行宏定义
-
-<p>在需要换行的地方使用”/“</p>
+<h3 id="多行宏定义"><a href="#多行宏定义" class="headerlink" title="多行宏定义"></a>多行宏定义</h3><p>在需要换行的地方使用”/“</p>
 <figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#define MACRO(arg1, arg2) do &#123; /</span></span><br><span class="line">	stmt1; /</span><br><span class="line">	stmt2; /</span><br><span class="line">&#125; <span class="keyword">while</span>(<span class="number">0</span>)</span><br></pre></td></tr></table></figure>
-&lt;h3 style=”background-color:#A3BB50; color:white; padding-top: 2px; padding-left: 5px;<br>padding-bottom: 2px;”; &gt;常用预处理命令
-
-<ul>
+<h3 id="常用预处理命令"><a href="#常用预处理命令" class="headerlink" title="常用预处理命令"></a>常用预处理命令</h3><ul>
 <li><p>防止一个头文件重复包含</p>
   <figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#ifndef COMDEF_H</span></span><br><span class="line"><span class="meta">#define COMDEF_H</span></span><br><span class="line">  <span class="comment">//头文件内容</span></span><br><span class="line"><span class="meta">#endif</span></span><br></pre></td></tr></table></figure>
 </li>
@@ -573,7 +563,7 @@
               
             
             
-              <p class="post-toc-empty">此文章未包含目录</p>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#不带参数的宏定义"><span class="nav-number">1.</span> <span class="nav-text">不带参数的宏定义</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#带参数的宏定义"><span class="nav-number">2.</span> <span class="nav-text">带参数的宏定义</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#宏定义-和-用法"><span class="nav-number">3.</span> <span class="nav-text">宏定义#和##用法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#多行宏定义"><span class="nav-number">4.</span> <span class="nav-text">多行宏定义</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#常用预处理命令"><span class="nav-number">5.</span> <span class="nav-text">常用预处理命令</span></a></li></ol></div>
             
           </div>
         </section>

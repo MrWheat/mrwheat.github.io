@@ -68,7 +68,7 @@
 <link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css">
 
 
-  <meta name="keywords" content="iOS,笔记,系统类,">
+  <meta name="keywords" content="笔记,iOS,系统类,">
 
 
 
@@ -85,14 +85,14 @@
 
 
 <meta name="description" content="在开发中，如果想要对一些控件类，比如UIImageView、UILabel、UINavigationBar等，做一些全局的改变，通常的做法都是通过继承的方式重写该类，这样新建一个一个文件，做的多了，会感觉很麻烦。在iOS5以后，苹果提供了更简单的方式，通过UIAppearance，你可以很轻松的管理你的界面。UIAppearance提供了两个方法：  + (id)appearance + (id)">
-<meta name="keywords" content="iOS,笔记,系统类">
+<meta name="keywords" content="笔记,iOS,系统类">
 <meta property="og:type" content="article">
 <meta property="og:title" content="UIAppearance UI全局设置">
 <meta property="og:url" content="http://hackmz.com/UIAppearance-UI全局设置/index.html">
 <meta property="og:site_name" content="MaiZi&#39;s Blog">
 <meta property="og:description" content="在开发中，如果想要对一些控件类，比如UIImageView、UILabel、UINavigationBar等，做一些全局的改变，通常的做法都是通过继承的方式重写该类，这样新建一个一个文件，做的多了，会感觉很麻烦。在iOS5以后，苹果提供了更简单的方式，通过UIAppearance，你可以很轻松的管理你的界面。UIAppearance提供了两个方法：  + (id)appearance + (id)">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2020-06-27T13:09:58.637Z">
+<meta property="og:updated_time" content="2020-07-03T08:06:57.655Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="UIAppearance UI全局设置">
 <meta name="twitter:description" content="在开发中，如果想要对一些控件类，比如UIImageView、UILabel、UINavigationBar等，做一些全局的改变，通常的做法都是通过继承的方式重写该类，这样新建一个一个文件，做的多了，会感觉很麻烦。在iOS5以后，苹果提供了更简单的方式，通过UIAppearance，你可以很轻松的管理你的界面。UIAppearance提供了两个方法：  + (id)appearance + (id)">
@@ -335,18 +335,15 @@
 <li>+ (id)appearanceWhenContainedIn:(Class &lt;&gt;)ContainerClass,…</li>
 </ul>
 <a id="more"></a>
-<p>###appearance使用</p>
-<p>appearance方法使用简单，比如要定制应用中所有UIBarButtonItem的颜色，可以在UIBarButtonItem的外观代理中设置tintColor。</p>
+<h3 id="appearance使用"><a href="#appearance使用" class="headerlink" title="appearance使用"></a>appearance使用</h3><p>appearance方法使用简单，比如要定制应用中所有UIBarButtonItem的颜色，可以在UIBarButtonItem的外观代理中设置tintColor。</p>
 <pre><code>[[UINavigationBar appearance] setBarTintColor:[UIColor grayColor]];
 </code></pre><p>或者你也可以这样写：</p>
 <pre><code>UINavigationBar *appearance = [UINavigationBar appearance];
 [appearance setBarTintColor:[UIColor grayColor]];
-</code></pre><p>###appearanceWhenContainedIn使用</p>
-<p>这个方法可以用来设置某个类在其他类里的改变。</p>
+</code></pre><h3 id="appearanceWhenContainedIn使用"><a href="#appearanceWhenContainedIn使用" class="headerlink" title="appearanceWhenContainedIn使用"></a>appearanceWhenContainedIn使用</h3><p>这个方法可以用来设置某个类在其他类里的改变。</p>
 <p>比如我想设置UIBarButtonItem在UINavigationBar、UIPopoverController、UITabbar中的TintColor，而在其他地方则保持不变。</p>
 <pre><code>[[UIBarButtonItem appearanceWhenContainedIn:[UINavigationBar class], [UIPopoverController class],[UITabBar class], nil] setTintColor:[UIColor clearColor]];
-</code></pre><p>###自定义类实现UIAppearance</p>
-<p>如果想要在我们自定义的类中实现UIAppearance，需要在的类中实现UIAppearanceContainer协议，同时，在Objective-C中，还需要将相关的方法用UI_APPEARANCE_SELECTOR来标记，在Swift中，则需要在对应的属性或方法前面加上dynamic。</p>
+</code></pre><h3 id="自定义类实现UIAppearance"><a href="#自定义类实现UIAppearance" class="headerlink" title="自定义类实现UIAppearance"></a>自定义类实现UIAppearance</h3><p>如果想要在我们自定义的类中实现UIAppearance，需要在的类中实现UIAppearanceContainer协议，同时，在Objective-C中，还需要将相关的方法用UI_APPEARANCE_SELECTOR来标记，在Swift中，则需要在对应的属性或方法前面加上dynamic。</p>
 <p>但实际上，UIView已经实现了UIAppearance和UIAppearanceContainer协议。因此，我们在其子类中不再需要显式地去声明实现这两个接口。</p>
 <p>比如自定义Cell时，通过UIAppearance设置图片的圆角。</p>
 <pre><code>// DateCell.h
@@ -365,8 +362,7 @@
 
 // 在控制器的viewDidLoad方法里
 [DateCell appearance].radios = 20;
-</code></pre><p>###注意事项</p>
-<ul>
+</code></pre><h3 id="注意事项"><a href="#注意事项" class="headerlink" title="注意事项"></a>注意事项</h3><ul>
 <li><p>使用UIAppearance设置UI效果最好采用全局的设置，在所有界面初始化前开始设置。对于在使用UIAppearance之前已经添加到界面上的控件，则没有效果。</p>
 </li>
 <li><p>对于自定义的UI控件，使用UIAppearance无法直接改变UI控件的子控件。</p>
@@ -398,8 +394,7 @@
 [DateCell appearance].radios = 20;
 </code></pre></li>
 </ul>
-<p>###参考</p>
-<p><a href="https://developer.apple.com/library/ios/documentation/UIKit/Reference/UIAppearance_Protocol/index.html#//apple_ref/occ/intfcm/UIAppearance/appearanceForTraitCollection:" target="_blank" rel="noopener">UIAppearance</a></p>
+<h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><p><a href="https://developer.apple.com/library/ios/documentation/UIKit/Reference/UIAppearance_Protocol/index.html#//apple_ref/occ/intfcm/UIAppearance/appearanceForTraitCollection:" target="_blank" rel="noopener">UIAppearance</a></p>
 <p><a href="http://www.cocoachina.com/ios/20150723/12671.html" target="_blank" rel="noopener">自定义系统控件的外观：UIApearance</a></p>
 
       
@@ -422,9 +417,9 @@
       
         <div class="post-tags">
           
-            <a href="/tags/iOS/" rel="tag">#iOS</a>
-          
             <a href="/tags/笔记/" rel="tag">#笔记</a>
+          
+            <a href="/tags/iOS/" rel="tag">#iOS</a>
           
             <a href="/tags/系统类/" rel="tag">#系统类</a>
           
@@ -596,7 +591,7 @@
               
             
             
-              <p class="post-toc-empty">此文章未包含目录</p>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#appearance使用"><span class="nav-number">1.</span> <span class="nav-text">appearance使用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#appearanceWhenContainedIn使用"><span class="nav-number">2.</span> <span class="nav-text">appearanceWhenContainedIn使用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#自定义类实现UIAppearance"><span class="nav-number">3.</span> <span class="nav-text">自定义类实现UIAppearance</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#注意事项"><span class="nav-number">4.</span> <span class="nav-text">注意事项</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#参考"><span class="nav-number">5.</span> <span class="nav-text">参考</span></a></li></ol></div>
             
           </div>
         </section>

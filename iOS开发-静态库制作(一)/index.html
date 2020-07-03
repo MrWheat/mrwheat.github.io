@@ -92,7 +92,7 @@
 <meta property="og:site_name" content="MaiZi&#39;s Blog">
 <meta property="og:description" content="这篇博客是对静态库的介绍，有点啰嗦，感兴趣的可以了解了解。">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2020-06-27T13:09:58.641Z">
+<meta property="og:updated_time" content="2020-07-03T08:01:27.485Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="iOS开发-静态库制作(一)">
 <meta name="twitter:description" content="这篇博客是对静态库的介绍，有点啰嗦，感兴趣的可以了解了解。">
@@ -331,10 +331,8 @@
       
         <p>这篇博客是对静态库的介绍，有点啰嗦，感兴趣的可以了解了解。</p>
 <a id="more"></a>
-<p>###什么是库</p>
-<p>库的本质是程序代码的集合，是共享程序代码的一种方式，也是复用代码的一种方式。根据代码公开程度，库可以分为两种，一种是开源库，一种是闭源库，闭源库指不公开源代码，是经过编译后的二进制文件，看不到具体实现。常用的闭源库主要有静态库、动态库。这里主要讲静态库的使用和制作。</p>
-<p>###为什么需要库</p>
-<p>在iOS开发中，我们时常会用到一些别人封装好的第三方库。那么不管是抱着礼尚往来的心态，还是好东西需要大家一起分享的态度，亦或者仅仅为了图自己以后开发的方便。我们也完全可以将自己写的一些方便程序开发的工具类封装成库，然后供大家使用。得到同行的肯定也是开发的一大乐趣之一，不是么。</p>
+<h3 id="什么是库"><a href="#什么是库" class="headerlink" title="什么是库"></a>什么是库</h3><p>库的本质是程序代码的集合，是共享程序代码的一种方式，也是复用代码的一种方式。根据代码公开程度，库可以分为两种，一种是开源库，一种是闭源库，闭源库指不公开源代码，是经过编译后的二进制文件，看不到具体实现。常用的闭源库主要有静态库、动态库。这里主要讲静态库的使用和制作。</p>
+<h3 id="为什么需要库"><a href="#为什么需要库" class="headerlink" title="为什么需要库"></a>为什么需要库</h3><p>在iOS开发中，我们时常会用到一些别人封装好的第三方库。那么不管是抱着礼尚往来的心态，还是好东西需要大家一起分享的态度，亦或者仅仅为了图自己以后开发的方便。我们也完全可以将自己写的一些方便程序开发的工具类封装成库，然后供大家使用。得到同行的肯定也是开发的一大乐趣之一，不是么。</p>
 <p>更进一步的，即使是封装好的管理类，框架类，在使用的时候可能也还会依赖一些第三方库和系统库。如果我们每次使用的时候都要将这些东西重新导入和配置一遍，这样会浪费很大的精力，而且对于开发者来说，也是一件枯燥无意义的事情。除此之外，如果项目需要多人合作，你可能也并不希望你的源代码暴漏在所有人的面前。那么机智的程序员便想出了一个一劳永逸的办法。我们可以使用静态库或者动态库的方式来对我们的代码进行封装，便于复用的同时，还能隐藏那些我们不愿公开的心血。</p>
 <p>在iOS中，静态库和动态库的存在形式分别有：</p>
 <ul>
@@ -538,7 +536,7 @@
               
             
             
-              <p class="post-toc-empty">此文章未包含目录</p>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#什么是库"><span class="nav-number">1.</span> <span class="nav-text">什么是库</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#为什么需要库"><span class="nav-number">2.</span> <span class="nav-text">为什么需要库</span></a></li></ol></div>
             
           </div>
         </section>

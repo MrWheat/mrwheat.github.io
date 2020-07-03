@@ -92,7 +92,7 @@
 <meta property="og:site_name" content="MaiZi&#39;s Blog">
 <meta property="og:description" content="无论是XML解析还是JSON解析，最终得到的数据通常我们都是以数据模型的形式保存在本地的，为什么不直接用字典呢？ 首先大多数编译器都有自动提示补全功能，将字典的key转换成模型里的属性，就能很好的利用这一功能，提高开发速度，比复制粘贴还快哦。 其次，如果模型的属性写错了，编译的时候，编译器会提示报错，这样就能及时修正BUG，而字典的key，你写成啥样，编译器也不会管你的死活。 最后一点，不管怎么样">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2020-06-27T13:09:58.641Z">
+<meta property="og:updated_time" content="2020-07-03T08:03:43.170Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="iOS字典转模型的那些坑">
 <meta name="twitter:description" content="无论是XML解析还是JSON解析，最终得到的数据通常我们都是以数据模型的形式保存在本地的，为什么不直接用字典呢？ 首先大多数编译器都有自动提示补全功能，将字典的key转换成模型里的属性，就能很好的利用这一功能，提高开发速度，比复制粘贴还快哦。 其次，如果模型的属性写错了，编译的时候，编译器会提示报错，这样就能及时修正BUG，而字典的key，你写成啥样，编译器也不会管你的死活。 最后一点，不管怎么样">
@@ -335,16 +335,14 @@
 <p>最后一点，不管怎么样，写成数据模型的形式，起码看起来也比字典专业不是么？</p>
 <p>字典转模型的方式多种多样，网上的开源库也很多。但在实际开发过程中，稍有不慎，一些细节问题同样会让你头疼。</p>
 <a id="more"></a>
-<p>###字典键值对多于模型属性。</p>
-<p>有些开发者会选择使用KVC的方式来进行字典模型转换。</p>
+<h3 id="字典键值对多于模型属性。"><a href="#字典键值对多于模型属性。" class="headerlink" title="字典键值对多于模型属性。"></a>字典键值对多于模型属性。</h3><p>有些开发者会选择使用KVC的方式来进行字典模型转换。</p>
 <p>使用setValuesForKeysWithDictionary:方法能够直接将字典的value赋值给模型，但是有时候会遇到程序莫名崩溃的情况。通过比对，发现字典的某些key，模型中并不存在对应的属性。</p>
 <p> 当找不到对应属性时，程序首先会到模型里去寻找master的getter方法，看有没有<code>- (id)master;</code>这个方法，如果没有，则会寻找<code>_master</code>的成员变量，如果没有，则继续寻找<code>master</code>的成员变量，如果还没有，会看有没有实现<code>valueForUndefinedKey</code>方法，如果没有，程序就崩溃了。</p>
 <p> 因此我们可以在模型里重写以下方法：</p>
 <pre><code>- (void)setValue:(id)value forUndefinedKey:(NSString *)key {
     // 内部并不需要写任何东西
 }
-</code></pre><p>###字典的key为OC关键字</p>
-<p>我们不能要求每一个后台都了解OC，有时候遇到后台数据字段和OC关键字冲突的情况下，更改后台代码又特别麻烦。这种情况下，以description关键字为例，我们可以在模型的.m文件中增加这样一行代码：</p>
+</code></pre><h3 id="字典的key为OC关键字"><a href="#字典的key为OC关键字" class="headerlink" title="字典的key为OC关键字"></a>字典的key为OC关键字</h3><p>我们不能要求每一个后台都了解OC，有时候遇到后台数据字段和OC关键字冲突的情况下，更改后台代码又特别麻烦。这种情况下，以description关键字为例，我们可以在模型的.m文件中增加这样一行代码：</p>
 <pre><code>@synthesize description = _description;
 </code></pre><p>当然，如果你使用MJExtension三方库，也可以这样写，然后在模型里定义一个des属性来代替description：</p>
 <pre><code>+ (NSDictionary *)replacedKeyFromPropertyName{
@@ -554,7 +552,7 @@
               
             
             
-              <p class="post-toc-empty">此文章未包含目录</p>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#字典键值对多于模型属性。"><span class="nav-number">1.</span> <span class="nav-text">字典键值对多于模型属性。</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#字典的key为OC关键字"><span class="nav-number">2.</span> <span class="nav-text">字典的key为OC关键字</span></a></li></ol></div>
             
           </div>
         </section>

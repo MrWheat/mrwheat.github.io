@@ -95,7 +95,7 @@
 <meta property="og:image" content="http://hackmz.com/img/IPv4-%3EIPv6类型对照表.png">
 <meta property="og:image" content="http://hackmz.com/img/搭建IPv6测试环境01.png">
 <meta property="og:image" content="http://hackmz.com/img/搭建IPv6测试环境02.png">
-<meta property="og:updated_time" content="2020-06-27T13:09:58.646Z">
+<meta property="og:updated_time" content="2020-07-03T08:03:27.608Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="本地搭建IPv6测试环境">
 <meta name="twitter:description" content="从6月初开始，苹果修改了App Store应用审核政策，规定所有提交审核的iOS应用都必须支持IPv6-only连网标准。虽然苹果早在去年的在WWDC2015大会上就宣布过iOS 9将转用IPv6-only网络服务，但是该消息来的依旧是如此的突然，导致大部分开发者毫无一丝防备。">
@@ -335,13 +335,11 @@
       
         <p>从6月初开始，苹果修改了App Store应用审核政策，规定所有提交审核的iOS应用都必须支持IPv6-only连网标准。虽然苹果早在去年的在WWDC2015大会上就宣布过iOS 9将转用IPv6-only网络服务，但是该消息来的依旧是如此的突然，导致大部分开发者毫无一丝防备。</p>
 <a id="more"></a>
-<p>###什么是IPv6</p>
-<p>IPv6是Internet Protocol version 6的缩写，全名为互联网通讯协议第6版，是互联网协议的最新版本，用于分组交换互联网络的网络层协议，旨在解决IPv4地址枯竭问题。</p>
+<h3 id="什么是IPv6"><a href="#什么是IPv6" class="headerlink" title="什么是IPv6"></a>什么是IPv6</h3><p>IPv6是Internet Protocol version 6的缩写，全名为互联网通讯协议第6版，是互联网协议的最新版本，用于分组交换互联网络的网络层协议，旨在解决IPv4地址枯竭问题。</p>
 <p>IPv6采用128位的地址，而IPv4使用的是32位。相对于IPv4，IPv6具有更大的地址空间，使用更小的路由表，并且具有更高的安全性。</p>
 <p>当然，以上只是官方对于IPv6的定义，不知道你们看完之后会不会露出，哦~原来如此的表情。那么IPv6具体长啥样？具体一点，IPv6就是我们看到的类似这样<code>2001:da8:215:4009:250:56ff:fe97:40c7</code>的地址。而IPv4则是<code>114.255.40.66</code>这样的地址，是不是很熟悉。</p>
 <p>目前来说，一个网卡会同时使用这两种地址，但在未来，一个网卡可能就仅支持IPv6地址， 并且使用这两种地址的设备是不能互相访问的，除了某些过渡的技术让他们在特定情况下可以互相访问，比如DNS64/NAT64。</p>
-<p>###如何兼容IPv6</p>
-<p>其实在大多数情况下，我们并不需要做什么，就可以兼容IPv6。比如目前使用的最多的网络库AFNetworking3.0就已经支持IPv6，我们只需在开发中注意一下以下的细节并做出一些改动就可以了。</p>
+<h3 id="如何兼容IPv6"><a href="#如何兼容IPv6" class="headerlink" title="如何兼容IPv6"></a>如何兼容IPv6</h3><p>其实在大多数情况下，我们并不需要做什么，就可以兼容IPv6。比如目前使用的最多的网络库AFNetworking3.0就已经支持IPv6，我们只需在开发中注意一下以下的细节并做出一些改动就可以了。</p>
 <ul>
 <li>使用更高层次的网络API，避免使用socket API。</li>
 <li>在你的应用中使用域名，不要在任何地方使用 IPv4地址。</li>
@@ -362,8 +360,7 @@ getipv4sourcefilter()
 setipv4sourcefilter()
 </code></pre></li>
 </ul>
-<p>###搭建IPv6测试环境</p>
-<p>如果想测试一下自己的应用是否支持IPv6，不如自己搭建一个测试环境。MacOS提供了创造IPv6-only测试环境的功能，操作很简单。</p>
+<h3 id="搭建IPv6测试环境"><a href="#搭建IPv6测试环境" class="headerlink" title="搭建IPv6测试环境"></a>搭建IPv6测试环境</h3><p>如果想测试一下自己的应用是否支持IPv6，不如自己搭建一个测试环境。MacOS提供了创造IPv6-only测试环境的功能，操作很简单。</p>
 <ol>
 <li><p>首先我们将Mac连接网线上网，关闭Wifi。</p>
 </li>
@@ -571,7 +568,7 @@ setipv4sourcefilter()
               
             
             
-              <p class="post-toc-empty">此文章未包含目录</p>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#什么是IPv6"><span class="nav-number">1.</span> <span class="nav-text">什么是IPv6</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#如何兼容IPv6"><span class="nav-number">2.</span> <span class="nav-text">如何兼容IPv6</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#搭建IPv6测试环境"><span class="nav-number">3.</span> <span class="nav-text">搭建IPv6测试环境</span></a></li></ol></div>
             
           </div>
         </section>

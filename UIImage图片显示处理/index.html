@@ -98,7 +98,7 @@
 <meta property="og:image" content="http://hackmz.com/img/UIImage图片显示处理04.png">
 <meta property="og:image" content="http://hackmz.com/img/UIImage图片显示处理05.png">
 <meta property="og:image" content="http://hackmz.com/img/UIImage图片显示处理06.png">
-<meta property="og:updated_time" content="2020-06-27T13:09:58.637Z">
+<meta property="og:updated_time" content="2020-07-03T08:09:29.964Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="UIImage图片显示处理">
 <meta name="twitter:description" content="上回写过一篇关于图片旋转的问题，详情请见iPhone图片上传服务器旋转的问题。 这只是图片使用过程中的一个小坑，类似的坑还有千万，我们不需要所有的坑都走一遍，也不用对每个坑做细致的调查，但对于常见的坑，掌握如何填平还是有必要的。 UIImageView作为最常用的控件之一，为了迎合需求，总是要求我们对图片做各种各样的处理，最常见的有拉伸，缩放，模糊，裁剪几种。 在这里分享图片处理的一些实用方法。">
@@ -341,8 +341,7 @@
 <p>UIImageView作为最常用的控件之一，为了迎合需求，总是要求我们对图片做各种各样的处理，最常见的有拉伸，缩放，模糊，裁剪几种。</p>
 <p>在这里分享图片处理的一些实用方法。</p>
 <a id="more"></a>
-<p>###加载图片</p>
-<p>这个不必多说，有两种方式：</p>
+<h3 id="加载图片"><a href="#加载图片" class="headerlink" title="加载图片"></a>加载图片</h3><p>这个不必多说，有两种方式：</p>
 <pre><code>UIImageView *imageV = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 300, 150)];
 
 // 第一种方式，通过文件路径加载，无缓存
@@ -352,15 +351,13 @@ imageV.image = [UIImage imageWithContentsOfFile:imageNamed];
 
 // 第二种方式，imageNamed:方法加载，有缓存
 imageV.image = [UIImage imageNamed:@&quot;testImage.jpg&quot;];
-</code></pre><p>###渲染模式</p>
-<p>图片在显示的时候，我们可以根据当前视图的Tint Color对图片进行渲染。系统提供了一个枚举值(UIImageRenderingMode)来方便我们设置。</p>
+</code></pre><h3 id="渲染模式"><a href="#渲染模式" class="headerlink" title="渲染模式"></a>渲染模式</h3><p>图片在显示的时候，我们可以根据当前视图的Tint Color对图片进行渲染。系统提供了一个枚举值(UIImageRenderingMode)来方便我们设置。</p>
 <pre><code>UIImageRenderingModeAutomatic    // 根据图片使用环境自动渲染
 UIImageRenderingModeAlwaysOriginal    // 始终绘制图片原始状态，不使用Tint Color
 UIImageRenderingModeAlwaysTemplate    // 始终根据Tint Color绘制图片，忽略图片的颜色信息
 </code></pre><p>使用方法：</p>
 <pre><code>UIImage *image = [[UIImage imageNamed:@&quot;testImage.jpg&quot;] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];  
-</code></pre><p>###显示方式</p>
-<p>系统提供了UIViewContentMode这个枚举值来设置图片的显示模式，下面介绍常用的几种。</p>
+</code></pre><h3 id="显示方式"><a href="#显示方式" class="headerlink" title="显示方式"></a>显示方式</h3><p>系统提供了UIViewContentMode这个枚举值来设置图片的显示模式，下面介绍常用的几种。</p>
 <ol>
 <li><p>UIViewContentModeScaleToFill    </p>
 <p> 默认方式，拉伸显示，充满控件，显示整个图片</p>
@@ -385,8 +382,7 @@ UIImageRenderingModeAlwaysTemplate    // 始终根据Tint Color绘制图片，�
 </code></pre><p> <img src="/img/UIImage图片显示处理05.png" alt></p>
 </li>
 </ol>
-<p>###颜色转图片</p>
-<p>对于想要找一个纯色图片作背景的人，这个方法再适合不过了，也不用麻烦美工妹子了，自己动手丰衣足食。</p>
+<h3 id="颜色转图片"><a href="#颜色转图片" class="headerlink" title="颜色转图片"></a>颜色转图片</h3><p>对于想要找一个纯色图片作背景的人，这个方法再适合不过了，也不用麻烦美工妹子了，自己动手丰衣足食。</p>
 <pre><code>- (UIImage *)imageWithColor:(UIColor *)color {
     CGRect rect = CGRectMake(0.0f, 0.0f, 1.0f, 1.0f);
     UIGraphicsBeginImageContext(rect.size);
@@ -397,11 +393,9 @@ UIImageRenderingModeAlwaysTemplate    // 始终根据Tint Color绘制图片，�
     UIGraphicsEndImageContext();
     return image;
 }
-</code></pre><p>###图片转颜色</p>
-<p>对于某些不支持图片只能使用颜色作背景的控件，比如UIView，如果想要加个背景怎么办呢，新建一个UIImageView也可以，不过下面这个好像更简单一些。</p>
+</code></pre><h3 id="图片转颜色"><a href="#图片转颜色" class="headerlink" title="图片转颜色"></a>图片转颜色</h3><p>对于某些不支持图片只能使用颜色作背景的控件，比如UIView，如果想要加个背景怎么办呢，新建一个UIImageView也可以，不过下面这个好像更简单一些。</p>
 <pre><code>UIColor *color = [UIColor colorWithPatternImage:[UIImage imageNamed:@&quot;麦子.jpg&quot;]];
-</code></pre><p>###图片圆角设置</p>
-<p>设置图片圆角用处也很多，最常见的就是设置头像。</p>
+</code></pre><h3 id="图片圆角设置"><a href="#图片圆角设置" class="headerlink" title="图片圆角设置"></a>图片圆角设置</h3><p>设置图片圆角用处也很多，最常见的就是设置头像。</p>
 <pre><code>imageV.layer.masksToBounds = YES;
 // 数值为正方形宽高的一半
 imageV.layer.cornerRadius = 150;
@@ -603,7 +597,7 @@ imageV.contentMode = UIViewContentModeScaleAspectFill;
               
             
             
-              <p class="post-toc-empty">此文章未包含目录</p>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#加载图片"><span class="nav-number">1.</span> <span class="nav-text">加载图片</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#渲染模式"><span class="nav-number">2.</span> <span class="nav-text">渲染模式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#显示方式"><span class="nav-number">3.</span> <span class="nav-text">显示方式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#颜色转图片"><span class="nav-number">4.</span> <span class="nav-text">颜色转图片</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#图片转颜色"><span class="nav-number">5.</span> <span class="nav-text">图片转颜色</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#图片圆角设置"><span class="nav-number">6.</span> <span class="nav-text">图片圆角设置</span></a></li></ol></div>
             
           </div>
         </section>

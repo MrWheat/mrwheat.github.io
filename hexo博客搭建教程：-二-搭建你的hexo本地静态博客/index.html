@@ -92,7 +92,7 @@
 <meta property="og:site_name" content="MaiZi&#39;s Blog">
 <meta property="og:description" content="现在来开始搭建属于你自己的博客吧，首先从安装工具开始。">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2020-06-27T13:09:58.640Z">
+<meta property="og:updated_time" content="2020-07-03T08:02:17.538Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="hexo博客搭建教程：(二)搭建你的hexo本地静态博客">
 <meta name="twitter:description" content="现在来开始搭建属于你自己的博客吧，首先从安装工具开始。">
@@ -331,25 +331,19 @@
       
         <p>现在来开始搭建属于你自己的博客吧，首先从安装工具开始。</p>
 <a id="more"></a>
-<p>###1. 安装node.js</p>
-<p>到<a href="http://nodejs.org/" target="_blank" rel="noopener">node.js官网</a>下载安装文件，并一路Next即可。</p>
-<p>###2. 安装Git</p>
-<p>Git的客户端很多，我用的是<a href="http://code.google.com/p/msysgit/" target="_blank" rel="noopener">msysgit</a>，同样下载下来，一路Next即可。官网被墙上不去的<a href="http://xiazai.xiazaiba.com/Soft/M/msysgit_1.9.4.0_XiaZaiBa.zip" target="_blank" rel="noopener">戳这</a>进行下载。</p>
-<p>###3. 安装hexo</p>
-<p>任意位置点击鼠标右键，选中Git Bash进入命令行界面。输入以下命令：</p>
+<h3 id="1-安装node-js"><a href="#1-安装node-js" class="headerlink" title="1. 安装node.js"></a>1. 安装node.js</h3><p>到<a href="http://nodejs.org/" target="_blank" rel="noopener">node.js官网</a>下载安装文件，并一路Next即可。</p>
+<h3 id="2-安装Git"><a href="#2-安装Git" class="headerlink" title="2. 安装Git"></a>2. 安装Git</h3><p>Git的客户端很多，我用的是<a href="http://code.google.com/p/msysgit/" target="_blank" rel="noopener">msysgit</a>，同样下载下来，一路Next即可。官网被墙上不去的<a href="http://xiazai.xiazaiba.com/Soft/M/msysgit_1.9.4.0_XiaZaiBa.zip" target="_blank" rel="noopener">戳这</a>进行下载。</p>
+<h3 id="3-安装hexo"><a href="#3-安装hexo" class="headerlink" title="3. 安装hexo"></a>3. 安装hexo</h3><p>任意位置点击鼠标右键，选中Git Bash进入命令行界面。输入以下命令：</p>
 <figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install -g hexo</span><br></pre></td></tr></table></figure>
 <p>等待就行，安装完成就关掉吧。</p>
-<p>###4. 安装hexo文件夹</p>
-<p>进入你想放你博客的位置，新建hexo文件夹，我的是D:\hexo，然后进入你新建的hexo文件夹，点击鼠标右键选择Git Bush（<code>之后的命令全在此文件夹下使用Git Bush</code>）。</p>
+<h3 id="4-安装hexo文件夹"><a href="#4-安装hexo文件夹" class="headerlink" title="4. 安装hexo文件夹"></a>4. 安装hexo文件夹</h3><p>进入你想放你博客的位置，新建hexo文件夹，我的是D:\hexo，然后进入你新建的hexo文件夹，点击鼠标右键选择Git Bush（<code>之后的命令全在此文件夹下使用Git Bush</code>）。</p>
 <figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hexo init</span><br></pre></td></tr></table></figure>
-<p>###5. 安装依赖包</p>
-<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install</span><br></pre></td></tr></table></figure>
+<h3 id="5-安装依赖包"><a href="#5-安装依赖包" class="headerlink" title="5. 安装依赖包"></a>5. 安装依赖包</h3><figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install</span><br></pre></td></tr></table></figure>
 <p>以上做完之后我们就可以搭建自己的本地hexo静态博客了。进入Git Bush(<code>记住，以后都在hexo文件夹下进入</code>)，执行以下命令：</p>
 <figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">hexo g  hexo g <span class="comment">// hexo generate 生成静态博客  </span></span><br><span class="line">hexo s  hexo s <span class="comment">// hexo server 本地查看</span></span><br></pre></td></tr></table></figure>
 <p>浏览器输入<code>localhost:4000</code>或<a href="http://localhost:4000/" target="_blank" rel="noopener">戳这</a>就可以查看你刚刚生成的博客勒，不过是本地的哦。</p>
 <p><strong>PS：</strong>可能打开网站的速度有点慢，请耐心等待。这个原因后面会讲，完成之后先跟着教程走吧。</p>
-<p>###hexo语法速查：</p>
-<blockquote>
+<h3 id="hexo语法速查："><a href="#hexo语法速查：" class="headerlink" title="hexo语法速查："></a>hexo语法速查：</h3><blockquote>
 <ul>
 <li>hexo g 　　　#生成 </li>
 <li>hexo d 　　　#部署 </li>
@@ -552,7 +546,7 @@
               
             
             
-              <p class="post-toc-empty">此文章未包含目录</p>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-安装node-js"><span class="nav-number">1.</span> <span class="nav-text">1. 安装node.js</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-安装Git"><span class="nav-number">2.</span> <span class="nav-text">2. 安装Git</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-安装hexo"><span class="nav-number">3.</span> <span class="nav-text">3. 安装hexo</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-安装hexo文件夹"><span class="nav-number">4.</span> <span class="nav-text">4. 安装hexo文件夹</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-安装依赖包"><span class="nav-number">5.</span> <span class="nav-text">5. 安装依赖包</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#hexo语法速查："><span class="nav-number">6.</span> <span class="nav-text">hexo语法速查：</span></a></li></ol></div>
             
           </div>
         </section>

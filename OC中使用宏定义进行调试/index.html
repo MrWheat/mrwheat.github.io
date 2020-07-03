@@ -92,7 +92,7 @@
 <meta property="og:site_name" content="MaiZi&#39;s Blog">
 <meta property="og:description" content="想了想还是把OC中经常用到的宏定义语法单独列了一章出来，毕竟对于不同的语言，不同的平台，使用起来还是千差万别的，如果对#define还不熟悉的朋友可以参看以前写的一篇博客#define用法总结。">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2020-06-27T13:09:58.636Z">
+<meta property="og:updated_time" content="2020-07-03T08:19:02.505Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="OC中使用宏定义进行调试">
 <meta name="twitter:description" content="想了想还是把OC中经常用到的宏定义语法单独列了一章出来，毕竟对于不同的语言，不同的平台，使用起来还是千差万别的，如果对#define还不熟悉的朋友可以参看以前写的一篇博客#define用法总结。">
@@ -331,12 +331,10 @@
       
         <p>想了想还是把OC中经常用到的宏定义语法单独列了一章出来，毕竟对于不同的语言，不同的平台，使用起来还是千差万别的，如果对<code>#define</code>还不熟悉的朋友可以参看以前写的一篇博客<a href="http://www.hackmz.com/2015/05/21/define用法总结/" target="_blank" rel="noopener">#define用法总结</a>。</p>
 <a id="more"></a>
-<p>###…的用法</p>
-<p>代码调试，用的最多的方法就是打印数据，对于输出方法来说，参数一般都是可变的，在调试程序时，你可能希望自己定义参数可变的输出函数，那么可变参数宏会是一个选择。</p>
+<h3 id="…的用法"><a href="#…的用法" class="headerlink" title="…的用法"></a>…的用法</h3><p>代码调试，用的最多的方法就是打印数据，对于输出方法来说，参数一般都是可变的，在调试程序时，你可能希望自己定义参数可变的输出函数，那么可变参数宏会是一个选择。</p>
 <pre><code>#define FMWLog(id, ...) NSLog((@&quot;%s [Line %d] &quot; id),__PRETTY_FUNCTION__, __LINE__, ##__VA_ARGS__);
 </code></pre><p>其中…表示可变的参数列表，##<strong>VA_ARGS</strong>在预处理中为实际的参数集。</p>
-<p>###宏定义过滤NSLog</p>
-<p>应用开发过程中，不可避免的会大量使用NSLog打印数据，但是在项目上线或是release的时候为了提高应用的执行效率，我们需要去掉这些打印方法。此时你辛辛苦苦写了那么多的NSLog，我们不可能手动去注释，有些做法是设一个开关变量，企图用这个总开关开启或注释NSLog。但更方便的则是利用宏定义进行设置。</p>
+<h3 id="宏定义过滤NSLog"><a href="#宏定义过滤NSLog" class="headerlink" title="宏定义过滤NSLog"></a>宏定义过滤NSLog</h3><p>应用开发过程中，不可避免的会大量使用NSLog打印数据，但是在项目上线或是release的时候为了提高应用的执行效率，我们需要去掉这些打印方法。此时你辛辛苦苦写了那么多的NSLog，我们不可能手动去注释，有些做法是设一个开关变量，企图用这个总开关开启或注释NSLog。但更方便的则是利用宏定义进行设置。</p>
 <ul>
 <li><p>对于系统的NSLog方法</p>
 <pre><code>#ifndef __OPTIMIZE__
@@ -356,8 +354,7 @@
 <p>这样设置后，只需要在Product -&gt;Scheme-&gt;Edit Scheme -&gt;info选择，是release ,还是debug版本即可。如果是debug版本，则打印数据，如果是release版本则不打印。</p>
 <p>我们发布到appstore上的版本均是release版本，这里简单说下这两个版本的差异。release是发行版本，比debug版本要小一些，他们调用两个不同底层库，debug包含的信息多，可以断点调试，单步执行，使用TRACE/ASSERT等调试输出语句，但是release 版本不包含调试信息，运行速度比较快。</p>
 <p>另外在此处设置的DEBUG参数可以在下面的路径进行设置：<code>工程-&gt;Target-&gt;Build Setting -&gt;Preprocessor Macros</code>。默认系统已经给出了DEBUG的参数。如果要增加新的参数，则在那里进行增加。</p>
-<p>###__OBJC__宏定义</p>
-<p>我们经常会见到在.pch文件中加上<code>#ifdef __OBJC__</code>这句宏定义，它的作用是什么呢？</p>
+<h3 id="OBJC-宏定义"><a href="#OBJC-宏定义" class="headerlink" title="__OBJC__宏定义"></a>__OBJC__宏定义</h3><p>我们经常会见到在.pch文件中加上<code>#ifdef __OBJC__</code>这句宏定义，它的作用是什么呢？</p>
 <p>因为在一个OC工程中，可能包含.m、.mm、.c、.cpp四类编译文件，这四类文件均会引用.pch预编译头。在编译.c、.cpp时，因为语法不兼容OC，所以预编译头中不能包含objc代码。</p>
 <p>而.pch是多类源文件共用的，所以在pch中，oc头文件要用__OBJC__包含起来，表示宏内引用的文件确保只被使用Objective-C语言的文件所引用，保证引用关系的清晰。</p>
 <pre><code>#ifdef __OBJC__
@@ -367,8 +364,7 @@
 #import &quot;AcctMacro.h&quot;
 #import &quot;EMSDK.h&quot;
 #endif
-</code></pre><p>###宏定义指令</p>
-<pre><code>#define 定义一个预处理宏
+</code></pre><h3 id="宏定义指令"><a href="#宏定义指令" class="headerlink" title="宏定义指令"></a>宏定义指令</h3><pre><code>#define 定义一个预处理宏
 #undef 取消宏的定义
 #include 包含文件命令
 #include_next 与#include相似, 但它有着特殊的用途
@@ -385,16 +381,14 @@
 #pragma 说明编译器信息
 #warning 显示编译警告信息
 #error 显示编译错误信息
-</code></pre><p>###一些系统宏定义</p>
-<pre><code>##__VA_ARGS__    // __VA_ARGS__ 是一个可变参数的宏。宏前面加 上##的作用在于，当可变参数的个数为0时，这里的##起到把前面多余的&quot;,&quot;去掉的作用,否则会编译出错。
+</code></pre><h3 id="一些系统宏定义"><a href="#一些系统宏定义" class="headerlink" title="一些系统宏定义"></a>一些系统宏定义</h3><pre><code>##__VA_ARGS__    // __VA_ARGS__ 是一个可变参数的宏。宏前面加 上##的作用在于，当可变参数的个数为0时，这里的##起到把前面多余的&quot;,&quot;去掉的作用,否则会编译出错。
 
 __FILE__    // 在预编译时会替换成当前的源文件名
 
 __LINE__    // 在预编译时会替换成当前的行号
 
 __FUNCTION__    // 在预编译时会替换成当前的函数名称
-</code></pre><p>###开发常见的宏定义</p>
-<pre><code>//AppDelegate
+</code></pre><h3 id="开发常见的宏定义"><a href="#开发常见的宏定义" class="headerlink" title="开发常见的宏定义"></a>开发常见的宏定义</h3><pre><code>//AppDelegate
 #define APPDELEGATE [(AppDelegate*)[UIApplication sharedApplication]  delegate]
 //----------------------系统设备相关----------------------------
 //获取设备屏幕尺寸
@@ -723,7 +717,7 @@ __FUNCTION__    // 在预编译时会替换成当前的函数名称
               
             
             
-              <p class="post-toc-empty">此文章未包含目录</p>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#…的用法"><span class="nav-number">1.</span> <span class="nav-text">…的用法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#宏定义过滤NSLog"><span class="nav-number">2.</span> <span class="nav-text">宏定义过滤NSLog</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#OBJC-宏定义"><span class="nav-number">3.</span> <span class="nav-text">__OBJC__宏定义</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#宏定义指令"><span class="nav-number">4.</span> <span class="nav-text">宏定义指令</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#一些系统宏定义"><span class="nav-number">5.</span> <span class="nav-text">一些系统宏定义</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#开发常见的宏定义"><span class="nav-number">6.</span> <span class="nav-text">开发常见的宏定义</span></a></li></ol></div>
             
           </div>
         </section>
