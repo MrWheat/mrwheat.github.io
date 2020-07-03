@@ -111,7 +111,7 @@ sitemap的初衷是给搜索引擎看的，为了提高搜索引擎对自己站�
 
 Godaddy的DNS解析设置参照：[Godaddy域名解析教程](http://www.51php.com/domain/13235.html)，这里就不过多介绍了。记录值或者IP地址填写gitcafe提供的IP地址。
 
-![](\img\IP地址.png)
+![](\img\hexo博客搭建教程：-六-hexo博客主题优化-下\IP地址.png)
 
 然后将你的域名添加到项目的自定义域名里就可以了。一个IP地址可以指向多个域名，而一个域名只能指向一个地址。
 
