@@ -1,0 +1,783 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css">
+
+
+  <meta name="keywords" content="iOS,笔记,三方库,">
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.1">
+
+
+
+
+
+
+<meta name="description" content="Masonry是AutoLayout的一个第三方类库，也是目前最流行的AutoLayout框架。熟练使用Masonry进行页面布局，能够减少很多不必要的宽高坐标值计算。">
+<meta name="keywords" content="iOS,笔记,三方库">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Masonry使用总结">
+<meta property="og:url" content="http://hackmz.com/iOS基础-Masonry使用总结/index.html">
+<meta property="og:site_name" content="MaiZi&#39;s Blog">
+<meta property="og:description" content="Masonry是AutoLayout的一个第三方类库，也是目前最流行的AutoLayout框架。熟练使用Masonry进行页面布局，能够减少很多不必要的宽高坐标值计算。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://hackmz.com/img/iOS基础-Masonry使用总结/Masonry用法01.png">
+<meta property="og:image" content="http://hackmz.com/img/iOS基础-Masonry使用总结/Masonry用法02.png">
+<meta property="og:image" content="http://hackmz.com/img/iOS基础-Masonry使用总结/Masonry用法01.png">
+<meta property="og:updated_time" content="2020-07-03T10:47:00.139Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Masonry使用总结">
+<meta name="twitter:description" content="Masonry是AutoLayout的一个第三方类库，也是目前最流行的AutoLayout框架。熟练使用Masonry进行页面布局，能够减少很多不必要的宽高坐标值计算。">
+<meta name="twitter:image" content="http://hackmz.com/img/iOS基础-Masonry使用总结/Masonry用法01.png">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"hide"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 0,
+      author: '博主'
+    }
+  };
+</script>
+
+  <title> Masonry使用总结 | MaiZi's Blog </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?c2586345b27e17779034f84bb3e505d2";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">MaiZi's Blog</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">Nothing is impossible！</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                Masonry使用总结
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-07-21T16:23:43+08:00" content="2016-07-21">
+              2016-07-21
+            </time>
+          </span>
+
+          
+            <span class="post-category">
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/iOS开发-基础/" itemprop="url" rel="index">
+                    <span itemprop="name">iOS开发 - 基础</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/iOS基础-Masonry使用总结/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="iOS基础-Masonry使用总结/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>Masonry是AutoLayout的一个第三方类库，也是目前最流行的AutoLayout框架。熟练使用Masonry进行页面布局，能够减少很多不必要的宽高坐标值计算。</p>
+<a id="more"></a>
+<h3 id="Masonry的属性"><a href="#Masonry的属性" class="headerlink" title="Masonry的属性"></a>Masonry的属性</h3><p>Masonry共提供了11种基本属性，分别是：</p>
+<pre><code>// 左边界
+@property (nonatomic, strong, readonly) MASConstraint *left;
+// 上边界
+@property (nonatomic, strong, readonly) MASConstraint *top;
+// 右边界
+@property (nonatomic, strong, readonly) MASConstraint *right;
+// 下边界
+@property (nonatomic, strong, readonly) MASConstraint *bottom;
+// 首部
+@property (nonatomic, strong, readonly) MASConstraint *leading;
+// 尾部
+@property (nonatomic, strong, readonly) MASConstraint *trailing;
+// 宽度
+@property (nonatomic, strong, readonly) MASConstraint *width;
+// 高度
+@property (nonatomic, strong, readonly) MASConstraint *height;
+// x坐标中心
+@property (nonatomic, strong, readonly) MASConstraint *centerX;
+// y坐标中心
+@property (nonatomic, strong, readonly) MASConstraint *centerY;
+// 文本基线
+@property (nonatomic, strong, readonly) MASConstraint *baseline;
+</code></pre><p>除了11种基本属性外，还提供了3种复合属性，用来快速设置控件的frame：</p>
+<pre><code>// (top, left, bottom, right)
+@property (nonatomic, strong, readonly) MASConstraint *edges;
+// (width, height)
+@property (nonatomic, strong, readonly) MASConstraint *size;
+// (centerX, centerY)
+@property (nonatomic, strong, readonly) MASConstraint *center;
+</code></pre><h3 id="Masonry的基本方法"><a href="#Masonry的基本方法" class="headerlink" title="Masonry的基本方法"></a>Masonry的基本方法</h3><p>熟悉了基本属性之后，我们还需要学习如何去使用这些基本属性去设置控件的约束。同样的，Masonry提供了三种方法来设置控件的约束，我们需要根据不同的情况去使用它。</p>
+<pre><code>// 新增约束
+- (NSArray *)mas_makeConstraints:(void(^)(MASConstraintMaker *make))block;
+// 更新约束（不删除以前的约束）
+- (NSArray *)mas_updateConstraints:(void(^)(MASConstraintMaker *make))block;
+// 重写约束（删除以前的约束）
+- (NSArray *)mas_remakeConstraints:(void(^)(MASConstraintMaker *make))block;
+</code></pre><p>从结果上来看，大部分情况下，使用上面三种方法都能得到我们想要的效果。但他们的功能却是不一样的，从应用性考虑，我们也不能乱用。</p>
+<p><code>mas_makeConstraints:</code>：新增约束，该方法只执行一次，适合用于初次设置约束的时候使用，循环调用，会生成许多无谓的约束。</p>
+<p><code>mas_updateConstraints:</code>：更新约束，该方法可执行多次，适用于部分约束改变的情况，比如需要根据字体的多少，动态的改变Label的高度。</p>
+<p><code>mas_remakeConstraints:</code>：重写约束，该方法会删除原有的约束，避免生成多余的约束，适用于控件的约束改动较大的地方，或代码重复调用的地方，比如cell的复用。</p>
+<h3 id="Masonry使用方法"><a href="#Masonry使用方法" class="headerlink" title="Masonry使用方法"></a>Masonry使用方法</h3><h4 id="常用属性用法"><a href="#常用属性用法" class="headerlink" title="常用属性用法"></a>常用属性用法</h4><p>在开始写之前，先将Masonry库文件拖入工程，并包含头文件<code>Masonry.h</code>，我们以给一个UIView添加约束为例。</p>
+<h5 id="offset设置偏移"><a href="#offset设置偏移" class="headerlink" title="offset设置偏移"></a>offset设置偏移</h5><pre><code>// 1.创建UI控件
+UIView *demoView = [[UIView alloc] init];
+demoView.backgroundColor = [UIColor yellowColor];
+// 2.将UI控件加入父视图
+[self.view addSubview:demoView];
+__weak typeof(self) weakSelf = self;
+// 3.创建控件约束
+[demoView mas_makeConstraints:^(MASConstraintMaker *make) {
+    make.left.equalTo(weakSelf.view.mas_left).offset(30);
+    make.right.equalTo(weakSelf.view.mas_right).offset(-30);
+    make.top.equalTo(weakSelf.view.mas_top).offset(30);
+    make.bottom.equalTo(weakSelf.view.mas_bottom).offset(-30);
+}];
+</code></pre><p>控件坐标的计算方法如下：</p>
+<p>控件的边界 = 参考控件的边界 + 偏移值</p>
+<p>效果图：</p>
+<p><img src="/img/iOS基础-Masonry使用总结/Masonry用法01.png" alt></p>
+<h5 id="multipliedBy设置偏移"><a href="#multipliedBy设置偏移" class="headerlink" title="multipliedBy设置偏移"></a>multipliedBy设置偏移</h5><pre><code>// 1.创建UI控件
+UIView *demoView = [[UIView alloc] init];
+demoView.backgroundColor = [UIColor yellowColor];
+// 2.将UI控件加入父视图
+[self.view addSubview:demoView];
+__weak typeof(self) weakSelf = self;
+// 3.创建控件约束
+[demoView mas_makeConstraints:^(MASConstraintMaker *make) {
+    make.centerX.equalTo(weakSelf.view.mas_centerX);
+    make.centerY.equalTo(weakSelf.view.mas_centerY);
+     make.height.equalTo(weakSelf.view.mas_height).multipliedBy(0.5);
+    make.width.equalTo(weakSelf.view.mas_width).multipliedBy(0.5);
+}];
+</code></pre><p>控件坐标的计算方法如下：</p>
+<p>控件的边界 = 参考控件的边界 * 偏移倍数</p>
+<p>效果图：</p>
+<p><img src="/img/iOS基础-Masonry使用总结/Masonry用法02.png" alt></p>
+<h4 id="复合属性用法"><a href="#复合属性用法" class="headerlink" title="复合属性用法"></a>复合属性用法</h4><pre><code>UIView *demoView = [[UIView alloc] init];
+demoView.backgroundColor = [UIColor yellowColor];
+[self.view addSubview:demoView];
+__weak typeof(self) weakSelf = self;
+[demoView mas_makeConstraints:^(MASConstraintMaker *make) {
+    make.edges.equalTo(weakSelf.view).insets(UIEdgeInsetsMake(30, 30, 30, 30));
+}];
+</code></pre><p>效果图：</p>
+<p><img src="/img/iOS基础-Masonry使用总结/Masonry用法01.png" alt></p>
+<h3 id="问题汇总"><a href="#问题汇总" class="headerlink" title="问题汇总"></a>问题汇总</h3><h4 id="动画问题"><a href="#动画问题" class="headerlink" title="动画问题"></a>动画问题</h4><p>Masonry动画和我们使用frame来创建动画的方式差不多，需要注意的是，在修改约束后，调用<code>layoutIfNeeded</code>方法。</p>
+<pre><code>[UIView animateWithDuration:0.6 animations:^{
+    [loginView mas_updateConstraints:^(MASConstraintMaker *make) {
+        make.top.equalTo(self.view.mas_top).offset(224.f/667.f*SCREEN_HEIGHT);
+    }];
+    logoImage.alpha = 1;
+    [loginView.superview layoutIfNeeded];//强制绘制
+}];
+</code></pre><h4 id="frame问题"><a href="#frame问题" class="headerlink" title="frame问题"></a>frame问题</h4><p>有时候我们需要根据控件的frame进行一些操作，比如设置控件的圆角，然而在约束设置完成之后，并不能立刻得到它的frame。如果需要立刻得到它的frame，可以调用：</p>
+<pre><code>[view.superview layoutIfNeeded];
+</code></pre>
+      
+    </div>
+
+    <div>
+      
+        
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/iOS/" rel="tag">#iOS</a>
+          
+            <a href="/tags/笔记/" rel="tag">#笔记</a>
+          
+            <a href="/tags/三方库/" rel="tag">#三方库</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/iOS基础-UIView布局之layout方法总结/" rel="next" title="UIView布局之layout方法总结">
+                <i class="fa fa-chevron-left"></i> UIView布局之layout方法总结
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/iOS基础-本地缓存管理/" rel="prev" title="iOS开发本地缓存管理">
+                iOS开发本地缓存管理 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <div class="ds-share flat" data-thread-key="iOS基础-Masonry使用总结/" data-title="Masonry使用总结" data-content data-url="http://hackmz.com/iOS基础-Masonry使用总结/">
+  <div class="ds-share-inline">
+    <ul class="ds-share-icons-16">
+
+      <li data-toggle="ds-share-icons-more"><a class="ds-more" href="javascript:void(0);">分享到：</a></li>
+      <li><a class="ds-weibo" href="javascript:void(0);" data-service="weibo">微博</a></li>
+      <li><a class="ds-qzone" href="javascript:void(0);" data-service="qzone">QQ空间</a></li>
+      <li><a class="ds-qqt" href="javascript:void(0);" data-service="qqt">腾讯微博</a></li>
+      <li><a class="ds-wechat" href="javascript:void(0);" data-service="wechat">微信</a></li>
+
+    </ul>
+    <div class="ds-share-icons-more">
+    </div>
+  </div>
+</div>
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="iOS基础-Masonry使用总结/" data-title="Masonry使用总结" data-url="http://hackmz.com/iOS基础-Masonry使用总结/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image" src="/avatar/avatar.jpg" alt="麦子">
+          <p class="site-author-name" itemprop="name">麦子</p>
+          <p class="site-description motion-element" itemprop="description">当你的才华撑不起你的野心的时候，你就应该静下心来学习！</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">43</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">15</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">46</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/MrWheat" target="_blank" title="Github">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  Github
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/3202240184" target="_blank" title="微博">
+                  
+                    <i class="fa fa-fw fa-weibo"></i>
+                  
+                  微博
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Masonry的属性"><span class="nav-number">1.</span> <span class="nav-text">Masonry的属性</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Masonry的基本方法"><span class="nav-number">2.</span> <span class="nav-text">Masonry的基本方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Masonry使用方法"><span class="nav-number">3.</span> <span class="nav-text">Masonry使用方法</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#常用属性用法"><span class="nav-number">3.1.</span> <span class="nav-text">常用属性用法</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#offset设置偏移"><span class="nav-number">3.1.1.</span> <span class="nav-text">offset设置偏移</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#multipliedBy设置偏移"><span class="nav-number">3.1.2.</span> <span class="nav-text">multipliedBy设置偏移</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#复合属性用法"><span class="nav-number">3.2.</span> <span class="nav-text">复合属性用法</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#问题汇总"><span class="nav-number">4.</span> <span class="nav-text">问题汇总</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#动画问题"><span class="nav-number">4.1.</span> <span class="nav-text">动画问题</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#frame问题"><span class="nav-number">4.2.</span> <span class="nav-text">frame问题</span></a></li></ol></li></ol></div>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">
+  
+  &copy;  2014 - 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">麦子</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+        
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.1"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.0.1"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.1"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"mrwheat"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+  
+
+
+
+
+
+  
+  
+  
+
+  
+
+  
+
+</body>
+</html>

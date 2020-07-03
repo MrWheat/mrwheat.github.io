@@ -1,0 +1,1025 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css">
+
+
+  <meta name="keywords" content="iOS,笔记,UI控件,">
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.1">
+
+
+
+
+
+
+<meta name="description" content="在众多的App中，我们经常能用到各式各样的表格数据，实现方式有很多种，但是最常用的就是使用UITableView来实现了。用好UITableView，也是学好iOS的一门必修课。">
+<meta name="keywords" content="iOS,笔记,UI控件">
+<meta property="og:type" content="article">
+<meta property="og:title" content="iOS教程之UITableView的使用">
+<meta property="og:url" content="http://hackmz.com/iOS基础-UITableView的使用/index.html">
+<meta property="og:site_name" content="MaiZi&#39;s Blog">
+<meta property="og:description" content="在众多的App中，我们经常能用到各式各样的表格数据，实现方式有很多种，但是最常用的就是使用UITableView来实现了。用好UITableView，也是学好iOS的一门必修课。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://hackmz.com/img/iOS基础-UITableView的使用/tableView1.png">
+<meta property="og:image" content="http://hackmz.com/img/iOS基础-UITableView的使用/tableView2.png">
+<meta property="og:image" content="http://hackmz.com/img/iOS基础-UITableView的使用/tableView.png">
+<meta property="og:image" content="http://hackmz.com/img/iOS基础-UITableView的使用/singleSection.png">
+<meta property="og:image" content="http://hackmz.com/img/iOS基础-UITableView的使用/sections.png">
+<meta property="og:image" content="http://hackmz.com/img/iOS基础-UITableView的使用/cell.png">
+<meta property="og:image" content="http://hackmz.com/img/iOS基础-UITableView的使用/selectedCell.png">
+<meta property="og:image" content="http://hackmz.com/img/iOS基础-UITableView的使用/deselectedCell.png">
+<meta property="og:image" content="http://hackmz.com/img/iOS基础-UITableView的使用/tableHeaderVIew.png">
+<meta property="og:image" content="http://hackmz.com/img/iOS基础-UITableView的使用/tableFooterView.png">
+<meta property="og:image" content="http://hackmz.com/img/iOS基础-UITableView的使用/sectionTitle.png">
+<meta property="og:image" content="http://hackmz.com/img/iOS基础-UITableView的使用/sectionTitle.png">
+<meta property="og:image" content="http://hackmz.com/img/iOS基础-UITableView的使用/sectionFooter.png">
+<meta property="og:image" content="http://hackmz.com/img/iOS基础-UITableView的使用/cellMove.png">
+<meta property="og:image" content="http://hackmz.com/img/iOS基础-UITableView的使用/duoxuan.png">
+<meta property="og:image" content="http://hackmz.com/img/iOS基础-UITableView的使用/index.png">
+<meta property="og:image" content="http://hackmz.com/img/iOS基础-UITableView的使用/separator.png">
+<meta property="og:image" content="http://hackmz.com/img/iOS基础-UITableView的使用/search.png">
+<meta property="og:updated_time" content="2020-07-03T10:36:14.394Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="iOS教程之UITableView的使用">
+<meta name="twitter:description" content="在众多的App中，我们经常能用到各式各样的表格数据，实现方式有很多种，但是最常用的就是使用UITableView来实现了。用好UITableView，也是学好iOS的一门必修课。">
+<meta name="twitter:image" content="http://hackmz.com/img/iOS基础-UITableView的使用/tableView1.png">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"hide"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 0,
+      author: '博主'
+    }
+  };
+</script>
+
+  <title> iOS教程之UITableView的使用 | MaiZi's Blog </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?c2586345b27e17779034f84bb3e505d2";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">MaiZi's Blog</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">Nothing is impossible！</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                iOS教程之UITableView的使用
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2014-11-16T13:17:35+08:00" content="2014-11-16">
+              2014-11-16
+            </time>
+          </span>
+
+          
+            <span class="post-category">
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/iOS开发-基础/" itemprop="url" rel="index">
+                    <span itemprop="name">iOS开发 - 基础</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/iOS基础-UITableView的使用/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="iOS基础-UITableView的使用/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>在众多的App中，我们经常能用到各式各样的表格数据，实现方式有很多种，但是最常用的就是使用UITableView来实现了。用好UITableView，也是学好iOS的一门必修课。</p>
+<a id="more"></a>
+<h3 id="目录"><a href="#目录" class="headerlink" title="目录"></a>目录</h3><ol>
+<li>表格视图的功能和介绍</li>
+<li>表格视图的基本使用</li>
+<li>显示分组数据<!--more--></li>
+<li>单元格的构成和基本定制</li>
+<li>常用事件处理</li>
+<li>添加头部视图和尾部视图</li>
+<li>设置段头和段尾</li>
+<li>表格视图的编辑(难点)</li>
+<li>表格视图的索引</li>
+<li>表格的分割线</li>
+<li>表格视图的搜索</li>
+<li>表格视图控制器</li>
+</ol>
+<h3 id="表格视图的功能和介绍"><a href="#表格视图的功能和介绍" class="headerlink" title="表格视图的功能和介绍"></a>表格视图的功能和介绍</h3><ol>
+<li><p>表格视图的功能:</p>
+<p> <img src="/img/iOS基础-UITableView的使用/tableView1.png" alt> <img src="/img/iOS基础-UITableView的使用/tableView2.png" alt></p>
+<blockquote>
+<p>如上图所示,tableView可以显示多行多组数据</p>
+</blockquote>
+</li>
+<li><p>表格视图的介绍:</p>
+<blockquote>
+<p>创建表格视图有两种风格,一种为Plain,另一种为Grouped.</p>
+</blockquote>
+<blockquote>
+<p>UITableView有两个Delegate分别为：dataSource和delegate。实现表格视图的功能需要遵守两个协议,分别是UITableViewDataSource和UITableViewDelegate.</p>
+</blockquote>
+<blockquote>
+<p>UITableView声明了一个NSIndexPath的类别，主要用来标识当前cell的在tableView中的位置，该类别有section和row两个属性，前者标识当前cell处于第几个section中，后者代表在该section中的第几行。</p>
+</blockquote>
+<blockquote>
+<p>两个必须实现的协议方法:返回每组的行数,返回每行的数据</p>
+</blockquote>
+</li>
+</ol>
+<h3 id="表格视图的基本使用"><a href="#表格视图的基本使用" class="headerlink" title="表格视图的基本使用"></a>表格视图的基本使用</h3><ul>
+<li><p>表格视图的创建:</p>
+<p>  <img src="/img/iOS基础-UITableView的使用/tableView.png" alt></p>
+<p>  代码</p>
+<pre><code>_tableView = [[UITableView alloc] initWithFrame:self.view.bounds style:UITableViewStylePlain];
+_tableView.delegate = self;
+_tableView.dataSource = self;
+[self.view addSubview:_tableView];
+</code></pre></li>
+<li><p>显示一组数据</p>
+<p>  <img src="/img/iOS基础-UITableView的使用/singleSection.png" alt></p>
+<pre><code>-(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
+{
+    return 1;
+}
+</code></pre><blockquote>
+<p>代码说明:</p>
+</blockquote>
+<blockquote>
+<p>协议方法,返回组数</p>
+</blockquote>
+</li>
+<li><p>单元格的复用机制</p>
+<pre><code>static NSString *cellID = @&quot;cell&quot;;
+UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellID];
+if(cell == nil)
+{
+    cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:cellID];
+}
+</code></pre><blockquote>
+<p>代码说明:</p>
+</blockquote>
+<blockquote>
+<p>定义cell的Identifier,用tableView的dequeueReusableCellWithIdentifier方法进行复用</p>
+</blockquote>
+</li>
+</ul>
+<h3 id="显示分组数据"><a href="#显示分组数据" class="headerlink" title="显示分组数据"></a>显示分组数据</h3><ul>
+<li><p>分组数据显示</p>
+<p>  <img src="/img/iOS基础-UITableView的使用/sections.png" alt></p>
+<pre><code>- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
+    return  _dataArray.count;
+}
+
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+    BOOL state = [_stateArray[section] boolValue];
+    if (state) {
+    return [_dataArray[section]count];
+    }else {
+        return 0;
+    }
+}
+</code></pre><blockquote>
+<p>代码说明:通过传入的indexPath.section值,来显示每个分组的数据</p>
+</blockquote>
+</li>
+</ul>
+<h3 id="单元格的构成和基本定制"><a href="#单元格的构成和基本定制" class="headerlink" title="单元格的构成和基本定制"></a>单元格的构成和基本定制</h3><ul>
+<li><p>单元格中的自带控件</p>
+<p>  <img src="/img/iOS基础-UITableView的使用/cell.png" alt></p>
+<pre><code>cell.textLabel.text = @&quot;小美&quot;;
+NSString *file = [NSString stringWithFormat:@&quot;head%d.jpg&quot;,indexPath.row%2+1];
+cell.imageView.image = [UIImage imageNamed:file];
+cell.detailTextLabel.text = @&quot;相约黄昏后&quot;;
+</code></pre><blockquote>
+<p>代码说明:</p>
+</blockquote>
+<blockquote>
+<p>UITableViewCell自带的控件有三个:textLabel,imageVie,detailTextLabel.其位置排列如图所示.</p>
+</blockquote>
+</li>
+<li><p>单元格行的高度</p>
+<p>  代码</p>
+<pre><code>-(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    return 44.0f;
+}
+</code></pre><blockquote>
+<p>代码说明:cell默认高度为44.是iOS界面设计中最小最适宜的面积的触控面积,若要修改,可根据此协议方法进行修改</p>
+</blockquote>
+</li>
+</ul>
+<ul>
+<li><p>单元格的背景</p>
+<p>  代码:</p>
+<pre><code>UIImageView *backView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 320, 44)];
+backView.image = [[UIImage imageNamed:@&quot;table_cell_bg.png&quot;] stretchableImageWithLeftCapWidth:8 topCapHeight:0];
+cell.backgroundView = backView;
+</code></pre></li>
+<li><p>单元格的内容视图contentView</p>
+<p>  代码:</p>
+<pre><code>UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(200, 10, 100, 30)];
+label.tag = 100;
+//给label设置值放在外面
+[cell.contentView addSubview:label];
+</code></pre><blockquote>
+<p>代码说明:<br>cell自己添加控件,都加在contentView上,由于cell复用,这句代码不能写在if语句外面.</p>
+</blockquote>
+</li>
+</ul>
+<h3 id="常用事件处理"><a href="#常用事件处理" class="headerlink" title="常用事件处理"></a>常用事件处理</h3><ul>
+<li><p>某行被选中</p>
+<p>  <img src="/img/iOS基础-UITableView的使用/selectedCell.png" alt></p>
+<p>  代码:</p>
+<pre><code>-(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    UIAlertView *alertView = [[UIAlertView alloc] init];
+    alertView.message = [NSString stringWithFormat:@&quot;您点击了%d组%d行&quot;,indexPath.section,indexPath.row];
+    [alertView addButtonWithTitle:@&quot;取消&quot;];
+    [alertView show];
+}
+</code></pre></li>
+<li><p>某行被反选</p>
+<p>  <img src="/img/iOS基础-UITableView的使用/deselectedCell.png" alt></p>
+<p>  代码</p>
+<pre><code>- (void)tableView:(UITableView *)tableView didDeselectRowAtIndexPath:(NSIndexPath *)indexPath {
+    UIAlertView *alertView = [[UIAlertView alloc] init];
+    alertView.message = [NSString stringWithFormat:@&quot;您取消选择%ld组%ld行&quot;,indexPath.section,indexPath.row];
+    [alertView addButtonWithTitle:@&quot;取消&quot;];
+    [alertView show];
+}
+</code></pre></li>
+</ul>
+<h3 id="添加头部视图和尾部视图"><a href="#添加头部视图和尾部视图" class="headerlink" title="添加头部视图和尾部视图"></a>添加头部视图和尾部视图</h3><ul>
+<li><p>头部视图</p>
+<p>  <img src="/img/iOS基础-UITableView的使用/tableHeaderVIew.png" alt></p>
+<p>  代码</p>
+<pre><code>UIImageView *headView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 320, 100)];
+headView.image = [UIImage imageNamed:@&quot;fenjing.jpg&quot;];
+_tableView.tableHeaderView = headView;
+</code></pre><blockquote>
+<p>代码说明:利用tableView的tableHeaderView属性来设置</p>
+</blockquote>
+</li>
+<li><p>尾部视图</p>
+<p>  <img src="/img/iOS基础-UITableView的使用/tableFooterView.png" alt></p>
+<p>  代码</p>
+<pre><code>UIImageView *footView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 320, 100)];
+footView.image = [UIImage imageNamed:@&quot;fenjing.jpg&quot;];
+_tableView.tableFooterView = footView;
+</code></pre><blockquote>
+<p>代码说明:利用tableView的tableFooterView属性来设置</p>
+</blockquote>
+</li>
+</ul>
+<h3 id="设置段头和段尾"><a href="#设置段头和段尾" class="headerlink" title="设置段头和段尾"></a>设置段头和段尾</h3><ul>
+<li><p>设置文本段头</p>
+<p>  <img src="/img/iOS基础-UITableView的使用/sectionTitle.png" alt></p>
+<pre><code>- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
+    return [NSString stringWithFormat:@&quot;第%ld段&quot;,section];
+}
+</code></pre></li>
+<li><p>设置自定义段头</p>
+<p>  <img src="/img/iOS基础-UITableView的使用/sectionTitle.png" alt></p>
+<pre><code>-(UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
+{
+    UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 100, 44)];
+    label.text  = [NSString stringWithFormat:@&quot;第%ld段&quot;,section];
+    return label;
+}
+</code></pre></li>
+<li><p>设置段头高度</p>
+<pre><code>- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
+    return 60;
+}
+</code></pre></li>
+<li><p>设置段尾</p>
+<p>  <img src="/img/iOS基础-UITableView的使用/sectionFooter.png" alt></p>
+<pre><code>- (NSString *)tableView:(UITableView *)tableView titleForFooterInSection:(NSInteger)section {
+    return @&quot;我是段尾!&quot;;
+}
+</code></pre>  &lt;h3 style=”background-color:#A3BB50; color:white; padding-top: 2px; padding-left: 5px;<br>  padding-bottom: 2px;”; &gt;表格视图的编辑(难点)
+</li>
+<li><p>单元格的删除操作[重点, 必须掌握]</p>
+<p>  代码:</p>
+<pre><code>- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    //重要参数:
+    //editingStyle 传入编辑风格(None,Delete,Insert)
+    //forRowAtIndexPath: 传入删除或者插入的位置
+    if(editingStyle == UITableViewCellEditingStyleDelete)
+    {
+        //处理删除操作
+        NSMutableArray *subArray = _dataArray[indexPath.section];
+        [subArray removeObjectAtIndex:indexPath.row];
+    }
+    //注意: 以后任何对于表格视图中数据的改变, 都应该调用这个方法,让表格视图重新加载新的数据
+    [_tableView reloadData];
+}
+</code></pre></li>
+<li><p>单元格的增加操作</p>
+<p>  代码:</p>
+<pre><code>- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    //重要参数:
+    //editingStyle 传入编辑风格(None,Delete,Insert)
+    //forRowAtIndexPath: 传入删除或者插入的位置      
+    if(editingStyle == UITableViewCellEditingStyleInsert)
+    {
+        NSString *info = @&quot;三里屯认识的阿娟&quot;;
+
+        //插入位置 indexPath
+        NSMutableArray *subArray = _dataArray[indexPath.section];
+        [subArray insertObject:info atIndex:indexPath.row];
+    }
+
+    //注意: 以后任何对于表格视图中数据的改变, 都应该调用这个方法,让表格视图重新加载新的数据
+    [_tableView reloadData];
+}
+</code></pre></li>
+<li><p>单元格的移动操作</p>
+<p>  <img src="/img/iOS基础-UITableView的使用/cellMove.png" alt></p>
+<p>  代码:</p>
+<pre><code>- (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)sourceIndexPath toIndexPath:(NSIndexPath *)destinationIndexPath
+{
+    //单元格移动之后数据并没有自动移动, 需要手动移动
+    //分两步: 1.源数组中移除数据
+    NSMutableArray *sourceArray = _dataArray[sourceIndexPath.section];
+    NSString *info = sourceArray[sourceIndexPath.row];
+    [sourceArray removeObject:info];
+
+    //2. 目标数组中添加数据
+    NSMutableArray *destinationArray = _dataArray[destinationIndexPath.section];
+    [destinationArray insertObject:info atIndex:destinationIndexPath.row];
+
+    [_tableView reloadData];
+}
+</code></pre></li>
+<li><p>多行选中和多行删除操作</p>
+<p>  <img src="/img/iOS基础-UITableView的使用/duoxuan.png" alt></p>
+<pre><code>- (NSIndexPath *)indexPath
+{
+    NSString *info = _dataArray[indexPath.section][indexPath.row];
+    [_multiSelectArray addObject:info];
+
+    //以后多选有严格要求的话: 最好记录 indexPath
+}
+
+//当取消选择一个单元格时执行
+-(void)tableView:(UITableView *)tableView didDeselectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    NSString *info = _dataArray[indexPath.section][indexPath.row];
+    [_multiSelectArray removeObject:info];
+}
+</code></pre></li>
+</ul>
+<h3 id="表格视图的索引"><a href="#表格视图的索引" class="headerlink" title="表格视图的索引"></a>表格视图的索引</h3><p><img src="/img/iOS基础-UITableView的使用/index.png" alt></p>
+<pre><code>//返回的是组的标签的索引(电话号码本边上的一列快速查询字母)
+- (NSArray *)sectionIndexTitlesForTableView:(UITableView *)tableView {
+    NSMutableArray *array = [NSMutableArray array];
+    for (int i=0; i&lt;26; i++) {
+        [array addObject:[NSString stringWithFormat:@&quot;%c&quot;,i+&apos;A&apos;]];
+    }
+    return array;
+}
+</code></pre><h3 id="表格的分割线"><a href="#表格的分割线" class="headerlink" title="表格的分割线"></a>表格的分割线</h3><p><img src="/img/iOS基础-UITableView的使用/separator.png" alt></p>
+<pre><code>//分割线的设置
+_tableView.separatorColor = [UIColor blackColor];
+_tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
+</code></pre><h3 id="表格视图的搜索"><a href="#表格视图的搜索" class="headerlink" title="表格视图的搜索"></a>表格视图的搜索</h3><p><img src="/img/iOS基础-UITableView的使用/search.png" alt></p>
+<pre><code>//创建搜索条
+_searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0, 0, 320, 44)];
+_searchBar.placeholder = @&quot;请输入您想要找的号码&quot;;
+_tableView.tableHeaderView = _searchBar;
+
+//有两种处理搜索的方式:
+//  1.使用系统类处理搜索
+//  2.新建一个界面处理搜索
+//系统UISearchDisplayController中包含一个tableView
+//      可以用这tableView显示搜索后的数据
+_searchDisplayController = [[UISearchDisplayController alloc] initWithSearchBar:_searchBar contentsController:self];
+//要给_searchDisplayController提供搜索结果
+_searchDisplayController.searchResultsDataSource = self;
+//注意: 当搜索框中文本改变时执行搜索
+
+//viewDidLoad中
+_searchResultsArray = [[NSMutableArray alloc] init];
+</code></pre><h3 id="表格视图控制器"><a href="#表格视图控制器" class="headerlink" title="表格视图控制器"></a>表格视图控制器</h3><blockquote>
+<p>说明:UITableViewController是系统提供的一个便利类，主要是为了方便我们使用UITableView，该类生成的时候就将自身设置成了其包含的tableView的dataSource和delegate，并创建了很多代理函数的框架，为我们大大的节省了时间，我们可以通过其tableView属性获取该controller内部维护的tableView对象。默认情况下使用UITableViewController创建的tableView是充满全屏的，如果需要用到tableView是不充满全屏的话，我们应该使用UIViewController自己创建和维护tableView。</p>
+</blockquote>
+<blockquote>
+<p>UITableViewController提供一个初始化函数initWithStyle:，根据需要我们可以创建Plain或者Grouped类型的tableView，当我们使用其从UIViewController继承来的init初始化函数的时候，默认将会我们创建一个Plain类型的tableView。</p>
+</blockquote>
+<blockquote>
+<p>UITableViewController默认的会在viewWillAppear的时候，清空所有选中cell，我们可以通过设置self.clearsSelectionOnViewWillAppear = NO，来禁用该功能，并在viewDidAppear中调用UIScrollView的flashScrollIndicators方法让滚动条闪动一次，从而提示用户该控件是可以滑动的。</p>
+</blockquote>
+
+      
+    </div>
+
+    <div>
+      
+        
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/iOS/" rel="tag">#iOS</a>
+          
+            <a href="/tags/笔记/" rel="tag">#笔记</a>
+          
+            <a href="/tags/UI控件/" rel="tag">#UI控件</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/iOS基础-UICollectionView集合视图/" rel="next" title="iOS教程之集合视图UICollectionView">
+                <i class="fa fa-chevron-left"></i> iOS教程之集合视图UICollectionView
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/iOS基础-AutoLayout自动布局/" rel="prev" title="iOS教程之AutoLayout/SizeClass屏幕适配">
+                iOS教程之AutoLayout/SizeClass屏幕适配 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <div class="ds-share flat" data-thread-key="iOS基础-UITableView的使用/" data-title="iOS教程之UITableView的使用" data-content data-url="http://hackmz.com/iOS基础-UITableView的使用/">
+  <div class="ds-share-inline">
+    <ul class="ds-share-icons-16">
+
+      <li data-toggle="ds-share-icons-more"><a class="ds-more" href="javascript:void(0);">分享到：</a></li>
+      <li><a class="ds-weibo" href="javascript:void(0);" data-service="weibo">微博</a></li>
+      <li><a class="ds-qzone" href="javascript:void(0);" data-service="qzone">QQ空间</a></li>
+      <li><a class="ds-qqt" href="javascript:void(0);" data-service="qqt">腾讯微博</a></li>
+      <li><a class="ds-wechat" href="javascript:void(0);" data-service="wechat">微信</a></li>
+
+    </ul>
+    <div class="ds-share-icons-more">
+    </div>
+  </div>
+</div>
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="iOS基础-UITableView的使用/" data-title="iOS教程之UITableView的使用" data-url="http://hackmz.com/iOS基础-UITableView的使用/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image" src="/avatar/avatar.jpg" alt="麦子">
+          <p class="site-author-name" itemprop="name">麦子</p>
+          <p class="site-description motion-element" itemprop="description">当你的才华撑不起你的野心的时候，你就应该静下心来学习！</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">43</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">15</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">46</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/MrWheat" target="_blank" title="Github">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  Github
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/3202240184" target="_blank" title="微博">
+                  
+                    <i class="fa fa-fw fa-weibo"></i>
+                  
+                  微博
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#目录"><span class="nav-number">1.</span> <span class="nav-text">目录</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#表格视图的功能和介绍"><span class="nav-number">2.</span> <span class="nav-text">表格视图的功能和介绍</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#表格视图的基本使用"><span class="nav-number">3.</span> <span class="nav-text">表格视图的基本使用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#显示分组数据"><span class="nav-number">4.</span> <span class="nav-text">显示分组数据</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#单元格的构成和基本定制"><span class="nav-number">5.</span> <span class="nav-text">单元格的构成和基本定制</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#常用事件处理"><span class="nav-number">6.</span> <span class="nav-text">常用事件处理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#添加头部视图和尾部视图"><span class="nav-number">7.</span> <span class="nav-text">添加头部视图和尾部视图</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#设置段头和段尾"><span class="nav-number">8.</span> <span class="nav-text">设置段头和段尾</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#表格视图的索引"><span class="nav-number">9.</span> <span class="nav-text">表格视图的索引</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#表格的分割线"><span class="nav-number">10.</span> <span class="nav-text">表格的分割线</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#表格视图的搜索"><span class="nav-number">11.</span> <span class="nav-text">表格视图的搜索</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#表格视图控制器"><span class="nav-number">12.</span> <span class="nav-text">表格视图控制器</span></a></li></ol></div>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">
+  
+  &copy;  2014 - 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">麦子</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+        
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.1"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.0.1"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.1"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"mrwheat"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+  
+
+
+
+
+
+  
+  
+  
+
+  
+
+  
+
+</body>
+</html>
