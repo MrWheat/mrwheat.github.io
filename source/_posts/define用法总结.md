@@ -24,15 +24,13 @@ tags: [笔记,语法,基础]
 
 常用的宏定义有两种：`带参数的宏定义`和`不带参数的宏定义`。
 
-<h3 style="background-color:#A3BB50; color:white; padding-top: 2px; padding-left: 5px;
-padding-bottom: 2px;"; >不带参数的宏定义</h3>
+### 不带参数的宏定义
 
 * 使用格式：#define	宏名	字符串
 * 作用：将程序中所有出现宏名的地方都用字符串进行替换
 * 例子：#define	SIZE	100
 
-<h3 style="background-color:#A3BB50; color:white; padding-top: 2px; padding-left: 5px;
-padding-bottom: 2px;"; >带参数的宏定义</h3>
+### 带参数的宏定义
 
 * 使用格式：#define	宏名(行参列表)	字符串
 * 作用：用实参替换行参，其他字符串原样保留
@@ -40,8 +38,7 @@ padding-bottom: 2px;"; >带参数的宏定义</h3>
 * 注意：字符串中参数最好加上括号，防止出现由优先级导致的bug。
 * 例子：S(3+2, 5+7);	—>	3+2*5+7	—>	20
 
-<h3 style="background-color:#A3BB50; color:white; padding-top: 2px; padding-left: 5px;
-padding-bottom: 2px;"; >宏定义#和##用法</h3>
+### 宏定义#和##用法
 
 * "#"是"字符串化"的意思。出现在宏定义中的"#"是把跟在后面的参数转换成一个字符串。
 
@@ -72,8 +69,7 @@ padding-bottom: 2px;"; >宏定义#和##用法</h3>
 	} 
 	```
 
-<h3 style="background-color:#A3BB50; color:white; padding-top: 2px; padding-left: 5px;
-padding-bottom: 2px;"; >多行宏定义</h3>
+### 多行宏定义
 
 在需要换行的地方使用"/"
 
@@ -84,8 +80,7 @@ padding-bottom: 2px;"; >多行宏定义</h3>
 } while(0)
 ```
 
-<h3 style="background-color:#A3BB50; color:white; padding-top: 2px; padding-left: 5px;
-padding-bottom: 2px;"; >常用预处理命令</h3>
+### 常用预处理命令
 
 * 防止一个头文件重复包含
 

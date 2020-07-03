@@ -12,13 +12,13 @@ tags: [教程,hexo]
 
 <!--more-->
 
-###1. 注册Gitcafe账号
+### 1. 注册Gitcafe账号
 
 已有账号的忽略，没有的，去[官网](https://gitcafe.com/)注册，全中文界面，很简单，这里就不介绍了。
 
 ![](/img/Gitcafe官网.png)
 
-###2. 创建添加SSH
+### 2. 创建添加SSH
 
 在桌面，点击鼠标右键，进入Git Bash，会得到一个命令行界面，输入：
 
@@ -75,7 +75,7 @@ Hi USERNAME! You've successfully authenticated, but GitCafe does not provide she
 
 [关于SSH简介及公钥和私钥的基本概念](http://blog.csdn.net/qimiguang/article/details/17427331)
 
-###３. 新建gitcafe项目
+### ３. 新建gitcafe项目
 
 ![](/img/新建项目.png)
 
@@ -90,7 +90,7 @@ Hi USERNAME! You've successfully authenticated, but GitCafe does not provide she
 
 官网有提示的按照官网的提示步骤来就行。
 
-###４.将本地博客托管到Gitcafe上
+### ４.将本地博客托管到Gitcafe上
 
 首先安装`hexo-deployer-git`
 

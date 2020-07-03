@@ -14,7 +14,7 @@ tags: [Github,开源,教程]
 
 <!--more-->
 
-###如何新建一个Github开源项目
+### 如何新建一个Github开源项目
 
 1. 首先你需要有一个Github的账号，这是打开新世界大门的钥匙，没有的先去注册一个。
 
@@ -64,7 +64,7 @@ tags: [Github,开源,教程]
 
 	![](/img/Github新建开源项目11.png)
 	
-###项目地址
+### 项目地址
 
 [我的帮助工具类](https://github.com/MrWheat/MZHelpCenterDemo)
 

@@ -30,9 +30,9 @@ tags: [笔记,Layout,iOS]
 
 * sizeToFit
 
-###layoutSubviews
+### layoutSubviews
 
-####相关介绍
+#### 相关介绍
 
 	- (void)layoutSubviews; 
 
@@ -40,7 +40,7 @@ layoutSubviews方法默认是不做任何事情的，但是在iOS6以后，当UI
 
 通过该方法可以对subviews重新布局，更新子视图，但是不能直接调用此方法，如果你想强制更新布局，你可以调用setNeedsLayout方法；如果你想立即数显你的views，你需要调用layoutIfNeeded方法。
 
-####被调用的情况
+#### 被调用的情况
 
 苹果官方文档强调，不能直接调用layoutSubviews对子视图进行重新布局，layoutSubviews只有在以下情况下才会被调用。
 
@@ -51,7 +51,7 @@ layoutSubviews方法默认是不做任何事情的，但是在iOS6以后，当UI
 * 旋转Screen会触发父UIView上的layoutSubviews事件。
 * 改变一个UIView大小的时候也会触发父UIView上的layoutSubviews事件。
 
-###setNeedsLayout
+### setNeedsLayout
 
 	- (void)setNeedsLayout;
 
@@ -59,7 +59,7 @@ layoutSubviews方法默认是不做任何事情的，但是在iOS6以后，当UI
 
 如果更改了控件上的约束，会自动调用setNeedsLayout方法，将其标记为“需要刷新”。
 
-###layoutIfNeeded
+### layoutIfNeeded
 
 	- (void)layoutIfNeeded;
 
@@ -67,7 +67,7 @@ layoutSubviews方法默认是不做任何事情的，但是在iOS6以后，当UI
 
 因此如果要立即刷新，首先需要调用setNeedsLayout方法将控件标记为“需要刷新”，然后调用layoutIfNeeded方法重新布局。当然，在视图第一次显示之前，标记总是“需要刷新”的，可以直接调用layoutIfNeeded。
 
-###代码说明
+### 代码说明
 
 	- (BOOL)textFieldShouldBeginEditing:(UITextField *)textField {
 	    self.editing = textField;
@@ -87,11 +87,11 @@ layoutSubviews方法默认是不做任何事情的，但是在iOS6以后，当UI
 
 然后通过父控件self.loginView.superview调用layoutIfNeeded，立即刷新父控件里的所有子控件，对子控件重新布局。
 
-###drawRect
+### drawRect
 
 使用drawRect方法来执行重绘的任务。
 
-####被调用的情况
+#### 被调用的情况
 
 * 如果初始化时设置了View的大小，则会调用。
 
@@ -101,7 +101,7 @@ layoutSubviews方法默认是不做任何事情的，但是在iOS6以后，当UI
 
 * 直接调用setNeedsDisplay，或者setNeedsDisplayInRect时。
 
-####使用注意情况
+#### 使用注意情况
 
 * 若使用UIView绘图，只能在drawRect方法中获取相应的contextRef并绘图。
 
@@ -111,7 +111,7 @@ layoutSubviews方法默认是不做任何事情的，但是在iOS6以后，当UI
 
 * 若要实时画图，不能使用gestureRecognizer，只能使用touchesBegan等方法来掉用setNeedsDisplay实时刷新屏幕。
 
-###sizeToFit
+### sizeToFit
 
 使用sizeToFit需要注意以下几点：
 

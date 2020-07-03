@@ -17,7 +17,7 @@ tags: [笔记,系统类,iOS]
 
 <!--more-->
 
-###appearance使用
+### appearance使用
 
 appearance方法使用简单，比如要定制应用中所有UIBarButtonItem的颜色，可以在UIBarButtonItem的外观代理中设置tintColor。
 
@@ -28,7 +28,7 @@ appearance方法使用简单，比如要定制应用中所有UIBarButtonItem的�
 	UINavigationBar *appearance = [UINavigationBar appearance];
 	[appearance setBarTintColor:[UIColor grayColor]];
 
-###appearanceWhenContainedIn使用
+### appearanceWhenContainedIn使用
 
 这个方法可以用来设置某个类在其他类里的改变。
 
@@ -36,7 +36,7 @@ appearance方法使用简单，比如要定制应用中所有UIBarButtonItem的�
 
     [[UIBarButtonItem appearanceWhenContainedIn:[UINavigationBar class], [UIPopoverController class],[UITabBar class], nil] setTintColor:[UIColor clearColor]];
     
-###自定义类实现UIAppearance
+### 自定义类实现UIAppearance
 
 如果想要在我们自定义的类中实现UIAppearance，需要在的类中实现UIAppearanceContainer协议，同时，在Objective-C中，还需要将相关的方法用UI_APPEARANCE_SELECTOR来标记，在Swift中，则需要在对应的属性或方法前面加上dynamic。
 
@@ -61,7 +61,7 @@ appearance方法使用简单，比如要定制应用中所有UIBarButtonItem的�
 	// 在控制器的viewDidLoad方法里
 	[DateCell appearance].radios = 20;
     
-###注意事项
+### 注意事项
 
 * 使用UIAppearance设置UI效果最好采用全局的设置，在所有界面初始化前开始设置。对于在使用UIAppearance之前已经添加到界面上的控件，则没有效果。
 
@@ -96,7 +96,7 @@ appearance方法使用简单，比如要定制应用中所有UIBarButtonItem的�
 		// 在控制器的viewDidLoad方法里
 		[DateCell appearance].radios = 20;
 		
-###参考
+### 参考
 
 [UIAppearance](https://developer.apple.com/library/ios/documentation/UIKit/Reference/UIAppearance_Protocol/index.html#//apple_ref/occ/intfcm/UIAppearance/appearanceForTraitCollection:)
 

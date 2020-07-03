@@ -20,19 +20,19 @@ tags: [项目,开发,Xcode,iOS]
 
 <!--more-->
 
-#####新建项目工程
+##### 新建项目工程
 
 首先为你的项目新建一个工程，如果有了则不必新建。
 
 ![](http://7pumug.com1.z0.glb.clouddn.com/138D9CAC-CC1F-42BC-946D-1FE4388F8AD2.png)
 
-#####新建静态库
+##### 新建静态库
 
 根据需要新建静态库，静态库的创建这里就不赘述，不懂的请移步[framework静态库创建](http://www.hackmz.com/2016/05/25/iOS开发-静态库制作-三/)。
 
 ![](http://7pumug.com1.z0.glb.clouddn.com/5713DA18-D3E2-42FB-8BFB-AA453012EBC4.png)
 
-#####构建Workspace
+##### 构建Workspace
 
 1. 打开Xcode，创建一个Workspace。
 
@@ -46,19 +46,19 @@ tags: [项目,开发,Xcode,iOS]
 
 	![](http://7pumug.com1.z0.glb.clouddn.com/4A672F33-A6F2-4B3A-A0A8-C826DBACAFE7.png)
 
-#####指定引用库的头文件路径
+##### 指定引用库的头文件路径
 
 在主项目的`Build Settings`里找到`Header Search Paths`，添加一项`$(SRCROOT)/../MZHelpeCenter`，并且设置为`recursive`，否则找不到头文件。
 
 ![](http://7pumug.com1.z0.glb.clouddn.com/38A103D3-9BC1-4DC7-90B2-8F653C91C178.png)
 
-#####把静态库添加到主工程里
+##### 把静态库添加到主工程里
 
 到主工程的`Build Phases`的`Link Binary With Libraries`里添加，点击"+"按钮，会给出整个Workspace可选的静态库，把我们创建的静态库`MZHelpeCenter.framework`加入进来。
 
 ![](http://7pumug.com1.z0.glb.clouddn.com/593EB492-AA97-48C3-992B-8E9EE8D4D4BB.png)
 
-#####使用方法
+##### 使用方法
 
 使用方式和静态库的使用方式相同，直接包含头文件即可。
 

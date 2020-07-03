@@ -14,7 +14,7 @@ tags: [Xcode,配置,备忘]
 
 <!--more-->
 
-###文件配置相关
+### 文件配置相关
 
 * Xcode配置包文件
 
@@ -24,7 +24,7 @@ tags: [Xcode,配置,备忘]
 
 	![](http://7pumug.com1.z0.glb.clouddn.com/%E9%85%8D%E7%BD%AEXcode%E5%8C%85.png)
 
-###文件清理相关
+### 文件清理相关
 
 * 删除Xcode中多余的证书provisioning profile
 

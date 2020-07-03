@@ -14,11 +14,9 @@ tags: [iOS,开发,静态库]
 
 <!--more-->
 
-###如何新建.a静态库
+### 如何新建.a静态库
 
 1. 创建工程，选择创建Framework&Library中Cocoa Touch Static Library。
-
-	![](http://7pumug.com1.z0.glb.clouddn.com/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7%202016-05-24%2005.07.27%20PM.png)
 
 2. 编写代码。
 
@@ -44,6 +42,6 @@ tags: [iOS,开发,静态库]
 
 6. 使用的时候将头文件、资源和.a文件直接拖入工程即可。
 
-###参考
+### 参考
 
 [静态库的制作](http://www.cnblogs.com/wendingding/p/3893095.html)

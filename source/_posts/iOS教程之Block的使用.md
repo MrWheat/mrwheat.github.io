@@ -12,8 +12,7 @@ Block代码块和C语言中的函数指针类似，Objective-C中的SEL也与函
 
 <!--more-->
 
-<h3 style="background-color:#A3BB50; color:white; padding-top: 2px; padding-left: 5px;
-padding-bottom: 2px;"; >创建一个简单的block</h3>
+### 创建一个简单的block
 
 代码：
 
@@ -42,8 +41,7 @@ printBlock();
 2016-05-19 15:59:59.157 blogTestCode[15443:285677] hello block!
 ```
 
-<h3 style="background-color:#A3BB50; color:white; padding-top: 2px; padding-left: 5px;
-padding-bottom: 2px;"; >创建多参数的block</h3>
+### 创建多参数的block
 
 代码：
 
@@ -65,8 +63,7 @@ NSLog(@"%d", calculateNum(1, 2));
 2016-05-19 15:48:30.843 blogTestCode[15415:275933] 3
 ```
 
-<h3 style="background-color:#A3BB50; color:white; padding-top: 2px; padding-left: 5px;
-padding-bottom: 2px;"; >创建参数为OC对象的block</h3>
+### 创建参数为OC对象的block
 
 代码：
 
@@ -87,8 +84,7 @@ NSLog(@"%@", string);
 2016-05-19 16:06:02.437 blogTestCode[15478:290573] hello block
 ```
 
-<h3 style="background-color:#A3BB50; color:white; padding-top: 2px; padding-left: 5px;
-padding-bottom: 2px;"; >调用系统的代码块进行数组排序</h3>
+### 调用系统的代码块进行数组排序
 
 代码：
 
@@ -115,8 +111,7 @@ NSLog(@"%@", sortArray);
 )
 ```
 
-<h3 style="background-color:#A3BB50; color:white; padding-top: 2px; padding-left: 5px;
-padding-bottom: 2px;"; >自定义Block类型</h3>
+### 自定义Block类型
 
 代码：
 
@@ -148,10 +143,9 @@ NSLog(@"%@", sortArray);
 ```
 
 
-<h3 style="background-color:#A3BB50; color:white; padding-top: 2px; padding-left: 5px;
-padding-bottom: 2px;"; >常见错误</h3>
+### 常见错误
 
-#####在代码块中使用局部变量
+##### 在代码块中使用局部变量
 
 代码：
 
@@ -175,7 +169,7 @@ addNum();
 2016-05-19 16:43:34.237 blogTestCode[15694:318406] 5
 ```
 
-#####在代码块中使用全局变量
+##### 在代码块中使用全局变量
 
 代码：
 
@@ -201,7 +195,7 @@ int num = 5;
 2016-05-19 16:43:34.237 blogTestCode[15694:318406] 10
 ```
 
-#####在代码块中改变局部变量
+##### 在代码块中改变局部变量
 
 代码：
 
@@ -228,7 +222,7 @@ NSLog(@"C:%d", num);
 2016-05-19 16:59:29.610 blogTestCode[15748:330854] C:6
 ```
 
-#####在代码块中改变全局变量
+##### 在代码块中改变全局变量
 
 代码：
 
@@ -256,7 +250,7 @@ int num = 5;
 2016-05-19 17:07:55.873 blogTestCode[15763:336709] C:6
 ```
 
-#####代码块的递归调用
+##### 代码块的递归调用
 
 代码块想要递归调用，代码块变量必须是全局变量或者是静态变量，这样在程序启动的时候代码块变量就初始化了，从而才能进行递归调用。
 

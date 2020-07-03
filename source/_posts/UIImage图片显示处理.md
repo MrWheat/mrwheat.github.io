@@ -20,7 +20,7 @@ UIImageView作为最常用的控件之一，为了迎合需求，总是要求我
 
 <!--more-->
 
-###加载图片
+### 加载图片
 
 这个不必多说，有两种方式：
 
@@ -34,7 +34,7 @@ UIImageView作为最常用的控件之一，为了迎合需求，总是要求我
     // 第二种方式，imageNamed:方法加载，有缓存
     imageV.image = [UIImage imageNamed:@"testImage.jpg"];
 	
-###渲染模式
+### 渲染模式
 
 图片在显示的时候，我们可以根据当前视图的Tint Color对图片进行渲染。系统提供了一个枚举值(UIImageRenderingMode)来方便我们设置。
 
@@ -46,7 +46,7 @@ UIImageView作为最常用的控件之一，为了迎合需求，总是要求我
 
     UIImage *image = [[UIImage imageNamed:@"testImage.jpg"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];  
     
-###显示方式
+### 显示方式
 
 系统提供了UIViewContentMode这个枚举值来设置图片的显示模式，下面介绍常用的几种。
 
@@ -86,7 +86,7 @@ UIImageView作为最常用的控件之一，为了迎合需求，总是要求我
 
 	![](/img/UIImage图片显示处理05.png)
 
-###颜色转图片
+### 颜色转图片
 
 对于想要找一个纯色图片作背景的人，这个方法再适合不过了，也不用麻烦美工妹子了，自己动手丰衣足食。
 
@@ -101,14 +101,14 @@ UIImageView作为最常用的控件之一，为了迎合需求，总是要求我
 	    return image;
 	}
 	
-###图片转颜色
+### 图片转颜色
 
 对于某些不支持图片只能使用颜色作背景的控件，比如UIView，如果想要加个背景怎么办呢，新建一个UIImageView也可以，不过下面这个好像更简单一些。
 
 	UIColor *color = [UIColor colorWithPatternImage:[UIImage imageNamed:@"麦子.jpg"]];
 
 
-###图片圆角设置
+### 图片圆角设置
 
 设置图片圆角用处也很多，最常见的就是设置头像。
 

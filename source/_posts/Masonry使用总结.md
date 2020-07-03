@@ -14,7 +14,7 @@ Masonry是AutoLayout的一个第三方类库，也是目前最流行的AutoLayou
 
 <!--more-->
 
-###Masonry的属性
+### Masonry的属性
 
 Masonry共提供了11种基本属性，分别是：
 
@@ -50,7 +50,7 @@ Masonry共提供了11种基本属性，分别是：
 	// (centerX, centerY)
 	@property (nonatomic, strong, readonly) MASConstraint *center;
 	
-###Masonry的基本方法
+### Masonry的基本方法
 
 熟悉了基本属性之后，我们还需要学习如何去使用这些基本属性去设置控件的约束。同样的，Masonry提供了三种方法来设置控件的约束，我们需要根据不同的情况去使用它。
 
@@ -69,13 +69,13 @@ Masonry共提供了11种基本属性，分别是：
 
 `mas_remakeConstraints:`：重写约束，该方法会删除原有的约束，避免生成多余的约束，适用于控件的约束改动较大的地方，或代码重复调用的地方，比如cell的复用。
 
-###Masonry使用方法
+### Masonry使用方法
 
-####常用属性用法
+#### 常用属性用法
 
 在开始写之前，先将Masonry库文件拖入工程，并包含头文件`Masonry.h`，我们以给一个UIView添加约束为例。
 
-#####offset设置偏移
+##### offset设置偏移
 
 	// 1.创建UI控件
 	UIView *demoView = [[UIView alloc] init];
@@ -99,7 +99,7 @@ Masonry共提供了11种基本属性，分别是：
 
 ![](/img/Masonry用法01.png)
 
-#####multipliedBy设置偏移
+##### multipliedBy设置偏移
 
 	// 1.创建UI控件
 	UIView *demoView = [[UIView alloc] init];
@@ -123,7 +123,7 @@ Masonry共提供了11种基本属性，分别是：
 
 ![](/img/Masonry用法02.png)
 
-####复合属性用法
+#### 复合属性用法
 
     UIView *demoView = [[UIView alloc] init];
     demoView.backgroundColor = [UIColor yellowColor];
@@ -137,9 +137,9 @@ Masonry共提供了11种基本属性，分别是：
 
 ![](/img/Masonry用法01.png)
 
-###问题汇总
+### 问题汇总
 
-####动画问题
+#### 动画问题
 
 Masonry动画和我们使用frame来创建动画的方式差不多，需要注意的是，在修改约束后，调用`layoutIfNeeded `方法。
 
@@ -151,7 +151,7 @@ Masonry动画和我们使用frame来创建动画的方式差不多，需要注�
         [loginView.superview layoutIfNeeded];//强制绘制
     }];
 
-####frame问题
+#### frame问题
 
 有时候我们需要根据控件的frame进行一些操作，比如设置控件的圆角，然而在约束设置完成之后，并不能立刻得到它的frame。如果需要立刻得到它的frame，可以调用：
 

@@ -14,7 +14,7 @@ tags: [UITextField,iOS,技巧]
 
 <!--more-->
 
-###取消第一响应者的方法
+### 取消第一响应者的方法
 
 系统提供了两种方法来取消控件的第一响应者。
 
@@ -30,7 +30,7 @@ tags: [UITextField,iOS,技巧]
 	
 	使用方式如`[self.view resignFirstResponder];`
 
-###点击ViewController空白部分收起键盘
+### 点击ViewController空白部分收起键盘
 
 解决点击控制器空白部分收起键盘应该是我们最常见到的需求之一了。解决办法也很简单，在控制器的`touchesBegan`方法里，调用`endEditing`或`resignFirstResponder`方法即可搞定。
 
@@ -39,7 +39,7 @@ tags: [UITextField,iOS,技巧]
 	    [self.view endEditing:YES];
 	}
 
-###点击其他控件收起键盘
+### 点击其他控件收起键盘
 
 当然也有可能遇到一些其他需求，类似点击图片或者按钮什么的，将键盘收起。这个就需要分别在控件的点击事件里调用`endEditing`方法或`resignFirstResponder`方法来实现。
 
@@ -53,7 +53,7 @@ tags: [UITextField,iOS,技巧]
     	[self.view endEditing:YES];
 	}
 	
-###点击UITableView收起键盘
+### 点击UITableView收起键盘
 
 UITableView作为开发中最常见的控件之一，当然也经常会遇到需要键盘收起的问题。相较于其他控件来说，UITableView比较尴尬。因为该控件分为很多个部分，表头、表尾、组头、组尾以及表中的Cell，我们不可能分别去处理UITableView各个部分的点击事件，然后在点击事件里取消第一响应者。根据UITableView里控件结构的复杂程度，这是一个不可预估的工作量。
 

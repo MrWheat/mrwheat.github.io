@@ -14,8 +14,7 @@ XCode6以前因为不支持.framework自定义静态库的制作，使用最多�
 
 <!--more-->
 
-<h3 style="background-color:#A3BB50; color:white; padding-top: 2px; padding-left: 5px;
-padding-bottom: 2px;"; >制作步骤</h3>
+### 制作步骤
 
 * 首先新建一个项目，选择Framework&Library中的Cocoa Touch Framework。
 
@@ -85,15 +84,13 @@ padding-bottom: 2px;"; >制作步骤</h3>
 
 	![](http://7pumug.com1.z0.glb.clouddn.com/4DF62E2A-C92E-4959-86DA-5B86B66E0F5B.png)
 
-<h3 style="background-color:#A3BB50; color:white; padding-top: 2px; padding-left: 5px;
-padding-bottom: 2px;"; >使用方法</h3>	
+### 使用方法	
 
 使用方式如下图，直接将.framework拖入工程即可。
 
 ![](http://7pumug.com1.z0.glb.clouddn.com/F770E5E4-933D-479C-9EFC-FDFC95B9DC05.png)
 
-<h3 style="background-color:#A3BB50; color:white; padding-top: 2px; padding-left: 5px;
-padding-bottom: 2px;"; >注意事项</h3>
+### 注意事项
 
 1. Category错误
 
@@ -111,8 +108,7 @@ padding-bottom: 2px;"; >注意事项</h3>
 
 	解决方案：将`Mach-O Type`设置为`Static Library`
 	
-<h3 style="background-color:#A3BB50; color:white; padding-top: 2px; padding-left: 5px;
-padding-bottom: 2px;"; >参考</h3>
+### 参考
 	
 [Xcode6制作动态及静态Framework](http://www.cocoachina.com/ios/20141126/10322.html)
 

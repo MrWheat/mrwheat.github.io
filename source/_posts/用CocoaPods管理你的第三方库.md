@@ -14,7 +14,7 @@ tags: [管理,开发,工具,iOS]
 
 <!--more-->
 
-###CocoaPods安装
+### CocoaPods安装
 
 CocoaPods是依赖于Ruby实现的，因此在使用CocoaPods时，我们还需要事先搭建好Ruby环境，Mac OS本身自带Ruby，为了确保Ruby是最新的，还是更新一下比较好。
 
@@ -37,7 +37,7 @@ CocoaPods是依赖于Ruby实现的，因此在使用CocoaPods时，我们还需�
 	$sudo gem install cocoapods
 	$pod setup
 	
-###CocoaPods使用方法
+### CocoaPods使用方法
 
 搜索需要的类库，使用如下命令，将会输出搜索到的所有类库版本和信息。
 
@@ -90,7 +90,7 @@ CocoaPods是依赖于Ruby实现的，因此在使用CocoaPods时，我们还需�
 	
 最后通过workspace文件打开工程。
 	
-###CocoaPods常用命令
+### CocoaPods常用命令
 
 * pod install
 	
@@ -120,7 +120,7 @@ CocoaPods是依赖于Ruby实现的，因此在使用CocoaPods时，我们还需�
 
 	用于跟新本地电脑上的保存的Pods依赖库tree。由于每天有很多人会创建或者更新Pods依赖库，这条命令执行的时候会相当慢，还请耐心等待。我们需要经常执行这条命令，否则有新的Pods依赖库的时候，执行pod search命令是搜不出来的。
 
-###错误汇总
+### 错误汇总
 
 * https协议
 
@@ -170,7 +170,7 @@ CocoaPods是依赖于Ruby实现的，因此在使用CocoaPods时，我们还需�
   			pods
 		end
 		
-###参考
+### 参考
 
 [RubyGems 镜像](https://ruby.taobao.org)
 

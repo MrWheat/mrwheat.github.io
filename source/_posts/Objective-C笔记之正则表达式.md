@@ -14,8 +14,7 @@ tags: [iOS,开发,笔记]
 
 <!--more-->
 
-<h3 style="background-color:#A3BB50; color:white; padding-top: 2px; padding-left: 5px;
-padding-bottom: 2px;"; >正则表达式介绍</h3>
+### 正则表达式介绍
 
 正则表达式是由普通字符（例如字符 a 到 z）以及特殊字符（称为"元字符"）组成的文字模式。其中普通字符包括大小写的字母和数字，而元字符则具有特殊的含义。常用的元字符有：
 
@@ -30,8 +29,7 @@ $     		| 匹配输入字符串的结束位置。
 [a-z]		| 字符范围。匹配指定范围内的任意字符。例如，“[a-z]”可以匹配“a”到“z”范围内的任意小写字母字符。   
 [^a-z]		| 负值字符范围。匹配任何不在指定范围内的任意字符。例如，“[^a-z]”可以匹配任何不在“a”到“z”范围内的任意字符。   
 
-<h3 style="background-color:#A3BB50; color:white; padding-top: 2px; padding-left: 5px;
-padding-bottom: 2px;"; >一些常用的正则表达式</h3>
+### 一些常用的正则表达式
 
 **关于字符串匹配**
 
@@ -63,8 +61,7 @@ padding-bottom: 2px;"; >一些常用的正则表达式</h3>
 
 用户帐号(字母开头，允许5-16字节，允许字母数字下划线)：^[a-zA-Z][a-zA-Z0-9_]{4,15}$
 
-<h3 style="background-color:#A3BB50; color:white; padding-top: 2px; padding-left: 5px;
-padding-bottom: 2px;"; >OC中正则表达式的使用</h3>
+### OC中正则表达式的使用
 
 **判断手机号是否合法**
 
@@ -98,8 +95,7 @@ padding-bottom: 2px;"; >OC中正则表达式的使用</h3>
 
 
 
-<h3 style="background-color:#A3BB50; color:white; padding-top: 2px; padding-left: 5px;
-padding-bottom: 2px;"; >NSPredicate对象</h3>
+### NSPredicate对象
 
 **相关介绍**
 
@@ -125,8 +121,7 @@ NSPredicate对象主要用于查询和过滤，它可以指定查询和过滤条
 * 指代对象本身：SELF
 * 正则表达式：MATCHES
 
-<h3 style="background-color:#A3BB50; color:white; padding-top: 2px; padding-left: 5px;
-padding-bottom: 2px;"; >NSRegularExpression对象介绍</h3>
+### NSRegularExpression对象介绍
 
 这是苹果推出的官方正则表达式，很方便功能也很强大。[官方文档传送门](https://developer.apple.com/library/mac/documentation/Foundation/Reference/NSRegularExpression_Class/index.html#//apple_ref/occ/instm/NSRegularExpression/enumerateMatchesInString:options:range:usingBlock:)
 
@@ -160,8 +155,7 @@ padding-bottom: 2px;"; >NSRegularExpression对象介绍</h3>
 	                                           options:0
 	                                             range:NSMakeRange(0, [urlString length])]; 
 
-<h3 style="background-color:#A3BB50; color:white; padding-top: 2px; padding-left: 5px;
-padding-bottom: 2px;"; >参考</h3>
+### 参考
 
 [正则表达式 - 语法](http://www.runoob.com/regexp/regexp-syntax.html)
 

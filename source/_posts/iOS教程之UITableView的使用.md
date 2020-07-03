@@ -14,8 +14,7 @@ tags: [笔记,UI控件,iOS]
 
 <!--more-->
 
-<h3 style="background-color:#A3BB50; color:white; padding-top: 2px; padding-left: 5px;
-padding-bottom: 2px;"; >目录</h3>
+### 目录
 
 1. 表格视图的功能和介绍
 2. 表格视图的基本使用
@@ -31,8 +30,7 @@ padding-bottom: 2px;"; >目录</h3>
 11. 表格视图的搜索
 12. 表格视图控制器
 
-<h3 style="background-color:#A3BB50; color:white; padding-top: 2px; padding-left: 5px;
-padding-bottom: 2px;"; >表格视图的功能和介绍</h3>
+### 表格视图的功能和介绍
 
 1. 表格视图的功能:
 
@@ -50,8 +48,7 @@ padding-bottom: 2px;"; >表格视图的功能和介绍</h3>
 
 	>两个必须实现的协议方法:返回每组的行数,返回每行的数据
 
-<h3 style="background-color:#A3BB50; color:white; padding-top: 2px; padding-left: 5px;
-padding-bottom: 2px;"; >表格视图的基本使用</h3>
+### 表格视图的基本使用
 
 * 表格视图的创建: 
 
@@ -90,8 +87,7 @@ padding-bottom: 2px;"; >表格视图的基本使用</h3>
 	
 	>定义cell的Identifier,用tableView的dequeueReusableCellWithIdentifier方法进行复用
 
-<h3 style="background-color:#A3BB50; color:white; padding-top: 2px; padding-left: 5px;
-padding-bottom: 2px;"; >显示分组数据</h3>
+### 显示分组数据
 
 * 分组数据显示
 
@@ -112,8 +108,7 @@ padding-bottom: 2px;"; >显示分组数据</h3>
 
 	>代码说明:通过传入的indexPath.section值,来显示每个分组的数据
 
-<h3 style="background-color:#A3BB50; color:white; padding-top: 2px; padding-left: 5px;
-padding-bottom: 2px;"; >单元格的构成和基本定制</h3>
+### 单元格的构成和基本定制
 
 * 单元格中的自带控件
 
@@ -160,8 +155,7 @@ padding-bottom: 2px;"; >单元格的构成和基本定制</h3>
 	>代码说明:
 	>cell自己添加控件,都加在contentView上,由于cell复用,这句代码不能写在if语句外面.
 
-<h3 style="background-color:#A3BB50; color:white; padding-top: 2px; padding-left: 5px;
-padding-bottom: 2px;"; >常用事件处理</h3>
+### 常用事件处理
 
 * 某行被选中
 
@@ -190,8 +184,7 @@ padding-bottom: 2px;"; >常用事件处理</h3>
 		    [alertView show];
 		}
 
-<h3 style="background-color:#A3BB50; color:white; padding-top: 2px; padding-left: 5px;
-padding-bottom: 2px;"; >添加头部视图和尾部视图</h3>
+### 添加头部视图和尾部视图
 
 * 头部视图
 
@@ -217,8 +210,7 @@ padding-bottom: 2px;"; >添加头部视图和尾部视图</h3>
 	
 	>代码说明:利用tableView的tableFooterView属性来设置
 
-<h3 style="background-color:#A3BB50; color:white; padding-top: 2px; padding-left: 5px;
-padding-bottom: 2px;"; >设置段头和段尾</h3>
+### 设置段头和段尾
 
 * 设置文本段头
 
@@ -337,8 +329,7 @@ padding-bottom: 2px;"; >设置段头和段尾</h3>
 		    [_multiSelectArray removeObject:info];
 		}
 
-<h3 style="background-color:#A3BB50; color:white; padding-top: 2px; padding-left: 5px;
-padding-bottom: 2px;"; >表格视图的索引</h3>
+### 表格视图的索引
 
 ![](/img/TableView/index.png)
 
@@ -351,8 +342,7 @@ padding-bottom: 2px;"; >表格视图的索引</h3>
 	    return array;
 	}
 
-<h3 style="background-color:#A3BB50; color:white; padding-top: 2px; padding-left: 5px;
-padding-bottom: 2px;"; >表格的分割线</h3>
+### 表格的分割线
 
 ![](/img/TableView/separator.png)
 
@@ -360,8 +350,7 @@ padding-bottom: 2px;"; >表格的分割线</h3>
 	_tableView.separatorColor = [UIColor blackColor];
 	_tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
 
-<h3 style="background-color:#A3BB50; color:white; padding-top: 2px; padding-left: 5px;
-padding-bottom: 2px;"; >表格视图的搜索</h3>
+### 表格视图的搜索
 
 ![](/img/TableView/search.png)
 
@@ -383,8 +372,7 @@ padding-bottom: 2px;"; >表格视图的搜索</h3>
 	//viewDidLoad中
 	_searchResultsArray = [[NSMutableArray alloc] init];
 
-<h3 style="background-color:#A3BB50; color:white; padding-top: 2px; padding-left: 5px;
-padding-bottom: 2px;"; >表格视图控制器</h3>
+### 表格视图控制器
 
 >说明:UITableViewController是系统提供的一个便利类，主要是为了方便我们使用UITableView，该类生成的时候就将自身设置成了其包含的tableView的dataSource和delegate，并创建了很多代理函数的框架，为我们大大的节省了时间，我们可以通过其tableView属性获取该controller内部维护的tableView对象。默认情况下使用UITableViewController创建的tableView是充满全屏的，如果需要用到tableView是不充满全屏的话，我们应该使用UIViewController自己创建和维护tableView。
 
