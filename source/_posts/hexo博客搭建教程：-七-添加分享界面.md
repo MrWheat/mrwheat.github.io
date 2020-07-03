@@ -2,7 +2,7 @@ title: hexo博客搭建教程：(七)添加分享界面
 
 date: 2014-06-27 21:13:29
 
-categories: hexo教程
+categories: 编程基础 - 博客
 
 tags: [教程,hexo]
 

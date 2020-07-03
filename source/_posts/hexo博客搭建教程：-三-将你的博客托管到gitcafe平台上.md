@@ -2,7 +2,7 @@ title: hexo博客搭建教程：(三)将你的博客托管到gitcafe平台上
 
 date: 2014-03-22 20:02:34
 
-categories: hexo教程
+categories: 编程基础 - 博客
 
 tags: [教程,hexo]
 
@@ -16,7 +16,7 @@ tags: [教程,hexo]
 
 已有账号的忽略，没有的，去[官网](https://gitcafe.com/)注册，全中文界面，很简单，这里就不介绍了。
 
-![](/img/Gitcafe官网.png)
+![](/img/hexo博客搭建教程：-三-将你的博客托管到gitcafe平台上/Gitcafe官网.png)
 
 ### 2. 创建添加SSH
 
@@ -40,7 +40,7 @@ tags: [教程,hexo]
 
 用文本文件(txt)打开公钥`id_rsa.pub`，复制所有的内容。进入 `GitCafe` -->`账户设置`-->`SSH` 公钥管理设置项，添加新公钥。名称可以随意起，将公钥粘贴进去。
 
-![](/img/gitcafe公钥添加.png)
+![](/img/hexo博客搭建教程：-三-将你的博客托管到gitcafe平台上/gitcafe公钥添加.png)
 
 以上步骤完成后，用下面的命令测试一下吧。
 
@@ -77,11 +77,11 @@ Hi USERNAME! You've successfully authenticated, but GitCafe does not provide she
 
 ### ３. 新建gitcafe项目
 
-![](/img/新建项目.png)
+![](/img/hexo博客搭建教程：-三-将你的博客托管到gitcafe平台上/新建项目.png)
 
 点击新建项目，项目名与你的gitcafe账号名一致，其他可不填，项目必须是公开的项目。
 
-![](/img/新建gitcafe项目.jpg)
+![](/img/hexo博客搭建教程：-三-将你的博客托管到gitcafe平台上/新建gitcafe项目.jpg)
 
 进入GitBash，第一次进入在本地设置git时必须：
 

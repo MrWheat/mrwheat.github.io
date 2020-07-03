@@ -2,7 +2,7 @@ title: hexo博客搭建教程：(二)搭建你的hexo本地静态博客
 
 date: 2014-03-15 20:01:36
 
-categories: hexo教程
+categories: 编程基础 - 博客
 
 tags: [教程,hexo]
 

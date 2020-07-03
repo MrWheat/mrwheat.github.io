@@ -2,7 +2,7 @@ title: hexo博客搭建教程：(六)hexo博客主题的优化 (下)
 
 date: 2014-06-20 17:02:40
 
-categories: hexo教程
+categories: 编程基础 - 博客
 
 tags: [教程,hexo]
 

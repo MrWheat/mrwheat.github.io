@@ -2,7 +2,7 @@ title: hexo博客搭建教程：(四)博客的配置和使用---jacman主题
 
 date: 2014-04-2 20:03:53
 
-categories: hexo教程
+categories: 编程基础 - 博客
 
 tags: [教程,hexo]
 

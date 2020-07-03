@@ -2,7 +2,7 @@ title: hexo博客搭建教程：(一)hexo介绍
 
 date: 2014-03-12 19:58:13
 
-categories: hexo教程
+categories: 编程基础 - 博客
 
 tags: [教程,hexo]
 
