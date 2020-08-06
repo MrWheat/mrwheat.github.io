@@ -264,6 +264,129 @@
             
               
                 
+                <a class="post-title-link" href="/iOS基础-CALayer-CAReplicatorLayer/" itemprop="url">
+                  CALayer-CAReplicatorLayer
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2018-07-06T18:43:12+08:00" content="2018-07-06">
+              2018-07-06
+            </time>
+          </span>
+
+          
+            <span class="post-category">
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/iOS开发-基础/" itemprop="url" rel="index">
+                    <span itemprop="name">iOS开发 - 基础</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/iOS基础-CALayer-CAReplicatorLayer/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="iOS基础-CALayer-CAReplicatorLayer/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <p>基于产品需求，在进行某些动画开发中，不可避免的会遇到需要创建重复图层的情况。直接循环创建看起来似乎有些蠢。</p>
+<p>CALayer提供了<code>CAReplicatorLayer</code>子类，很好的解决了这个问题，它可以将自己的子图层复制指定的次数，并且保留被复制图层的各种基础属性。</p>
+          <div class="post-more-link text-center">
+            <a class="btn" href="/iOS基础-CALayer-CAReplicatorLayer/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
                 <a class="post-title-link" href="/iOS进阶-Runtime开发使用实例/" itemprop="url">
                   Runtime开发使用实例
                 </a>
@@ -871,131 +994,6 @@
 
 
     
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/iOS基础-常用iOS系统应用API/" itemprop="url">
-                  常用iOS系统应用API
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            <span class="post-meta-item-icon">
-              <i class="fa fa-calendar-o"></i>
-            </span>
-            <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2016-08-02T14:32:43+08:00" content="2016-08-02">
-              2016-08-02
-            </time>
-          </span>
-
-          
-            <span class="post-category">
-              &nbsp; | &nbsp;
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-              
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/iOS开发-基础/" itemprop="url" rel="index">
-                    <span itemprop="name">iOS开发 - 基础</span>
-                  </a>
-                </span>
-
-                
-                
-
-              
-            </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-                &nbsp; | &nbsp;
-                <a href="/iOS基础-常用iOS系统应用API/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="iOS基础-常用iOS系统应用API/" itemprop="commentsCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-
-          
-          
-
-          
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <p>前面讲沙盒目录的时候说过，iOS应用都是被一个小箱子锁起来的独立个体，里面的数据出不来，外面的数据进不去，除了某些特殊的情况。<a href="http://www.hackmz.com/2016/07/25/沙盒目录和应用程序包/" target="_blank" rel="noopener">博客传送门</a></p>
-<p>我们在开发App的时候可以预留一些Api用来与其他应用进行交互，而对于系统应用来说，比如地图，相册，照相机这些预装应用，苹果也为我们提供了一些工具来访问它们。</p>
-<p>那怎么做呢？</p>
-<p><strong>PS:</strong>以下代码大部分均需在真机上调试才有效果。</p>
-          <div class="post-more-link text-center">
-            <a class="btn" href="/iOS基础-常用iOS系统应用API/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
@@ -1039,7 +1037,7 @@
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">47</span>
+              <span class="site-state-item-count">48</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
@@ -1056,7 +1054,7 @@
           
             <div class="site-state-item site-state-tags">
               <a href="/tags">
-                <span class="site-state-item-count">50</span>
+                <span class="site-state-item-count">52</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>

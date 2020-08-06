@@ -1,0 +1,734 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css">
+
+
+  <meta name="keywords" content="Pod,Mac,">
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.1">
+
+
+
+
+
+
+<meta name="description" content="因为工作需要，前段时间都在做Android开发，当然也有一些零碎的iOS需求，但是因为不涉及到发版等，所以Xcode都是能用就行。 最近在上传ipa包时，遇到了点问题，要求必须使用最新版本的Xcode进行打包，于是点开App Store去升级，发现还需要将macOS升级到最新版本，否则无法更新Xcode，没办法，更新吧，漫长的等待… 本以为等等就完事了，没想到还是有一些改变的，遇到的第一个问题就是">
+<meta name="keywords" content="Pod,Mac">
+<meta property="og:type" content="article">
+<meta property="og:title" content="macOS 10.15 Catalina 升级问题">
+<meta property="og:url" content="http://hackmz.com/iOS问题-macOS10.15升级问题/index.html">
+<meta property="og:site_name" content="MaiZi&#39;s Blog">
+<meta property="og:description" content="因为工作需要，前段时间都在做Android开发，当然也有一些零碎的iOS需求，但是因为不涉及到发版等，所以Xcode都是能用就行。 最近在上传ipa包时，遇到了点问题，要求必须使用最新版本的Xcode进行打包，于是点开App Store去升级，发现还需要将macOS升级到最新版本，否则无法更新Xcode，没办法，更新吧，漫长的等待… 本以为等等就完事了，没想到还是有一些改变的，遇到的第一个问题就是">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://hackmz.com/img/iOS问题-macOS10.15升级问题/20200806181112.jpg">
+<meta property="og:image" content="http://hackmz.com/img/iOS问题-macOS10.15升级问题/20200806181420.jpg">
+<meta property="og:image" content="http://hackmz.com/img/iOS问题-macOS10.15升级问题/20200720121725.jpg">
+<meta property="og:image" content="http://hackmz.com/img/iOS问题-macOS10.15升级问题/20200720122815.jpg">
+<meta property="og:updated_time" content="2020-08-06T11:25:48.626Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="macOS 10.15 Catalina 升级问题">
+<meta name="twitter:description" content="因为工作需要，前段时间都在做Android开发，当然也有一些零碎的iOS需求，但是因为不涉及到发版等，所以Xcode都是能用就行。 最近在上传ipa包时，遇到了点问题，要求必须使用最新版本的Xcode进行打包，于是点开App Store去升级，发现还需要将macOS升级到最新版本，否则无法更新Xcode，没办法，更新吧，漫长的等待… 本以为等等就完事了，没想到还是有一些改变的，遇到的第一个问题就是">
+<meta name="twitter:image" content="http://hackmz.com/img/iOS问题-macOS10.15升级问题/20200806181112.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"hide"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 0,
+      author: '博主'
+    }
+  };
+</script>
+
+  <title> macOS 10.15 Catalina 升级问题 | MaiZi's Blog </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?c2586345b27e17779034f84bb3e505d2";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">MaiZi's Blog</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">Nothing is impossible！</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                macOS 10.15 Catalina 升级问题
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2020-08-06T19:19:23+08:00" content="2020-08-06">
+              2020-08-06
+            </time>
+          </span>
+
+          
+            <span class="post-category">
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/iOS开发-问题/" itemprop="url" rel="index">
+                    <span itemprop="name">iOS开发 - 问题</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/iOS问题-macOS10.15升级问题/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="iOS问题-macOS10.15升级问题/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>因为工作需要，前段时间都在做Android开发，当然也有一些零碎的iOS需求，但是因为不涉及到发版等，所以Xcode都是能用就行。</p>
+<p>最近在上传ipa包时，遇到了点问题，要求必须使用最新版本的Xcode进行打包，于是点开App Store去升级，发现还需要将macOS升级到最新版本，否则无法更新Xcode，没办法，更新吧，漫长的等待…</p>
+<p>本以为等等就完事了，没想到还是有一些改变的，遇到的第一个问题就是，我的Pod不能用了。</p>
+<a id="more"></a>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ pod install</span><br><span class="line">zsh: /usr/local/bin/pod: bad interpreter: /System/Library/Frameworks/Ruby.framework/Versions/2.3/usr/bin/ruby: no such file or directory</span><br></pre></td></tr></table></figure>
+<p>一开始以为是更新系统后Cocoapods被干掉了，重装的时候发现还在，猜测是新版本更新系统，目录发生改变导致的。</p>
+<h3 id="Cocoapods更新问题"><a href="#Cocoapods更新问题" class="headerlink" title="Cocoapods更新问题"></a>Cocoapods更新问题</h3><p>重装Cocoapods比较简单，使用gem或者brew安装都可以：</p>
+<blockquote>
+<p>gem install cocoapods</p>
+</blockquote>
+<p>或</p>
+<blockquote>
+<p>brew reinstall cocoapods</p>
+</blockquote>
+<p>这里使用的是第一种方式，直接执行安装pods命令：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">$ sudo gem install cocoapods -n /usr/local/bin</span><br><span class="line">Building native extensions. This could take a while...</span><br><span class="line">ERROR:  Error installing cocoapods:</span><br><span class="line">    ERROR: Failed to build gem native extension.</span><br><span class="line">    ......</span><br></pre></td></tr></table></figure>
+<p>看起来是gem的问题，由于这些第三方依赖包都是通过gem管理的，所以先更新一下gem：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">$ sudo gem update --system</span><br><span class="line">ERROR: While executing gem ... (TypeError)</span><br><span class="line">    no implicit conversion of nil into String.</span><br><span class="line">    ......</span><br></pre></td></tr></table></figure>
+<p>发现有文件缺失，因为安装pods和更新gem都需要依赖ruby环境，猜测是ruby版本过低导致的，毕竟已经记不清上一次更新ruby是何年月了，于是跑去升级ruby。</p>
+<p>升级过程中才发现，因为Mac系统自带ruby，貌似我的电脑上并没有安装过rvm，何为rvm？rvm是用来管理ruby版本的，没办法，装吧，执行rvm安装命令。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ curl -L https://get.rvm.io | bash -s stable</span><br><span class="line">ERROR: Failed to connect to raw.githubusercontent.com port 443: Connection refused</span><br></pre></td></tr></table></figure>
+<p>嗯，果然，人生不如意，十有八九，无论如何，生活还是要继续，网上搜索了一下，说是Github的一些域名的DNS解析被污染，导致DNS解析过程无法通过域名取得正确的IP地址。</p>
+<p>打开 <a href="https://www.ipaddress.com/" target="_blank" rel="noopener">https://www.ipaddress.com/</a> 输入访问不了的域名: </p>
+<p><img src="/img/iOS问题-macOS10.15升级问题/20200806181112.jpg" alt></p>
+<p>查询之后可以获得正确的IP地址，然后在本机的host文件中添加，建议使用 <a href="https://github.com/oldj/SwitchHosts/releases" target="_blank" rel="noopener">switchhosts</a> 方便host管理.</p>
+<p><img src="/img/iOS问题-macOS10.15升级问题/20200806181420.jpg" alt></p>
+<p>网络问题解决了，重新执行rvm安装命令，因为安装rvm需要借助另外一个工具Homebrew，Homebrew是一款Mac OS平台下的软件包管理工具，在安装的过程中会执行 <code>brew update</code> 进行升级。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">$ brew update</span><br><span class="line">Error: /usr/local is not writable. You should change the</span><br><span class="line">ownership and permissions of /usr/local back to your</span><br><span class="line">user account:</span><br><span class="line">  sudo chown -R $(whoami) /usr/local</span><br></pre></td></tr></table></figure>
+<p>嗯，又遇到了这个权限的问题，那我们自己动手安装升级一下Homebrew吧，如果遇到443网络问题，可以参考前面提到的方式解决，网上也有说重新安装 xcode-select，自己试了下感觉还是不靠谱。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ /usr/bin/ruby -e &quot;$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)&quot;</span><br></pre></td></tr></table></figure>
+<p><img src="/img/iOS问题-macOS10.15升级问题/20200720121725.jpg" alt></p>
+<p>安装成功之后，执行：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">$ curl -L https://get.rvm.io | bash -s stable</span><br><span class="line">$ rvm install ruby-2.6</span><br><span class="line">$ rvm use ruby-2.6.3</span><br><span class="line">$ rvm --default use 2.6.3</span><br><span class="line">$ rm &apos;/usr/local/bin/pod&apos;</span><br><span class="line">$ rm &apos;/usr/local/bin/xcodeproj&apos;</span><br><span class="line">$ brew reinstall cocoapods</span><br></pre></td></tr></table></figure>
+<p><img src="/img/iOS问题-macOS10.15升级问题/20200720122815.jpg" alt></p>
+<p>到这里，问题基本上解决了。</p>
+<h3 id="Mac写入保护权限"><a href="#Mac写入保护权限" class="headerlink" title="Mac写入保护权限"></a>Mac写入保护权限</h3><p>安装过程中，我们会遇到读写权限的问题，原因是Rootless机制，虽然通过上面的方式已经解决了，但我们还是简单了解一下。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ sudo chown -R $(whoami) /usr/local</span><br><span class="line">chown: /usr/local: Operation not permitted</span><br></pre></td></tr></table></figure>
+<p>苹果从 OS X El Capitan 10.11 系统开始使用了 Rootless 机制，系统默认将会锁定 /system、/sbin、/usr 这三个目录，用户要获取这三个目录的写权限，需要关闭Rootless。</p>
+<p>通过<code>csrutil status</code>命令，可以查看该机制的运行情况，如需关闭：</p>
+<ul>
+<li>重启Mac</li>
+<li>开机时后按下 Command+R，进入恢复模式</li>
+<li>在上面的菜单实用工具中找到并打开 Terminal</li>
+<li>输入<code>csrutil disable</code></li>
+</ul>
+<p>打开的方式也是一样：</p>
+<ul>
+<li>重启Mac</li>
+<li>开机时后按下 Command+R，进入恢复模式</li>
+<li>在上面的菜单实用工具中找到并打开 Terminal</li>
+<li>输入<code>csrutil enable</code></li>
+</ul>
+<h3 id="相关帖子"><a href="#相关帖子" class="headerlink" title="相关帖子"></a>相关帖子</h3><p><a href="https://rvm.io/rvm/install" target="_blank" rel="noopener">rvm.io</a><br><a href="https://github.com/CocoaPods/CocoaPods/issues/9538" target="_blank" rel="noopener">Failed to build gem native extension</a><br><a href="https://github.com/CocoaPods/CocoaPods/issues/9602" target="_blank" rel="noopener">Failed to build gem native extension. Header file missing</a><br><a href="https://github.com/CocoaPods/CocoaPods/issues/8955" target="_blank" rel="noopener">Brew based CocoaPods CLI fails in MacOS 10.15 Catalina due incorrect fallback to Ruby 2.3</a><br><a href="https://github.com/hawtim/blog/issues/10" target="_blank" rel="noopener">Failed to connect to raw.githubusercontent.com port 443: Connection refused</a><br><a href="https://www.cnblogs.com/shisishao/p/12553221.html" target="_blank" rel="noopener">MacOS 10.15.x 最新安装 Cocoapods 教程及问题解决</a></p>
+
+      
+    </div>
+
+    <div>
+      
+        
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Pod/" rel="tag">#Pod</a>
+          
+            <a href="/tags/Mac/" rel="tag">#Mac</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/读书-《怪诞行为学2》笔记/" rel="next" title="《怪诞行为学2》非理性的积极力量">
+                <i class="fa fa-chevron-left"></i> 《怪诞行为学2》非理性的积极力量
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <div class="ds-share flat" data-thread-key="iOS问题-macOS10.15升级问题/" data-title="macOS 10.15 Catalina 升级问题" data-content data-url="http://hackmz.com/iOS问题-macOS10.15升级问题/">
+  <div class="ds-share-inline">
+    <ul class="ds-share-icons-16">
+
+      <li data-toggle="ds-share-icons-more"><a class="ds-more" href="javascript:void(0);">分享到：</a></li>
+      <li><a class="ds-weibo" href="javascript:void(0);" data-service="weibo">微博</a></li>
+      <li><a class="ds-qzone" href="javascript:void(0);" data-service="qzone">QQ空间</a></li>
+      <li><a class="ds-qqt" href="javascript:void(0);" data-service="qqt">腾讯微博</a></li>
+      <li><a class="ds-wechat" href="javascript:void(0);" data-service="wechat">微信</a></li>
+
+    </ul>
+    <div class="ds-share-icons-more">
+    </div>
+  </div>
+</div>
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="iOS问题-macOS10.15升级问题/" data-title="macOS 10.15 Catalina 升级问题" data-url="http://hackmz.com/iOS问题-macOS10.15升级问题/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image" src="/avatar/avatar.jpg" alt="麦子">
+          <p class="site-author-name" itemprop="name">麦子</p>
+          <p class="site-description motion-element" itemprop="description">当你的才华撑不起你的野心的时候，你就应该静下心来学习！</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">48</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">9</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">52</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/MrWheat" target="_blank" title="Github">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  Github
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/3202240184" target="_blank" title="微博">
+                  
+                    <i class="fa fa-fw fa-weibo"></i>
+                  
+                  微博
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Cocoapods更新问题"><span class="nav-number">1.</span> <span class="nav-text">Cocoapods更新问题</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Mac写入保护权限"><span class="nav-number">2.</span> <span class="nav-text">Mac写入保护权限</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#相关帖子"><span class="nav-number">3.</span> <span class="nav-text">相关帖子</span></a></li></ol></div>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">
+  
+  &copy;  2014 - 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">麦子</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+        
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.1"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.0.1"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.1"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"mrwheat"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+  
+
+
+
+
+
+  
+  
+  
+
+  
+
+  
+
+</body>
+</html>
