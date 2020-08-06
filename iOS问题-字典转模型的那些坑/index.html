@@ -92,7 +92,7 @@
 <meta property="og:site_name" content="MaiZi&#39;s Blog">
 <meta property="og:description" content="无论是XML解析还是JSON解析，最终得到的数据通常我们都是以数据模型的形式保存在本地的，为什么不直接用字典呢？ 首先大多数编译器都有自动提示补全功能，将字典的key转换成模型里的属性，就能很好的利用这一功能，提高开发速度，比复制粘贴还快哦。 其次，如果模型的属性写错了，编译的时候，编译器会提示报错，这样就能及时修正BUG，而字典的key，你写成啥样，编译器也不会管你的死活。 最后一点，不管怎么样">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2020-07-03T09:14:15.687Z">
+<meta property="og:updated_time" content="2020-07-08T10:10:16.051Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="iOS字典转模型的那些坑">
 <meta name="twitter:description" content="无论是XML解析还是JSON解析，最终得到的数据通常我们都是以数据模型的形式保存在本地的，为什么不直接用字典呢？ 首先大多数编译器都有自动提示补全功能，将字典的key转换成模型里的属性，就能很好的利用这一功能，提高开发速度，比复制粘贴还快哦。 其次，如果模型的属性写错了，编译的时候，编译器会提示报错，这样就能及时修正BUG，而字典的key，你写成啥样，编译器也不会管你的死活。 最后一点，不管怎么样">
@@ -349,8 +349,7 @@
     return @{@&quot;des&quot;: @&quot;description&quot;};
 }
 </code></pre><p>像多个页面使用同一个类，页面相似，数据也相似，但字段不同的情况，我们也可以通过这种方式，免除建很多个多余的Model的烦恼。</p>
-<p>###写在最后</p>
-<p>最后分享一个根据字典的key快速创建模型的方法。</p>
+<h3 id="写在最后"><a href="#写在最后" class="headerlink" title="写在最后"></a>写在最后</h3><p>最后分享一个根据字典的key快速创建模型的方法。</p>
 <pre><code>- (void)createModelWithDictionary:(NSDictionary *)dict {
     for (NSString *key in dict) {
         printf(&quot;@property (nonatomic, copy) NSString *%s;\n&quot;, [key UTF8String]);
@@ -486,7 +485,7 @@
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">46</span>
+              <span class="site-state-item-count">47</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
@@ -503,7 +502,7 @@
           
             <div class="site-state-item site-state-tags">
               <a href="/tags">
-                <span class="site-state-item-count">49</span>
+                <span class="site-state-item-count">50</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
@@ -552,7 +551,7 @@
               
             
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#字典键值对多于模型属性。"><span class="nav-number">1.</span> <span class="nav-text">字典键值对多于模型属性。</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#字典的key为OC关键字"><span class="nav-number">2.</span> <span class="nav-text">字典的key为OC关键字</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#字典键值对多于模型属性。"><span class="nav-number">1.</span> <span class="nav-text">字典键值对多于模型属性。</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#字典的key为OC关键字"><span class="nav-number">2.</span> <span class="nav-text">字典的key为OC关键字</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#写在最后"><span class="nav-number">3.</span> <span class="nav-text">写在最后</span></a></li></ol></div>
             
           </div>
         </section>
