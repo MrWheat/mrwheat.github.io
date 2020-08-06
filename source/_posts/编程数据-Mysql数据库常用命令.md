@@ -12,8 +12,6 @@ tags: [Mysql,数据库]
 
 本章主要是记录一些Mysql数据库常用的命令，方便日后使用的时候查阅。
 
-<!--more-->
-
 #### Mac安装Mysql数据库
 
 ##### 通过brew方式安装
@@ -27,6 +25,8 @@ tags: [Mysql,数据库]
 	> mysql.server start
 	
 ##### 官网下载安装
+
+<!--more-->
 
 1. 下载地址：[https://dev.mysql.com/downloads/mysql/](https://dev.mysql.com/downloads/mysql/)
 
