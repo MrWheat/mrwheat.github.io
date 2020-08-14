@@ -238,10 +238,10 @@ mathjax:
 baidu_analytics: c2586345b27e17779034f84bb3e505d2
 
 # Duoshuo ShortName
-duoshuo_shortname: mrwheat
+# duoshuo_shortname: mrwheat
 
 # Disqus
-#disqus_shortname:
+disqus_shortname: mrwheat
 
 # Baidu Share
 # Available value:
@@ -254,7 +254,7 @@ duoshuo_shortname: mrwheat
 #add_this_id:
 
 # Share
-duoshuo_share: true
+disqus_share: true
 
 # Google Webmaster tools verification setting
 # See: https://www.google.com/webmasters/
