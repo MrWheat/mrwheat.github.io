@@ -1,0 +1,776 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css">
+
+
+  <meta name="keywords" content="iOS,开发,静态库,">
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.1">
+
+
+
+
+
+
+<meta name="description" content="FrameworkFramework可以理解为是一个封装了共享资源的具有层次结构的文件夹。同时它也是个Bundle，可以通过Bundle的相关API来访问。 制作FrameworkXcode Version: 12.0.1  点击Xcode -&amp;gt; File -&amp;gt; New -&amp;gt; Target，选择iOS滑动到底部，在Framework &amp;amp; Library一栏下选择Frame">
+<meta name="keywords" content="iOS,开发,静态库">
+<meta property="og:type" content="article">
+<meta property="og:title" content="iOS开发-Framework和XCFramework制作">
+<meta property="og:url" content="http://hackmz.com/iOS基础-Framework和XCFramework制作/index.html">
+<meta property="og:site_name" content="MaiZi&#39;s Blog">
+<meta property="og:description" content="FrameworkFramework可以理解为是一个封装了共享资源的具有层次结构的文件夹。同时它也是个Bundle，可以通过Bundle的相关API来访问。 制作FrameworkXcode Version: 12.0.1  点击Xcode -&amp;gt; File -&amp;gt; New -&amp;gt; Target，选择iOS滑动到底部，在Framework &amp;amp; Library一栏下选择Frame">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://hackmz.com/img/iOS基础-Framework和XCFramework制作/20201126161901.jpg">
+<meta property="og:image" content="http://hackmz.com/img/iOS基础-Framework和XCFramework制作/20201126161917.jpg">
+<meta property="og:image" content="http://hackmz.com/img/iOS基础-Framework和XCFramework制作/A1110831-7D75-454A-97B7-E7872615708A.jpg">
+<meta property="og:image" content="http://hackmz.com/img/iOS基础-Framework和XCFramework制作/2AE04CC8-3C7B-4D2D-88C5-4F32DDC98DEC.jpg">
+<meta property="og:updated_time" content="2020-11-26T09:35:17.678Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="iOS开发-Framework和XCFramework制作">
+<meta name="twitter:description" content="FrameworkFramework可以理解为是一个封装了共享资源的具有层次结构的文件夹。同时它也是个Bundle，可以通过Bundle的相关API来访问。 制作FrameworkXcode Version: 12.0.1  点击Xcode -&amp;gt; File -&amp;gt; New -&amp;gt; Target，选择iOS滑动到底部，在Framework &amp;amp; Library一栏下选择Frame">
+<meta name="twitter:image" content="http://hackmz.com/img/iOS基础-Framework和XCFramework制作/20201126161901.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"hide"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 0,
+      author: '博主'
+    }
+  };
+</script>
+
+  <title> iOS开发-Framework和XCFramework制作 | MaiZi's Blog </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?c2586345b27e17779034f84bb3e505d2";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">MaiZi's Blog</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">Nothing is impossible！</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                iOS开发-Framework和XCFramework制作
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2020-11-26T11:26:59+08:00" content="2020-11-26">
+              2020-11-26
+            </time>
+          </span>
+
+          
+            <span class="post-category">
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/iOS开发-基础/" itemprop="url" rel="index">
+                    <span itemprop="name">iOS开发 - 基础</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/iOS基础-Framework和XCFramework制作/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="iOS基础-Framework和XCFramework制作/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h3 id="Framework"><a href="#Framework" class="headerlink" title="Framework"></a>Framework</h3><p>Framework可以理解为是一个封装了共享资源的具有层次结构的文件夹。同时它也是个Bundle，可以通过Bundle的相关API来访问。</p>
+<h4 id="制作Framework"><a href="#制作Framework" class="headerlink" title="制作Framework"></a>制作Framework</h4><p>Xcode Version: 12.0.1 </p>
+<p>点击<code>Xcode -&gt; File -&gt; New -&gt; Target</code>，选择<code>iOS</code>滑动到底部，在<code>Framework &amp; Library</code>一栏下选择<code>Framework</code>。</p>
+<h4 id="Mach-O-Type设置"><a href="#Mach-O-Type设置" class="headerlink" title="Mach-O Type设置"></a>Mach-O Type设置</h4><p>Mach-O Type分为以下五种类型，一般常见的有<code>Dynamic Library</code>和<code>Static Library</code>，这里我们设置为<code>Static Library</code>。</p>
+<table>
+<thead>
+<tr>
+<th>参数名</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Executable</td>
+<td>可执行二进制文件</td>
+</tr>
+<tr>
+<td>Dynamic Library</td>
+<td>动态库</td>
+</tr>
+<tr>
+<td>Bundle</td>
+<td>非独立二进制文件，显式加载</td>
+</tr>
+<tr>
+<td>Static Library</td>
+<td>静态库</td>
+</tr>
+<tr>
+<td>Relocatable Object File</td>
+<td>可重定位的目标文件，中间结果</td>
+</tr>
+</tbody>
+</table>
+<a id="more"></a>
+<h5 id="静态库-Static-Libraries"><a href="#静态库-Static-Libraries" class="headerlink" title="静态库(Static Libraries)"></a>静态库(Static Libraries)</h5><p><img src="/img/iOS基础-Framework和XCFramework制作/20201126161901.jpg" alt></p>
+<p>静态库是我们使用最常见的方式，主要以.a、.lib、.framework、.xcframework形式存在，平时用到的三方SDK基本上都是这种，它有以下几个特点：</p>
+<ol>
+<li>在项目编译过程中就需要导入到目标程序中，因此会一定程度上增加包的体积，当库有修改时，也必须重新编译和发布。</li>
+<li>App启动时就会载入内存，因此在使用时不需要外部加载，速度快，但相应的也增加了App启动时间。</li>
+<li>减少耦合性，静态库中是不可以包含其他静态库的，使用的时候要另外导入它的依赖库，可以最大限度的保证了每一个静态库都是独立的，不会重复引用。</li>
+<li>减少对外界的依赖，如果使用第三方动态库，库找不到的话程序会崩溃。</li>
+</ol>
+<h5 id="动态库-Dynamic-Libraries"><a href="#动态库-Dynamic-Libraries" class="headerlink" title="动态库(Dynamic Libraries)"></a>动态库(Dynamic Libraries)</h5><p><img src="/img/iOS基础-Framework和XCFramework制作/20201126161917.jpg" alt></p>
+<p>动态库我们使用最多的就是UIkit.framework和Fundation.framework，动态库主要以.dylib、.so、.dll、.tbd、.framework、.xcframewor的形式存在，它有以下几个特点：</p>
+<ol>
+<li>App按需加载，加速App的启动。</li>
+<li>不需要拷贝到可执行文件中，减少包的体积。</li>
+<li>维护和更新比较方便，只要接口不变，依赖动态库的App就不用重新编译。</li>
+<li>在制作上可以直接包含静态库，因此在使用时不需要再次导入其他的依赖库。</li>
+</ol>
+<p>在 iOS 8 之前，iOS 平台不支持开发者使用用户自己的动态Framework，这种限制可能是出于安全的考虑。因为 iOS 应用都是运行在沙盒当中，不同的程序之间不能共享代码，同时动态下载代码又是被苹果明令禁止的，没办法发挥出动态库的优势，实际上动态库也就没有存在的必要了。</p>
+<p>但是，iOS 8/Xcode 6 推出之后，因为Extension的出现，iOS添加了对动态库的支持，Extension 和 App 是两个分开的可执行文件，同时需要共享代码，这种情况下动态库的支持就是必不可少的了。</p>
+<p>不过这种动态 Framework 和系统的 UIKit.Framework 还是有很大区别，系统的 Framework 不需要拷贝到目标程序中，我们自己做出来的 Framework 哪怕是动态的，最后也还是要拷贝到 App 中（App和Extension的 Bundle是共享的），因此苹果又把这种 Framework 称为 Embedded Framework。</p>
+<p>在导入自己制作的动态库时，需要在Embedded Binaries中导入，不然会报image not found，程序崩溃。</p>
+<h4 id="其他相关设置"><a href="#其他相关设置" class="headerlink" title="其他相关设置"></a>其他相关设置</h4><p><code>Architectures:</code>指定工程将被编译成支持哪些指令集，一般不包含armv7s，如果需要可以额外添加。</p>
+<p><code>Valid Architecures:</code>指定可能支持的指令集，该列表和Architectures列表的交集，将是Xcode最终生成的二进制包所支持的指令集。</p>
+<p><code>Build Active Architecture Only:</code>编译时是否只保留对应设备的指令集。</p>
+<p><code>Enable Bitcode:</code>是否支持Bitcode。</p>
+<p><code>Dead Code Stripping:</code>是否消除无效代码，设置为NO关闭对代码中dead，unreachable代码过滤。</p>
+<p><code>Link With Standard Libraries:</code>是否用标准库链接，设置为 NO 避免重复链接。</p>
+<h4 id="编写代码"><a href="#编写代码" class="headerlink" title="编写代码"></a>编写代码</h4><p>这里不再赘述，对于OC而言，需要暴露的头文件需要添加到 <code>Build Phases -&gt; Headers -&gt; Public</code> 里。</p>
+<p>如果是Swift Framework，需要暴露的方法使用 <code>public</code> 和 <code>@objc</code> 修饰，对于那些需要继承重写的类使用 <code>open</code> 修饰。</p>
+<h4 id="创建通用包"><a href="#创建通用包" class="headerlink" title="创建通用包"></a>创建通用包</h4><p>编译过后，会在<code>Products</code>生成一个包，如果是真机则是真机包，如果是模拟器则是模拟器包。这两个包的区别是包含的指令集不一致。</p>
+<p>真机：armv7｜armv7s｜arm64<br>模拟器：i386｜x86_64</p>
+<p>在终端通过lipo指令查看包的指令集。</p>
+<blockquote>
+<p>lipo -info xxxx/ProjectName.framework/ProjcetName</p>
+</blockquote>
+<p>不同的包只能在固定的场景下使用，为了省去来回切换的麻烦，我们需要将两个包进行合并。</p>
+<blockquote>
+<p>lipo -create PATH1 PATH2 -output PATH3</p>
+</blockquote>
+<p>这一步是为了合并两者的二进制文件<code>ProjectName.framework/ProjcetName</code>，PATH1、PATH2和PATH3均为二进制文件路径，合并完成之后将真机或者模拟器的二进制文件替换为合并之后的。</p>
+<p>基本到这里就结束了，但是对于Swfit来讲，仅仅合并二进制文件是不够的，还需要合并<code>ProjectName.framework/Modules/</code>文件夹和<code>swift header file</code>，所以建议还是采用脚本的方式。</p>
+<p>点击<code>Xcode -&gt; File -&gt; New -&gt; Target</code>，选择<code>Other</code>，创建<code>Aggregate</code>，在新建的Aggregate下点击<code>+</code>号添加<code>New Run Script Phase</code>，添加以下脚本：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><span class="line"># Set bash script to exit immediately if any commands fail.</span><br><span class="line">set -e</span><br><span class="line"># Setup some constants for use later on.</span><br><span class="line">FRAMEWORK_NAME=$&#123;PROJECT_NAME&#125;</span><br><span class="line">OUTPUT_DIR=&quot;$&#123;SRCROOT&#125;/build&quot;</span><br><span class="line"></span><br><span class="line"># If remains from a previous build exist,delete them.</span><br><span class="line">if [ -d &quot;$&#123;OUTPUT_DIR&#125;&quot; ]; then</span><br><span class="line">rm -rf &quot;$&#123;OUTPUT_DIR&#125;&quot;</span><br><span class="line">fi</span><br><span class="line"></span><br><span class="line"># Build the framework for device and for simulator.</span><br><span class="line">echo &quot;Building for device&quot;</span><br><span class="line">xcodebuild -project &quot;$&#123;FRAMEWORK_NAME&#125;.xcodeproj&quot; -scheme &quot;$&#123;FRAMEWORK_NAME&#125;&quot; -configuration Release -arch arm64 -arch armv7 only_active_arch=no defines_module=yes -sdk &quot;iphoneos&quot; -derivedDataPath &quot;$&#123;OUTPUT_DIR&#125;&quot;</span><br><span class="line">echo &quot;Building for Simulator&quot;</span><br><span class="line">xcodebuild -project &quot;$&#123;FRAMEWORK_NAME&#125;.xcodeproj&quot; -scheme &quot;$&#123;FRAMEWORK_NAME&#125;&quot; -configuration Release -arch x86_64 -arch i386 only_active_arch=no defines_module=yes -sdk &quot;iphonesimulator&quot; -derivedDataPath &quot;$&#123;OUTPUT_DIR&#125;&quot;</span><br><span class="line"></span><br><span class="line"># Remove .framework file if exists from previous run.</span><br><span class="line">if [ -d &quot;$&#123;OUTPUT_DIR&#125;/$&#123;FRAMEWORK_NAME&#125;.framework&quot; ]; then</span><br><span class="line">rm -rf &quot;$&#123;OUTPUT_DIR&#125;/$&#123;FRAMEWORK_NAME&#125;.framework&quot;</span><br><span class="line">fi</span><br><span class="line"></span><br><span class="line"># Copy the device version of framework.</span><br><span class="line">cp -r &quot;$&#123;OUTPUT_DIR&#125;/Build/Products/Release-iphoneos/$&#123;FRAMEWORK_NAME&#125;.framework&quot; &quot;$&#123;OUTPUT_DIR&#125;/$&#123;FRAMEWORK_NAME&#125;.framework&quot;</span><br><span class="line"></span><br><span class="line"># Merging the device and simulator frameworks&apos; executables with lipo.</span><br><span class="line">lipo -create -output &quot;$&#123;OUTPUT_DIR&#125;/$&#123;FRAMEWORK_NAME&#125;.framework/$&#123;FRAMEWORK_NAME&#125;&quot; &quot;$&#123;OUTPUT_DIR&#125;/Build/Products/Release-iphoneos/$&#123;FRAMEWORK_NAME&#125;.framework/$&#123;FRAMEWORK_NAME&#125;&quot; &quot;$&#123;OUTPUT_DIR&#125;/Build/Products/Release-iphonesimulator/$&#123;FRAMEWORK_NAME&#125;.framework/$&#123;FRAMEWORK_NAME&#125;&quot;</span><br><span class="line"></span><br><span class="line"># Copy Swift module mappings for simulator into the framework. </span><br><span class="line">cp -r &quot;$&#123;OUTPUT_DIR&#125;/Build/Products/Release-iphonesimulator/$&#123;FRAMEWORK_NAME&#125;.framework/Modules/$&#123;FRAMEWORK_NAME&#125;.swiftmodule/&quot; &quot;$&#123;OUTPUT_DIR&#125;/$&#123;FRAMEWORK_NAME&#125;.framework/Modules/$&#123;FRAMEWORK_NAME&#125;.swiftmodule&quot;</span><br><span class="line">cp -r &quot;$&#123;OUTPUT_DIR&#125;/Build/Products/Release-iphoneos/$&#123;FRAMEWORK_NAME&#125;.framework/Modules/$&#123;FRAMEWORK_NAME&#125;.swiftmodule/&quot; &quot;$&#123;OUTPUT_DIR&#125;/$&#123;FRAMEWORK_NAME&#125;.framework/Modules/$&#123;FRAMEWORK_NAME&#125;.swiftmodule&quot;</span><br><span class="line"></span><br><span class="line"># Create new combined simulator and device swift header file.</span><br><span class="line">COMBINED_PATH=&quot;$&#123;BUILD_DIR&#125;/iOS + iOS Simulator/$&#123;PROJECT_NAME&#125;-Swift.h&quot;</span><br><span class="line">mkdir -p &quot;$&#123;BUILD_DIR&#125;/iOS + iOS Simulator/&quot;</span><br><span class="line">touch &quot;$&#123;COMBINED_PATH&#125;&quot;</span><br><span class="line">echo &quot;#ifndef TARGET_OS_SIMULATOR\n#include &lt;TargetConditionals.h&gt;\n#endif\n#if TARGET_OS_SIMULATOR&quot; &gt;&gt; &quot;$&#123;COMBINED_PATH&#125;&quot;</span><br><span class="line">cat &quot;$&#123;OUTPUT_DIR&#125;/Build/Products/Release-iphonesimulator/$&#123;FRAMEWORK_NAME&#125;.framework/Headers/$&#123;FRAMEWORK_NAME&#125;-Swift.h&quot; &gt;&gt; &quot;$&#123;COMBINED_PATH&#125;&quot;</span><br><span class="line">echo &quot;#else&quot; &gt;&gt; &quot;$&#123;COMBINED_PATH&#125;&quot;</span><br><span class="line">echo &quot;//Start of iphoneos&quot; &gt;&gt; &quot;$&#123;COMBINED_PATH&#125;&quot;</span><br><span class="line">cat &quot;$&#123;OUTPUT_DIR&#125;/Build/Products/Release-iphoneos/$&#123;FRAMEWORK_NAME&#125;.framework/Headers/$&#123;FRAMEWORK_NAME&#125;-Swift.h&quot; &gt;&gt; &quot;$&#123;COMBINED_PATH&#125;&quot;</span><br><span class="line">echo &quot;#endif&quot; &gt;&gt; &quot;$&#123;COMBINED_PATH&#125;&quot;</span><br><span class="line"></span><br><span class="line"># Overwrite generated -Swift.h file with combined -Swift.h file </span><br><span class="line">cat &quot;$COMBINED_PATH&quot; &gt; &quot;$&#123;OUTPUT_DIR&#125;/$&#123;FRAMEWORK_NAME&#125;.framework/Headers/$&#123;FRAMEWORK_NAME&#125;-Swift.h&quot;</span><br><span class="line"></span><br><span class="line">#Optional Step to copy the framework to root folder</span><br><span class="line">cp -r &quot;$&#123;OUTPUT_DIR&#125;/$&#123;FRAMEWORK_NAME&#125;.framework&quot; &quot;$&#123;SRCROOT&#125;&quot;</span><br></pre></td></tr></table></figure>
+<p>打包上线时删除未使用的指令集：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line">APP_PATH=&quot;$&#123;TARGET_BUILD_DIR&#125;/$&#123;WRAPPER_NAME&#125;&quot;</span><br><span class="line"># This script loops through the frameworks embedded in the application and</span><br><span class="line"># removes unused architectures.</span><br><span class="line">find &quot;$APP_PATH&quot; -name &apos;*.framework&apos; -type d | whileread -r FRAMEWORK</span><br><span class="line">do</span><br><span class="line">FRAMEWORK_EXECUTABLE_NAME=$(defaults read&quot;$FRAMEWORK/Info.plist&quot; CFBundleExecutable)</span><br><span class="line">FRAMEWORK_EXECUTABLE_PATH=&quot;$FRAMEWORK/$FRAMEWORK_EXECUTABLE_NAME&quot;</span><br><span class="line">echo &quot;Executable is $FRAMEWORK_EXECUTABLE_PATH&quot;</span><br><span class="line">EXTRACTED_ARCHS=()</span><br><span class="line">GOOD_ARCHS=()</span><br><span class="line">PRESENT_ARCHS=($(lipo -archs &quot;$FRAMEWORK_EXECUTABLE_PATH&quot;))</span><br><span class="line">if [[ &quot;$&#123;#PRESENT_ARCHS[@]&#125;&quot; -lt 2 ]]</span><br><span class="line">then</span><br><span class="line">   echo &quot;Framework is not a Fat binary, skipping...&quot;</span><br><span class="line">   continue</span><br><span class="line">fi</span><br><span class="line">for ARCH in &quot;$&#123;PRESENT_ARCHS[@]&#125;&quot;</span><br><span class="line">do</span><br><span class="line">if [[ &quot;$ARCH&quot; != x86_64 &amp;&amp; &quot;$ARCH&quot; != i386 ]]</span><br><span class="line">then</span><br><span class="line">   echo &quot;Extracting $ARCH from $FRAMEWORK_EXECUTABLE_NAME&quot;</span><br><span class="line">   lipo -extract &quot;$ARCH&quot; &quot;$FRAMEWORK_EXECUTABLE_PATH&quot; -o &quot;$FRAMEWORK_EXECUTABLE_PATH-$ARCH&quot;</span><br><span class="line">   GOOD_ARCHS+=(&quot;$ARCH&quot;)</span><br><span class="line">   EXTRACTED_ARCHS+=(&quot;$FRAMEWORK_EXECUTABLE_PATH-$ARCH&quot;)</span><br><span class="line">   fi</span><br><span class="line">done</span><br><span class="line">echo &quot;Merging extracted architectures: $&#123;ARCHS&#125;&quot;</span><br><span class="line">lipo -o &quot;$FRAMEWORK_EXECUTABLE_PATH-merged&quot; -create &quot;$&#123;EXTRACTED_ARCHS[@]&#125;&quot;</span><br><span class="line">rm &quot;$&#123;EXTRACTED_ARCHS[@]&#125;&quot;</span><br><span class="line">echo &quot;Replacing original executable with thinned version&quot;</span><br><span class="line">rm &quot;$FRAMEWORK_EXECUTABLE_PATH&quot;</span><br><span class="line">mv &quot;$FRAMEWORK_EXECUTABLE_PATH-merged&quot;&quot;$FRAMEWORK_EXECUTABLE_PATH&quot;</span><br><span class="line">done</span><br></pre></td></tr></table></figure>
+<h3 id="XCFramework"><a href="#XCFramework" class="headerlink" title="XCFramework"></a>XCFramework</h3><p>XCFramework 是 Xcode 11 引入的，一个可分发的二进制包，它包含了 framework 的一个或多个变体，XCFramework的好处就是用 Xcode 发布的时候，Xcode 会自动选用正确的指令集Framework，省去了手动移除动态库中的模拟器指令集的工作。</p>
+<p>设置方式和Framework一致，可以是静态的也可以是动态的，打包XCFramework的脚本如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br></pre></td><td class="code"><pre><span class="line">#!/bin/sh -e</span><br><span class="line"></span><br><span class="line">REVEAL_XCFRAMEWORK_IN_FINDER=true</span><br><span class="line"></span><br><span class="line">FREAMEWORK_NAME=&quot;$&#123;PROJECT_NAME&#125;&quot;</span><br><span class="line">FREAMEWORK_OUTPUT_DIR=&quot;$&#123;PROJECT_DIR&#125;/Distribution&quot;</span><br><span class="line">ARCHIVE_PATH_IOS_DEVICE=&quot;./Build/ios_device.xcarchive&quot;</span><br><span class="line">ARCHIVE_PATH_IOS_SIMULATOR=&quot;./Build/ios_simulator.xcarchive&quot;</span><br><span class="line"># ARCHIVE_PATH_MACOS=&quot;./build/macos.xcarchive&quot;</span><br><span class="line"></span><br><span class="line">function archiveOnePlatform &#123;</span><br><span class="line">    echo &quot;▸ Starts archiving the scheme: $&#123;1&#125; for destination: $&#123;2&#125;;\n▸ Archive path: $&#123;3&#125;&quot;</span><br><span class="line"></span><br><span class="line">    xcodebuild archive \</span><br><span class="line">        -scheme &quot;$&#123;1&#125;&quot; \</span><br><span class="line">        -destination &quot;$&#123;2&#125;&quot; \</span><br><span class="line">        -archivePath &quot;$&#123;3&#125;&quot; \</span><br><span class="line">        VALID_ARCHS=&quot;$&#123;4&#125;&quot; \</span><br><span class="line">        SKIP_INSTALL=NO \</span><br><span class="line">        BUILD_LIBRARY_FOR_DISTRIBUTION=YES | xcpretty</span><br><span class="line"></span><br><span class="line">    # sudo gem install -n /usr/local/bin xcpretty</span><br><span class="line">    # xcpretty makes xcode compile information much more readable.</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">function archiveAllPlatforms &#123;</span><br><span class="line"></span><br><span class="line">    # https://www.mokacoding.com/blog/xcodebuild-destination-options/</span><br><span class="line"></span><br><span class="line">    # Platform                Destination</span><br><span class="line">    # iOS                    generic/platform=iOS</span><br><span class="line">    # iOS Simulator            generic/platform=iOS Simulator</span><br><span class="line">    # iPadOS                generic/platform=iPadOS</span><br><span class="line">    # iPadOS Simulator        generic/platform=iPadOS Simulator</span><br><span class="line">    # macOS                    generic/platform=macOS</span><br><span class="line">    # tvOS                    generic/platform=tvOS</span><br><span class="line">    # watchOS                generic/platform=watchOS</span><br><span class="line">    # watchOS Simulator        generic/platform=watchOS Simulator</span><br><span class="line">    # carPlayOS                generic/platform=carPlayOS</span><br><span class="line">    # carPlayOS Simulator    generic/platform=carPlayOS Simulator</span><br><span class="line"></span><br><span class="line">    SCHEME=$&#123;1&#125;</span><br><span class="line"></span><br><span class="line">    archiveOnePlatform $SCHEME &quot;generic/platform=iOS Simulator&quot; $&#123;ARCHIVE_PATH_IOS_SIMULATOR&#125; &quot;x86_64&quot;</span><br><span class="line">      archiveOnePlatform $SCHEME &quot;generic/platform=iOS&quot; $&#123;ARCHIVE_PATH_IOS_DEVICE&#125; &quot;armv7 arm64&quot;</span><br><span class="line">      # archiveOnePlatform $SCHEME &quot;generic/platform=macOS&quot; $&#123;ARCHIVE_PATH_MACOS&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">function makeXCFramework &#123;</span><br><span class="line"></span><br><span class="line">    FRAMEWORK_RELATIVE_PATH=&quot;Products/Library/Frameworks&quot;</span><br><span class="line">    OUTPUT_DIR=&quot;$&#123;FREAMEWORK_OUTPUT_DIR&#125;/DynamicFramework&quot;</span><br><span class="line"></span><br><span class="line">    mkdir -p &quot;$&#123;OUTPUT_DIR&#125;&quot;</span><br><span class="line"></span><br><span class="line">    xcodebuild -create-xcframework \</span><br><span class="line">        -framework &quot;$&#123;ARCHIVE_PATH_IOS_DEVICE&#125;/$&#123;FRAMEWORK_RELATIVE_PATH&#125;/$&#123;FREAMEWORK_NAME&#125;.framework&quot; \</span><br><span class="line">        -framework &quot;$&#123;ARCHIVE_PATH_IOS_SIMULATOR&#125;/$&#123;FRAMEWORK_RELATIVE_PATH&#125;/$&#123;FREAMEWORK_NAME&#125;.framework&quot; \</span><br><span class="line">        -output &quot;$&#123;OUTPUT_DIR&#125;/$&#123;FREAMEWORK_NAME&#125;.xcframework&quot;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">echo &quot;#####################&quot;</span><br><span class="line">echo &quot;▸ Cleaning XCFramework output dir: $&#123;FREAMEWORK_OUTPUT_DIR&#125;&quot;</span><br><span class="line">rm -rf $FREAMEWORK_OUTPUT_DIR</span><br><span class="line"></span><br><span class="line">#### Make XCFramework</span><br><span class="line"></span><br><span class="line">echo &quot;▸ Archive framework: $&#123;FREAMEWORK_NAME&#125;&quot;</span><br><span class="line">archiveAllPlatforms $FREAMEWORK_NAME</span><br><span class="line"></span><br><span class="line">echo &quot;▸ Make framework: $&#123;FREAMEWORK_NAME&#125;.xcframework&quot;</span><br><span class="line">makeXCFramework</span><br><span class="line"></span><br><span class="line"># Clean Build</span><br><span class="line">rm -rf &quot;./Build&quot;</span><br><span class="line"></span><br><span class="line">if [ $&#123;REVEAL_XCFRAMEWORK_IN_FINDER&#125; = true ]; then</span><br><span class="line">    open &quot;$&#123;FREAMEWORK_OUTPUT_DIR&#125;/&quot;</span><br><span class="line">fi</span><br></pre></td></tr></table></figure>
+<h3 id="常见错误"><a href="#常见错误" class="headerlink" title="常见错误"></a>常见错误</h3><h4 id="Category错误"><a href="#Category错误" class="headerlink" title="Category错误"></a>Category错误</h4><p>错误描述：静态库中如果包含了Category（分类），有时候在使用静态库的工程中会报“方法找不到”的错误（unrecognized selector sent to instance）。</p>
+<p>具体原因：参见<a href="http://www.tuicool.com/articles/qQzeia" target="_blank" rel="noopener">编译参数-objc说明</a></p>
+<p>解决方案：在使用静态库的工程中配置<code>Other Linker Flags</code>为-ObjC</p>
+<h4 id="制作成动态库"><a href="#制作成动态库" class="headerlink" title="制作成动态库"></a>制作成动态库</h4><p>错误描述：在使用静态库时，运行报错(Reason: Image Not Found)</p>
+<p>具体原因：可能由于没有设置<code>Mach-O Type</code>，做的是动态库，在使用的时候需要额外加一个步骤，要把Framework同时添加到<code>General --&gt; Embedded Binaries</code>中。</p>
+<p>解决方案：将<code>Mach-O Type</code>设置为<code>Static Library</code></p>
+<h4 id="OC项目引用Swift-Framework"><a href="#OC项目引用Swift-Framework" class="headerlink" title="OC项目引用Swift Framework"></a>OC项目引用Swift Framework</h4><p><strong>错误日志：</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Undefined symbol: __swift_FORCE_LOAD_$_swiftCompatibilityDynamicReplacements</span><br><span class="line">Undefined symbol: __swift_FORCE_LOAD_$_swiftCompatibility51</span><br><span class="line">Undefined symbol: __swift_FORCE_LOAD_$_swiftCompatibility50</span><br></pre></td></tr></table></figure>
+<p><strong>解决方式：</strong>在项目的<code>Build Setting -&gt; LIBRARY_SEARCH_PATHS</code>添加</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$(TOOLCHAIN_DIR)/usr/lib/swift/$(PLATFORM_NAME)</span><br><span class="line">$(TOOLCHAIN_DIR)/usr/lib/swift-5.0/$(PLATFORM_NAME)</span><br></pre></td></tr></table></figure>
+<p><strong>错误日志：</strong></p>
+<p><img src="/img/iOS基础-Framework和XCFramework制作/A1110831-7D75-454A-97B7-E7872615708A.jpg" alt></p>
+<p><strong>解决方式：</strong>修改项目配置<code>Build Setting -&gt; ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES</code>为YES</p>
+<p><strong>错误日志：</strong></p>
+<p><img src="/img/iOS基础-Framework和XCFramework制作/2AE04CC8-3C7B-4D2D-88C5-4F32DDC98DEC.jpg" alt></p>
+<p><strong>解决方式：</strong>在项目的<code>Build Setting -&gt; LD_RUNPATH_SEARCH_PATHS</code>添加（一定要加在第一行）</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/usr/lib/swift</span><br></pre></td></tr></table></figure>
+<p>如果某些系统库找不到，则在项目的<code>Build Phases -&gt; Link Binary With Libraries</code>添加Swift依赖库：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">libswiftCompression.tbd</span><br><span class="line">libswiftUIKit.tbd</span><br><span class="line">libswiftCore.tbd</span><br></pre></td></tr></table></figure>
+<h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><p><a href="https://medium.com/@priya_talreja/create-custom-universal-framework-in-ios-aef7fa6fd51e" target="_blank" rel="noopener">Custom Universal Framework in iOS</a></p>
+<p><a href="https://www.userdesk.io/blog/how-to-build-a-binary-framework-in-xcode-11/" target="_blank" rel="noopener">How to build a binary framework in Xcode 11</a></p>
+
+      
+    </div>
+
+    <div>
+      
+        
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/iOS/" rel="tag">#iOS</a>
+          
+            <a href="/tags/开发/" rel="tag">#开发</a>
+          
+            <a href="/tags/静态库/" rel="tag">#静态库</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/读书-《好好学习》笔记/" rel="next" title="《好好学习》笔记">
+                <i class="fa fa-chevron-left"></i> 《好好学习》笔记
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image" src="/avatar/avatar.jpg" alt="麦子">
+          <p class="site-author-name" itemprop="name">麦子</p>
+          <p class="site-description motion-element" itemprop="description">当你的才华撑不起你的野心的时候，你就应该静下心来学习！</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">51</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">9</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">54</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/MrWheat" target="_blank" title="Github">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  Github
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/3202240184" target="_blank" title="微博">
+                  
+                    <i class="fa fa-fw fa-weibo"></i>
+                  
+                  微博
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Framework"><span class="nav-number">1.</span> <span class="nav-text">Framework</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#制作Framework"><span class="nav-number">1.1.</span> <span class="nav-text">制作Framework</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Mach-O-Type设置"><span class="nav-number">1.2.</span> <span class="nav-text">Mach-O Type设置</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#静态库-Static-Libraries"><span class="nav-number">1.2.1.</span> <span class="nav-text">静态库(Static Libraries)</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#动态库-Dynamic-Libraries"><span class="nav-number">1.2.2.</span> <span class="nav-text">动态库(Dynamic Libraries)</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#其他相关设置"><span class="nav-number">1.3.</span> <span class="nav-text">其他相关设置</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#编写代码"><span class="nav-number">1.4.</span> <span class="nav-text">编写代码</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#创建通用包"><span class="nav-number">1.5.</span> <span class="nav-text">创建通用包</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#XCFramework"><span class="nav-number">2.</span> <span class="nav-text">XCFramework</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#常见错误"><span class="nav-number">3.</span> <span class="nav-text">常见错误</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Category错误"><span class="nav-number">3.1.</span> <span class="nav-text">Category错误</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#制作成动态库"><span class="nav-number">3.2.</span> <span class="nav-text">制作成动态库</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#OC项目引用Swift-Framework"><span class="nav-number">3.3.</span> <span class="nav-text">OC项目引用Swift Framework</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#参考"><span class="nav-number">4.</span> <span class="nav-text">参考</span></a></li></ol></div>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">
+  
+  &copy;  2014 - 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">麦子</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+        
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.1"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.0.1"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.1"></script>
+
+
+
+  
+
+
+
+  
+
+    <script type="text/javascript">
+      var disqus_shortname = 'mrwheat';
+      var disqus_identifier = 'iOS基础-Framework和XCFramework制作/';
+      var disqus_title = 'iOS开发-Framework和XCFramework制作';
+      var disqus_url = 'http://hackmz.com/iOS基础-Framework和XCFramework制作/';
+
+      function run_disqus_script(disqus_script){
+        var dsq = document.createElement('script');
+        dsq.type = 'text/javascript';
+        dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/' + disqus_script;
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+      }
+
+      run_disqus_script('count.js');
+      
+        run_disqus_script('embed.js');
+      
+    </script>
+  
+
+
+
+  
+  
+  
+
+  
+
+  
+
+</body>
+</html>
