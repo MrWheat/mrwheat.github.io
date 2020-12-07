@@ -64,6 +64,16 @@ Mach-O Type分为以下五种类型，一般常见的有`Dynamic Library`和`Sta
 
 在导入自己制作的动态库时，需要在Embedded Binaries中导入，不然会报image not found，程序崩溃。
 
+#### 支持Bitcode
+
+`Enable Bitcode:`YES
+
+`Deployment Postprocessing:`YES
+
+`Strip Style:`Debugging Symbols
+
+`Other C Flags:`-fembed-bitcode / fembed-bitcode
+
 #### 其他相关设置
 
 `Architectures:`指定工程将被编译成支持哪些指令集，一般不包含armv7s，如果需要可以额外添加。
@@ -71,8 +81,6 @@ Mach-O Type分为以下五种类型，一般常见的有`Dynamic Library`和`Sta
 `Valid Architecures:`指定可能支持的指令集，该列表和Architectures列表的交集，将是Xcode最终生成的二进制包所支持的指令集。
 
 `Build Active Architecture Only:`编译时是否只保留对应设备的指令集。
-
-`Enable Bitcode:`是否支持Bitcode。
 
 `Dead Code Stripping:`是否消除无效代码，设置为NO关闭对代码中dead，unreachable代码过滤。
 
